@@ -43,7 +43,7 @@ const MenuItem = (props) => {
                 />
             </Ripple>
             <View style={{ display: "flex", alignItems: "center" }}>
-                <Text style={[styles.textSemiBold, { fontSize: 12, marginTop: 5, color: "#444547" }]}>{props.text}</Text>
+                <Text style={[styles.textSemiBold, { fontSize: 12, marginTop: 5, color: "#595959" }]}>{props.text}</Text>
             </View>
         </View>
     )
