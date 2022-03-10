@@ -1,14 +1,13 @@
 import { Text, View } from 'react-native'
-import React, { Component } from 'react'
+import React from 'react'
+import styles from '../stylesheets/Main'
 
-export class Transaksi extends Component {
-  render() {
-    return (
-      <View style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <Text>Transaksi</Text>
-      </View>
-    )
-  }
+const Transaksi = () => {
+  return (
+    <View style={styles.initPage}>
+      <Text>Transaksi</Text>
+    </View>
+  )
 }
 
 export default Transaksi

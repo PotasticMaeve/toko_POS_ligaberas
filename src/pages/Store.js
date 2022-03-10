@@ -1,14 +1,13 @@
+import React from 'react'
 import { Text, View } from 'react-native'
-import React, { Component } from 'react'
+import styles from '../stylesheets/Main'
 
-export class Store extends Component {
-    render() {
-        return (
-            <View style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <Text>Store</Text>
-            </View>
-        )
-    }
+const Store = () => {
+    return (
+        <View style={styles.initPage}>
+            <Text>Store</Text>
+        </View>
+    )
 }
 
 export default Store

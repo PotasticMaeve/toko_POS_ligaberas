@@ -1,14 +1,17 @@
-import { Text, View } from 'react-native'
-import React, { Component } from 'react'
+import { View, ScrollView } from "react-native"
+import React from "react"
+import Header from "../components/Header"
+import Slider from "../components/Slider"
 
-export class Home extends Component {
-  render() {
-    return (
-      <View style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <Text>Home</Text>
-      </View>
-    )
-  }
+const Home = () => {
+  return (
+    <View>
+      <Header />
+      <ScrollView>
+        <Slider />
+      </ScrollView>
+    </View>
+  )
 }
 
 export default Home

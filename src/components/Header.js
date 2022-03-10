@@ -1,0 +1,24 @@
+import { View, TouchableOpacity } from 'react-native'
+import React from "react"
+import styles from '../stylesheets/Main'
+import TextField from './TextField'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import LinearGradient from 'react-native-linear-gradient';
+
+const Header = () => {
+    return (
+        <LinearGradient colors={['#f6b635', '#f3a337', '#eb8937']} style={styles.headerWrap}>
+            <TextField />
+            <View style={styles.cartIcon}>
+                <TouchableOpacity>
+                    <FontAwesome5 name={"shopping-cart"} size={18} color='#FFFFFF' style={{ marginLeft: 7, marginRight: 10 }} />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                    <FontAwesome5 name={"bars"} size={18} color='#FFFFFF' style={{ marginLeft: 7 }} />
+                </TouchableOpacity>
+            </View>
+        </LinearGradient>
+    )
+}
+
+export default Header
