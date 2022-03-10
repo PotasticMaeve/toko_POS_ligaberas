@@ -1,7 +1,8 @@
-import React  from 'react'
-import { Image, View } from 'react-native'
+import React from 'react'
+import { Image, View, TouchableOpacity } from 'react-native'
 import Swiper from 'react-native-swiper'
 import styles from '../stylesheets/Main'
+import Ripple from 'react-native-material-ripple';
 
 const Slider = () => {
     const images = [
@@ -12,12 +13,12 @@ const Slider = () => {
 
     return (
         <View style={styles.bannerWrap}>
-            <Swiper 
+            <Swiper
                 loop
                 autoplay
-                dotStyle={{ marginTop: 200}}
+                dotStyle={{ marginTop: 200 }}
                 autoplayTimeout={7}
-                paginationStyle={{  
+                paginationStyle={{
                     position: "absolute",
                     bottom: 0,
                     left: 10,
@@ -31,14 +32,23 @@ const Slider = () => {
                     <View style={{ width: 8, height: 8, backgroundColor: "#e8791c", borderRadius: 100, marginHorizontal: 2 }}>
                     </View>
                 }
-            >   
+            >
                 {images?.map((item, i) => (
-                    <Image
+                    <Ripple
+                        style={{
+                            width: 340,
+                            height: 150,
+                            marginHorizontal: 10
+                        }}
+                        rippleColor="#fff"
                         key={i}
-                        source={{ uri: item }}
-                        resizeMode="stretch"
-                        style={{ width: 340, height: 150, marginHorizontal: 10, borderRadius: 5 }}
-                    />
+                    >
+                        <Image
+                            source={{ uri: item }}
+                            resizeMode="stretch"
+                            style={{ width: 340, height: 150, borderRadius: 5 }}
+                        />
+                    </Ripple>
                 ))}
             </Swiper>
         </View>

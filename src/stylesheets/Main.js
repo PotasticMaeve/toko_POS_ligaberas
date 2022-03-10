@@ -46,29 +46,38 @@ const styles = StyleSheet.create({
         width: "100%",
         paddingTop: 10,
     },
-    slideItem: {
-        height: "100%",
-        width: "auto"
+    menuWrap: {
+        height: 100,
+        width: "100%",
+        paddingHorizontal: 10,
+        paddingTop: 20,
+        display: "flex",
+        flexDirection: "row"
     },
-    dotWrap: {
-        flexDirection: "row",
-        alignSelf: "flex-start",
-        position: "absolute",
-        bottom: 0,
-        left: 10,
-        zIndex: 99
+    imgMenu: {
+        height: 60,
+        width: 60,
+        borderRadius: 10,
+        marginHorizontal: 12,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: '#eee',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+        elevation: 2,
     },
-    dotActive: {
-        width: 15,
-        height: 15,
-        margin: 1,
-        color: "#e8791c",
-    },
-    dot: {
-        width: 15,
-        height: 15,
-        margin: 1,
-        color: "#c1c1c1"
+    labelWrap: {
+        marginTop: 20,
+        height: 50,
+        width: 170,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        paddingLeft: 20,
+        borderTopRightRadius: 20,
+        borderBottomRightRadius: 100,
     },
     textBold: {
         fontFamily: "Nunito-Bold"
