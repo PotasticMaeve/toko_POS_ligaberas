@@ -30,6 +30,10 @@ const styles = StyleSheet.create({
         width: "25%"
     },
     textField: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        alignItems: "center",
         paddingHorizontal: "3%",
         backgroundColor: "#eee",
         width: "73%",
@@ -69,15 +73,25 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     labelWrap: {
-        marginTop: 20,
         height: 50,
-        width: 170,
+        width: 250,
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-start",
         paddingLeft: 20,
         borderTopRightRadius: 20,
         borderBottomRightRadius: 100,
+    },
+    homeWrap: {
+        backgroundColor: "#fafafa",
+        height: "100%"
+    },
+    labelRow: {
+        height: 90,
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
     },
     textBold: {
         fontFamily: "Nunito-Bold"

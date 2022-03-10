@@ -5,9 +5,11 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const Label = () => {
     return (
-        <LinearGradient colors={['#f6b635', '#f1961a']} style={styles.labelWrap}>
-            <Text style={[styles.textBold, { color: "#7e7e7e", fontSize: 15 }]}>Produk Terlaris</Text>
-        </LinearGradient>
+        <View style={styles.labelRow}>
+            <LinearGradient colors={['#f4ab18', '#e2880d']} style={styles.labelWrap}>
+                <Text style={[styles.textBold, { color: "#fff", fontSize: 15 }]}>Produk Terbaru</Text>
+            </LinearGradient>
+        </View>
     )
 }
 

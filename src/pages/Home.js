@@ -4,10 +4,11 @@ import Header from "../components/Header"
 import Slider from "../components/Slider"
 import Menu from "../components/Menu"
 import Label from "../components/Label"
+import styles from "../stylesheets/Main"
 
 const Home = () => {
   return (
-    <View>
+    <View style={styles.homeWrap}>
       <Header />
       <ScrollView>
         <Slider />
