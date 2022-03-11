@@ -6,10 +6,10 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 const TextField = () => {
     return (
         <View style={styles.textField}>
-            <FontAwesome5 name={"search"} size={15} color="#c1c1c1"/>
+            <FontAwesome5 name={"search"} size={15} color="#c1c1c1" />
             <TextInput
                 placeholder="Cari sepatu bola"
-                style={[styles.textMedium, { marginLeft: 5, fontSize: 14, width: "90%" }]}
+                style={[styles.textMedium, { marginLeft: 5, fontSize: 14, width: "90%", color: "#595959" }]}
                 spellCheck={false}
                 autoCorrect={false}
             />

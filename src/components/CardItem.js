@@ -3,6 +3,7 @@ import { View, Text, Image } from 'react-native'
 import Ripple from 'react-native-material-ripple'
 import styles from '../stylesheets/Main'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { convertToIDR } from '../Helper';
 
 const getImage = (imgName) => {
     if (imgName === "tas3") {
@@ -46,7 +47,7 @@ const CardItem = (props) => {
                 paddingHorizontal: 7
             }}>
                 <Text numberOfLines={2} style={[styles.textMedium, { textTransform: "capitalize", fontSize: 12 }]}>{props.title}</Text>
-                <Text style={[styles.textBold, { textTransform: "capitalize", fontSize: 13, marginVertical: 5 }]}>Rp {props.price}</Text>
+                <Text style={[styles.textBold, { textTransform: "capitalize", fontSize: 13, marginVertical: 5 }]}>{convertToIDR(props.price)}</Text>
                 <View style={{
                     position: "absolute",
                     bottom: -30,
