@@ -7,7 +7,7 @@ import {
 import Home from "./pages/Home";
 import Wishlist from "./pages/Wishlist";
 import Transaksi from "./pages/Transaksi";
-import Store from "./pages/Store";
+import Keranjang from "./pages/Keranjang";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import styles from "./stylesheets/Main";
 
@@ -37,9 +37,6 @@ const Routes = () => {
                     <Scene key="Home" name="home" title="Home" icon={tabIcon} >
                         <Scene key="Home" component={Home} hideNavBar initial />
                     </Scene>
-                    <Scene key="Store" name="store" title="Store" icon={tabIcon} hideNavBar>
-                        <Scene key="Store" component={Store} title="Store" />
-                    </Scene>
                     <Scene key="Wishlist" name="heart" title="Wishlist" icon={tabIcon} hideNavBar>
                         <Scene key="Wishlist" component={Wishlist} title="Wishlist" />
                     </Scene>
@@ -47,6 +44,7 @@ const Routes = () => {
                         <Scene key="Transaksi" component={Transaksi} title="Transaksi" />
                     </Scene>
                 </Scene>
+                <Scene key="Keranjang" component={Keranjang} title="Keranjang" />
             </Scene>
         </Router>
     )

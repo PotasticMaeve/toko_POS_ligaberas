@@ -54,9 +54,9 @@ const styles = StyleSheet.create({
     imgMenu: {
         flex: 1,
         height: WIDTH / 6,
-        width: WIDTH / 4.8,
+        width: WIDTH / 5,
         backgroundColor: "#eaeaea",
-        marginHorizontal: 5,
+        marginHorizontal: 6.5,
         marginVertical: 15,
         borderRadius: 10,
         display: 'flex',
@@ -97,12 +97,24 @@ const styles = StyleSheet.create({
     cardItemWrap: {
         flex: 1,
         display: "flex",
-        backgroundColor: "#eaeaea",
-        alignItems: "center",
-        justifyContent: "center",
-        height: WIDTH / 2,
+        backgroundColor: "#fff",
+        height: WIDTH / 1.5,
+        marginHorizontal: 5,
+        marginVertical: 10,
+        borderRadius: 10,
+        shadowColor: '#eaeaea',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+        elevation: 3,
+    },
+    cardBlank: {
+        flex: 1,
+        display: "flex",
+        backgroundColor: "#fff",
+        height: WIDTH / 1.5,
         margin: 5,
-        borderRadius: 10
+        borderRadius: 10    
     },
     space: {
         height: 30

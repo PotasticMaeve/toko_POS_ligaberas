@@ -1,17 +1,30 @@
 import React from 'react'
-import { View, FlatList } from 'react-native'
+import { View, FlatList, SafeAreaView } from 'react-native'
 import styles from '../stylesheets/Main'
 import CardItem from "./CardItem"
 
-const dataList = [{key: "1"},{key: "2"},{key: "3"},{key: "4"},{key: "5"}]
+const dataList = [
+    { key: "1", nama: "tas3", title: "tas selempang dan jinjing tan kekinian", price: 25000, star: 4.8, sale: 90 },
+    { key: "2", nama: "sepatu1", title: "Techdoo Sepatu Sneakers Pria Sepatu Olahraga Lari Casual Import MC101", price: 25000, star: 4.9, sale: 20 },
+    { key: "3", nama: "lampu1", title: "Lampu Tidur si Pentol Quby Star Moly Soft Head Touch Dimmer Original", price: 355000, star: 4.9, sale: 25 },
+    { key: "4", nama: "tepung1", title: "Segitiga Biru Tepung Terigu 1000gr", price: 11500, star: 5, sale: 72 },
+    { key: "5", nama: "pan1", title: "Neochef Multipan 2 in 1 Masak Cepat Hemat Minyak Anti Lengket", price: 298000, star: 4.6, sale: 5 },
+]
 const _renderItem = ({ item }) => {
-    if(item.empty){
-        return(
-            <View style={[styles.cardItemWrap, styles.blankCard]} />
+    if (item.empty) {
+        return (
+            <View style={[styles.cardBlank, styles.blankCard]} />
         )
     }
-    return(
-        <CardItem />
+    return (
+        <CardItem
+            nama={item.nama}
+            img={item.img}
+            title={item.title}
+            price={item.price}
+            star={item.star}
+            sale={item.sale}
+        />
     )
 }
 
@@ -19,23 +32,23 @@ const formatCard = (dataList) => {
     let numColumns = 2
     const totalRows = Math.floor(dataList.length / numColumns)
     let totalLastRow = dataList.length - (totalRows * numColumns)
-    while(totalLastRow !== 0 && totalLastRow !== numColumns){
-        dataList.push({key: "blank", empty: true})
+    while (totalLastRow !== 0 && totalLastRow !== numColumns) {
+        dataList.push({ key: "blank", empty: true })
         totalLastRow++
     }
     return dataList
-} 
+}
 
 const Card = () => {
     return (
-        <View style={styles.cardWrap}>
-            <FlatList 
+        <SafeAreaView style={styles.cardWrap}>
+            <FlatList
                 data={formatCard(dataList)}
                 renderItem={_renderItem}
                 keyExtractor={(item, i) => i.toString()}
                 numColumns={2}
             />
-        </View>
+        </SafeAreaView>
     )
 }
 

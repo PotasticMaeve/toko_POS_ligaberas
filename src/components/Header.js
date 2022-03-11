@@ -4,13 +4,14 @@ import styles from '../stylesheets/Main'
 import TextField from './TextField'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
+import { Actions } from 'react-native-router-flux';
 
 const Header = () => {
     return (
         <LinearGradient colors={['#f6b635', '#f3a337', '#eb8937']} style={styles.headerWrap}>
             <TextField />
             <View style={styles.cartIcon}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => Actions.push("Keranjang")}>
                     <FontAwesome5 name={"shopping-cart"} size={18} color='#FFFFFF' style={{ marginLeft: 7, marginRight: 10 }} />
                 </TouchableOpacity>
                 <TouchableOpacity>

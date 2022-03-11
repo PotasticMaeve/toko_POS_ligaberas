@@ -9,7 +9,7 @@ const TextField = () => {
             <FontAwesome5 name={"search"} size={15} color="#c1c1c1"/>
             <TextInput
                 placeholder="Cari sepatu bola"
-                style={[styles.textRegular, { marginLeft: 5, fontSize: 15, width: "90%" }]}
+                style={[styles.textMedium, { marginLeft: 5, fontSize: 14, width: "90%" }]}
                 spellCheck={false}
                 autoCorrect={false}
             />
