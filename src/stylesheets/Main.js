@@ -1,5 +1,6 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
+const WIDTH = Dimensions.get("window").width
 const styles = StyleSheet.create({
     tabTitle: {
         fontSize: 11,
@@ -50,20 +51,15 @@ const styles = StyleSheet.create({
         width: "100%",
         paddingTop: 10,
     },
-    menuWrap: {
-        height: 100,
-        width: "100%",
-        paddingHorizontal: 10,
-        paddingTop: 20,
-        display: "flex",
-        flexDirection: "row"
-    },
     imgMenu: {
-        height: 60,
-        width: 60,
+        flex: 1,
+        height: WIDTH / 6,
+        width: WIDTH / 4.8,
+        backgroundColor: "#eaeaea",
+        marginHorizontal: 5,
+        marginVertical: 15,
         borderRadius: 10,
-        marginHorizontal: 12,
-        display: "flex",
+        display: 'flex',
         justifyContent: "center",
         alignItems: "center",
         shadowColor: '#eee',
@@ -87,11 +83,32 @@ const styles = StyleSheet.create({
         height: "100%"
     },
     labelRow: {
-        height: 90,
+        marginTop: 15,
+        height: 70,
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center"
+    },
+    cardWrap: {
+        height: "auto",
+        paddingHorizontal: 10
+    },
+    cardItemWrap: {
+        flex: 1,
+        display: "flex",
+        backgroundColor: "#eaeaea",
+        alignItems: "center",
+        justifyContent: "center",
+        height: WIDTH / 2,
+        margin: 5,
+        borderRadius: 10
+    },
+    space: {
+        height: 30
+    },
+    blankCard: {
+        backgroundColor: "transparent"
     },
     textBold: {
         fontFamily: "Nunito-Bold"
