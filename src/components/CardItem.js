@@ -47,6 +47,7 @@ const CardItem = (props) => {
                 style={styles.cardItemWrap}
             >
                 <ShimmerPlaceHolder
+                    shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
                     ref={imgShimmer}
                     style={{
                         height: "55%",
@@ -66,6 +67,7 @@ const CardItem = (props) => {
                     paddingHorizontal: 7
                 }}>
                     <ShimmerPlaceHolder 
+                        shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
                         ref={title1Shimmer}
                         style={{ 
                             width: "90%",
@@ -73,6 +75,7 @@ const CardItem = (props) => {
                         }}
                     />
                     <ShimmerPlaceHolder 
+                        shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
                         ref={title2Shimmer}
                         style={{ 
                             width: "75%",
@@ -81,6 +84,7 @@ const CardItem = (props) => {
                         }}
                     />
                     <ShimmerPlaceHolder 
+                        shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
                         ref={priceShimmer}
                         style={{ 
                             width: "40%",
@@ -93,10 +97,12 @@ const CardItem = (props) => {
                         bottom: -30,
                         display: "flex",
                         flexDirection: "row",
-                        width: '65%',
-                        justifyContent: "space-evenly"
+                        marginLeft: 8,
+                        width: 75,
+                        justifyContent: "space-between"
                     }}>
                         <ShimmerPlaceHolder
+                            shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
                             ref={ratingShimmer}
                             style={{ 
                                 width: 30,
@@ -104,9 +110,10 @@ const CardItem = (props) => {
                             }}
                         />
                         <ShimmerPlaceHolder
+                            shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
                             ref={saleShimmer}
                             style={{ 
-                                width: 45,
+                                width: 40,
                                 borderRadius: 5
                             }}
                         />
