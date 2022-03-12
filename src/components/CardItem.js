@@ -26,14 +26,10 @@ const getImage = (imgName) => {
     }
 }
 
+const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
+
 const CardItem = (props) => {
     const [isLoading, setIsLoading] = useState(true)
-    const imgShimmer = React.createRef()
-    const title1Shimmer = React.createRef()
-    const title2Shimmer = React.createRef()
-    const priceShimmer = React.createRef()
-    const ratingShimmer = React.createRef()
-    const saleShimmer = React.createRef()
 
     useEffect(() => {
         setTimeout(() => {
@@ -47,19 +43,11 @@ const CardItem = (props) => {
                 style={styles.cardItemWrap}
             >
                 <ShimmerPlaceHolder
-                    shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
-                    ref={imgShimmer}
-                    style={{
-                        height: "55%",
-                        width: "100%",
-                        borderTopRightRadius: 10,
-                        borderTopLeftRadius: 10,
-                        overflow: "hidden",
-                        backgroundColor: '#eaeaea',
-                    }}>
+                    shimmerColors={colorShimmer}
+                    style={styles.imgCardWrap}>
                     <Image
                         source={getImage(props.nama)}
-                        style={{ height: "100%", width: '100%', resizeMode: 'cover' }}
+                        style={styles.imgCard}
                     />
                 </ShimmerPlaceHolder>
                 <View style={{
@@ -67,16 +55,14 @@ const CardItem = (props) => {
                     paddingHorizontal: 7
                 }}>
                     <ShimmerPlaceHolder 
-                        shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
-                        ref={title1Shimmer}
+                        shimmerColors={colorShimmer}
                         style={{ 
                             width: "90%",
                             borderRadius: 5
                         }}
                     />
                     <ShimmerPlaceHolder 
-                        shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
-                        ref={title2Shimmer}
+                        shimmerColors={colorShimmer}
                         style={{ 
                             width: "75%",
                             marginTop: 3,
@@ -84,8 +70,7 @@ const CardItem = (props) => {
                         }}
                     />
                     <ShimmerPlaceHolder 
-                        shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
-                        ref={priceShimmer}
+                        shimmerColors={colorShimmer}
                         style={{ 
                             width: "40%",
                             marginTop: 7,
@@ -102,16 +87,14 @@ const CardItem = (props) => {
                         justifyContent: "space-between"
                     }}>
                         <ShimmerPlaceHolder
-                            shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
-                            ref={ratingShimmer}
+                            shimmerColors={colorShimmer}
                             style={{ 
                                 width: 30,
                                 borderRadius: 5
                             }}
                         />
                         <ShimmerPlaceHolder
-                            shimmerColors={["#ececec", "#d0d0d0", "#ececec"]}
-                            ref={saleShimmer}
+                            shimmerColors={colorShimmer}
                             style={{ 
                                 width: 40,
                                 borderRadius: 5
@@ -127,33 +110,19 @@ const CardItem = (props) => {
                 style={styles.cardItemWrap}
                 rippleColor="#fff"
             >
-                <View style={{
-                    height: "55%",
-                    width: "100%",
-                    borderTopRightRadius: 10,
-                    borderTopLeftRadius: 10,
-                    overflow: "hidden",
-                    backgroundColor: '#eaeaea',
-                }}>
+                <View style={styles.imgCardWrap}>
                     <Image
                         source={getImage(props.nama)}
-                        style={{ height: "100%", width: '100%', resizeMode: 'cover' }}
+                        style={styles.imgCard}
                     />
                 </View>
                 <View style={{
                     paddingVertical: 5,
                     paddingHorizontal: 7
                 }}>
-                    <Text numberOfLines={2} style={[styles.textMedium, { textTransform: "capitalize", fontSize: 12 }]}>{props.title}</Text>
-                    <Text style={[styles.textBold, { textTransform: "capitalize", fontSize: 13, marginVertical: 5 }]}>{convertToIDR(props.price)}</Text>
-                    <View style={{
-                        position: "absolute",
-                        bottom: -30,
-                        display: "flex",
-                        flexDirection: "row",
-                        width: '75%',
-                        justifyContent: "space-evenly"
-                    }}>
+                    <Text numberOfLines={2} style={[styles.textMedium, styles.titleCard]}>{props.title}</Text>
+                    <Text style={[styles.textBold, styles.priceCard]}>{convertToIDR(props.price)}</Text>
+                    <View style={styles.ratingWrap}>
                         <FontAwesome5 name={"star"} solid size={14} color='#FFC400' />
                         <Text style={[styles.textMedium, { fontSize: 12 }]}>{props.star.toString().length === 1 ? props.star + ".0" : props.star}</Text>
                         <Text style={[styles.textMedium, { fontSize: 11.5, color: 'grey' }]}>| Terjual {props.sale}</Text>

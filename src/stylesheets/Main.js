@@ -122,6 +122,36 @@ const styles = StyleSheet.create({
     blankCard: {
         backgroundColor: "transparent"
     },
+    imgCardWrap: {
+        height: "55%",
+        width: "100%",
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10,
+        overflow: "hidden",
+        backgroundColor: '#eaeaea',
+    },
+    imgCard: { 
+        height: "100%", 
+        width: '100%', 
+        resizeMode: 'cover' 
+    },
+    titleCard: { 
+        textTransform: "capitalize", 
+        fontSize: 12 
+    },
+    priceCard: { 
+        textTransform: "capitalize", 
+        fontSize: 13, 
+        marginVertical: 5 
+    },
+    ratingWrap: {
+        position: "absolute",
+        bottom: -30,
+        display: "flex",
+        flexDirection: "row",
+        width: '75%',
+        justifyContent: "space-evenly"
+    },
     textBold: {
         fontFamily: "Nunito-Bold"
     },
