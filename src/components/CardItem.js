@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, Image } from 'react-native'
 import Ripple from 'react-native-material-ripple'
 import styles from '../stylesheets/Main'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { convertToIDR } from '../Helper';
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
-import LinearGradient from 'react-native-linear-gradient';
+import { Actions } from 'react-native-router-flux';
+import ShimmerCard from './ShimmerCard';
+import { MainContext } from '../context/MainContext';
 
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const getImage = (imgName) => {
     if (imgName === "tas3") {
         return require("../../assets/images/tas3.jpg")
@@ -26,11 +26,10 @@ const getImage = (imgName) => {
     }
 }
 
-const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
-
 const CardItem = (props) => {
-    const [isLoading, setIsLoading] = useState(true)
-
+    const { loading } = React.useContext(MainContext)
+    const [ isLoading, setIsLoading ] = loading
+    
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false)
@@ -39,76 +38,14 @@ const CardItem = (props) => {
 
     if (isLoading) {
         return (
-            <View
-                style={styles.cardItemWrap}
-            >
-                <ShimmerPlaceHolder
-                    shimmerColors={colorShimmer}
-                    style={styles.imgCardWrap}>
-                    <Image
-                        source={getImage(props.nama)}
-                        style={styles.imgCard}
-                    />
-                </ShimmerPlaceHolder>
-                <View style={{
-                    paddingVertical: 5,
-                    paddingHorizontal: 7
-                }}>
-                    <ShimmerPlaceHolder 
-                        shimmerColors={colorShimmer}
-                        style={{ 
-                            width: "90%",
-                            borderRadius: 5
-                        }}
-                    />
-                    <ShimmerPlaceHolder 
-                        shimmerColors={colorShimmer}
-                        style={{ 
-                            width: "75%",
-                            marginTop: 3,
-                            borderRadius: 5
-                        }}
-                    />
-                    <ShimmerPlaceHolder 
-                        shimmerColors={colorShimmer}
-                        style={{ 
-                            width: "40%",
-                            marginTop: 7,
-                            borderRadius: 5
-                        }}
-                    />
-                    <View style={{
-                        position: "absolute",
-                        bottom: -30,
-                        display: "flex",
-                        flexDirection: "row",
-                        marginLeft: 8,
-                        width: 75,
-                        justifyContent: "space-between"
-                    }}>
-                        <ShimmerPlaceHolder
-                            shimmerColors={colorShimmer}
-                            style={{ 
-                                width: 30,
-                                borderRadius: 5
-                            }}
-                        />
-                        <ShimmerPlaceHolder
-                            shimmerColors={colorShimmer}
-                            style={{ 
-                                width: 40,
-                                borderRadius: 5
-                            }}
-                        />
-                    </View>
-                </View>
-            </View>
+            <ShimmerCard />
         )
     } else {
         return (
             <Ripple
                 style={styles.cardItemWrap}
                 rippleColor="#fff"
+                onPress={() => Actions.DetailCard()}
             >
                 <View style={styles.imgCardWrap}>
                     <Image

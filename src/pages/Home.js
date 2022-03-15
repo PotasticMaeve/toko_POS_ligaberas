@@ -1,5 +1,6 @@
 import { View, ScrollView } from "react-native"
-import React from "react"
+import React, { useEffect, useContext } from "react"
+import { MainContext } from "../context/MainContext"
 import Header from "../components/Header"
 import Slider from "../components/Slider"
 import Menu from "../components/Menu"
@@ -12,9 +13,7 @@ const Home = () => {
   return (
     <View style={styles.homeWrap}>
       <Header />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Slider />
         <Menu />
         <Label />

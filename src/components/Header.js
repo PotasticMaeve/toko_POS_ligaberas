@@ -6,9 +6,11 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
 import { Actions } from 'react-native-router-flux';
 
+const colorHeader = ['#f6b635', '#f3a337', '#eb8937']
+
 const Header = () => {
     return (
-        <LinearGradient colors={['#f6b635', '#f3a337', '#eb8937']} style={styles.headerWrap}>
+        <LinearGradient colors={colorHeader} style={styles.headerWrap}>
             <TextField />
             <View style={styles.cartIcon}>
                 <TouchableOpacity onPress={() => Actions.push("Keranjang")}>

@@ -8,6 +8,8 @@ import Home from "./pages/Home";
 import Wishlist from "./pages/Wishlist";
 import Transaksi from "./pages/Transaksi";
 import Keranjang from "./pages/Keranjang";
+import DetailCard from "./pages/DetailCard";
+import Feed from "./pages/Feed";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import styles from "./stylesheets/Main";
 
@@ -31,20 +33,22 @@ const tabIcon = ({ name, focused, title }) => {
 
 const Routes = () => {
     return (
-        <Router>
+        <Router backAndroidHandler={() => false}>
             <Scene key="root" hideNavBar={true}>
                 <Scene key="tabbar" tabs={true} tabBarStyle={{ height: 54, paddingBottom: 5, paddingTop: 7 }} showLabel={false}>
                     <Scene key="Home" name="home" title="Home" icon={tabIcon} >
-                        <Scene key="Home" component={Home} hideNavBar initial />
+                        <Scene key="Home" name="Home" component={Home} hideNavBar initial />
                     </Scene>
-                    <Scene key="Wishlist" name="heart" title="Wishlist" icon={tabIcon} hideNavBar>
-                        <Scene key="Wishlist" component={Wishlist} title="Wishlist" />
+                    <Scene key="Feed" name="th-large" title="Feed" icon={tabIcon} hideNavBar>
+                        <Scene key="Feed" name="Feed" component={Feed} title="Feed" />
                     </Scene>
                     <Scene key="Transaksi" name="receipt" title="Transaksi" icon={tabIcon} hideNavBar>
-                        <Scene key="Transaksi" component={Transaksi} title="Transaksi" />
+                        <Scene key="Transaksi" name="Transaksi" component={Transaksi} title="Transaksi" />
                     </Scene>
                 </Scene>
                 <Scene key="Keranjang" component={Keranjang} title="Keranjang" />
+                <Scene key="DetailCard" component={DetailCard} title="DetailCard" />
+                <Scene key="Wishlist" component={Wishlist} title="Wishlist" />
             </Scene>
         </Router>
     )

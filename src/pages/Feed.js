@@ -1,0 +1,16 @@
+import React from 'react'
+import { Text } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
+import styles from '../stylesheets/Main'
+
+const colorHeader = ['#f6b635', '#f3a337', '#eb8937']
+
+const Feed = () => {
+    return (
+        <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 90, paddingTop: 35, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            <Text style={[styles.textBold, { fontSize: 17, color: "#fff"}]}>Feed</Text>
+        </LinearGradient>
+    )
+}
+
+export default Feed

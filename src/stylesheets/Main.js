@@ -6,16 +6,10 @@ const styles = StyleSheet.create({
         fontSize: 11,
         fontFamily: "Nunito-Bold"
     },
-    initPage: {
-        flex: 1,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-    },
     headerWrap : {
         display: "flex",
         backgroundColor: "#1C3165",
-        height: 95,
+        height: 94,
         paddingHorizontal: "4%",
         paddingTop: "13%",
         flexDirection: "row",
@@ -38,8 +32,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: "3%",
         backgroundColor: "#eee",
         width: "73%",
-        height: 40,
+        height: 35,
         borderRadius: 6,
+        shadowColor: '#eee',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+        elevation: 1,
     },
     eraseText: {
         position: "absolute",
@@ -47,17 +46,18 @@ const styles = StyleSheet.create({
         right: 15
     },
     bannerWrap: {
-        height: 175,
+        height: 180,
         width: "100%",
         paddingTop: 10,
     },
     imgMenu: {
         flex: 1,
         height: WIDTH / 6,
-        width: WIDTH / 5,
+        width: WIDTH / 4.8,
         backgroundColor: "#eaeaea",
         marginHorizontal: 6.5,
-        marginVertical: 15,
+        marginTop: 10,
+        marginBottom: 15,
         borderRadius: 10,
         display: 'flex',
         justifyContent: "center",
@@ -83,12 +83,11 @@ const styles = StyleSheet.create({
         height: "100%"
     },
     labelRow: {
-        marginTop: 15,
-        height: 70,
+        height: 65,
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems: "center"
+        alignItems: "center",
     },
     cardWrap: {
         height: "auto",

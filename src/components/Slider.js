@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, View, TouchableOpacity } from 'react-native'
+import { Image, View } from 'react-native'
 import Swiper from 'react-native-swiper'
 import styles from '../stylesheets/Main'
 import Ripple from 'react-native-material-ripple';
@@ -20,23 +20,22 @@ const Slider = () => {
                 autoplayTimeout={7}
                 paginationStyle={{
                     position: "absolute",
-                    bottom: 0,
-                    left: 10,
+                    bottom: 5,
                     justifyContent: "flex-start"
                 }}
                 dot={
-                    <View style={{ width: 8, height: 8, backgroundColor: "#c1c1c1", borderRadius: 100, marginHorizontal: 2 }}>
+                    <View style={{ width: 8, height: 8, backgroundColor: "#c1c1c1", borderRadius: 100, marginLeft: 10, marginRight: -5 }}>
                     </View>
                 }
                 activeDot={
-                    <View style={{ width: 8, height: 8, backgroundColor: "#e8791c", borderRadius: 100, marginHorizontal: 2 }}>
+                    <View style={{ width: 8, height: 8, backgroundColor: "#e8791c", borderRadius: 100, marginLeft: 10, marginRight: -5 }}>
                     </View>
                 }
             >
                 {images?.map((item, i) => (
                     <Ripple
                         style={{
-                            width: 340,
+                            width: "94.5%",
                             height: 150,
                             marginHorizontal: 10
                         }}
@@ -46,7 +45,7 @@ const Slider = () => {
                         <Image
                             source={{ uri: item }}
                             resizeMode="stretch"
-                            style={{ width: 340, height: 150, borderRadius: 5 }}
+                            style={{ width: "100%", height: 150, borderRadius: 5 }}
                         />
                     </Ripple>
                 ))}

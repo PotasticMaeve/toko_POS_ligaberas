@@ -4,9 +4,7 @@ import styles from '../stylesheets/Main'
 
 const Space = () => {
     return (
-        <View style={styles.space}>
-
-        </View>
+        <View style={styles.space} />
     )
 }
 

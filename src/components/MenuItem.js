@@ -42,8 +42,18 @@ const MenuItem = (props) => {
                     style={{ height: 35, width: 35 }}
                 />
             </Ripple>
-            <View style={{ display: "flex", alignItems: "center" }}>
-                <Text style={[styles.textSemiBold, { fontSize: 12, marginTop: -10, color: "#595959" }]}>{props.text}</Text>
+            <View style={{ display: "flex", alignItems: "center", height: 18 }}>
+                {(() => {
+                    if (props.text.length > 10) {
+                        return (
+                            <Text style={[styles.textSemiBold, { fontSize: 11.5, marginTop: -10, color: "#595959" }]}>{props.text}</Text>
+                        )
+                    } else {
+                        return (
+                            <Text style={[styles.textSemiBold, { fontSize: 12, marginTop: -10, color: "#595959" }]}>{props.text}</Text>
+                        )
+                    }
+                })()}
             </View>
         </View>
     )
