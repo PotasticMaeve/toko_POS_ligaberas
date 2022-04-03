@@ -161,10 +161,10 @@ const styles = StyleSheet.create({
         height: 45,
     },
     indicatorTab: {
-        backgroundColor: "black",
+        backgroundColor: "#ea2b1f",
     },
     labelTab: {
-        color: "black",
+        color: "#ea2b1f",
         alignSelf: 'center',
         fontFamily: "Nunito-Bold",    
         textTransform: "uppercase"

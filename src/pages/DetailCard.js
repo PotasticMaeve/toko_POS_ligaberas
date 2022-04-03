@@ -1,24 +1,82 @@
-import React, { useEffect, useContext } from 'react'
-import { View, BackHandler } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
-import styles from '../stylesheets/Main'
+import * as React from 'react';
+import { View, useWindowDimensions, Text, Image, TouchableOpacity } from 'react-native';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Actions } from 'react-native-router-flux'
+import Deskripsi from '../components/Deskripsi';
+import Ulasan from '../components/Ulasan';
+import styles from '../stylesheets/Main'
 
-const colorHeader = ['#f6b635', '#f3a337', '#eb8937']
+const renderScene = SceneMap({
+    first: Deskripsi,
+    second: Ulasan,
+});
 
-const DetailCard = () => {
+const renderTabBar = props =>
+    <TabBar {...props}
+        indicatorStyle={styles.indicatorTab}
+        style={styles.tabbar}
+        tabStyle={styles.tab}
+        renderLabel={({ route }) => (
+            <Text style={styles.labelTab}>
+                {route.title}
+            </Text>
+        )}
+    />;
+
+export default function DetailCard() {
+    const layout = useWindowDimensions();
+
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+        { key: 'first', title: 'deskripsi' },
+        { key: 'second', title: 'ulasan' },
+    ]);
     return (
-        <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 95, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-            <TouchableOpacity onPress={() => Actions.pop()}>
-                <FontAwesome5 name={"arrow-left"} size={23} color='#fff' />
+        <>
+            <TouchableOpacity
+                onPress={() => Actions.pop()}
+                style={{
+                    position: "absolute",
+                    left: "5%",
+                    top: "6%",
+                    zIndex: 999
+                }}
+            >
+                <FontAwesome5 name={"arrow-left"} size={23} color='#ea2b1f' />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => Actions.Keranjang()}>
-                <FontAwesome5 name={"shopping-cart"} solid size={19} color='#fff' />
+            <TouchableOpacity
+                onPress={() => Actions.Keranjang()}
+                style={{
+                    position: "absolute",
+                    right: "5%",
+                    top: "6.1%",
+                    zIndex: 999,
+                }}
+            >
+                <FontAwesome5 name={"shopping-cart"} solid size={19} color='#ea2b1f' />
             </TouchableOpacity>
-        </LinearGradient>
-    )
+            <Image
+                source={require("../../assets/images/sepatu1.jpg")}
+                style={{ height: 300, width: "auto" }}
+                resizeMode='cover'
+            />
+            <View style={{
+                position: "absolute",
+                height: 300,
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+            }}>
+            </View>
+            <TabView
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                renderTabBar={renderTabBar}
+                onIndexChange={setIndex}
+                initialLayout={{ width: layout.width }}
+            />
+        </>
+    );
 }
-
-export default DetailCard

@@ -16,7 +16,7 @@ const Header = () => {
                 <TouchableOpacity onPress={() => Actions.Keranjang()}>
                     <FontAwesome5 name={"shopping-cart"} size={18} color='#FFFFFF' style={{ marginLeft: 7, marginRight: 10 }} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => Actions.Auth()}>
+                <TouchableOpacity onPress={() => Actions.Login()}>
                     <FontAwesome5 name={"bars"} size={18} color='#FFFFFF' style={{ marginLeft: 7 }} />
                 </TouchableOpacity>
             </View>

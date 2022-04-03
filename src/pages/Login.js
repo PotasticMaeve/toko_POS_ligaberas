@@ -1,9 +1,14 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { View } from 'react-native'
 
 const Login = () => {
     return (
-        <Text>Login</Text>
+        <View style={{
+            flex: 1,
+            backgroundColor: "#eb8937"
+        }}>
+
+        </View>
     )
 }
 
