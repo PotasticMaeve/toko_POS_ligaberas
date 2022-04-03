@@ -13,10 +13,10 @@ const Header = () => {
         <LinearGradient colors={colorHeader} style={styles.headerWrap}>
             <TextField />
             <View style={styles.cartIcon}>
-                <TouchableOpacity onPress={() => Actions.push("Keranjang")}>
+                <TouchableOpacity onPress={() => Actions.Keranjang()}>
                     <FontAwesome5 name={"shopping-cart"} size={18} color='#FFFFFF' style={{ marginLeft: 7, marginRight: 10 }} />
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => Actions.Auth()}>
                     <FontAwesome5 name={"bars"} size={18} color='#FFFFFF' style={{ marginLeft: 7 }} />
                 </TouchableOpacity>
             </View>

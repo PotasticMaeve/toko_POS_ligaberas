@@ -151,6 +151,24 @@ const styles = StyleSheet.create({
         width: '75%',
         justifyContent: "space-evenly"
     },
+    containerTab: {
+        flex: 1,
+    },
+    tabbar: {
+        backgroundColor: "#fff",
+    },
+    tab: {
+        height: 45,
+    },
+    indicatorTab: {
+        backgroundColor: "black",
+    },
+    labelTab: {
+        color: "black",
+        alignSelf: 'center',
+        fontFamily: "Nunito-Bold",    
+        textTransform: "uppercase"
+    },
     textBold: {
         fontFamily: "Nunito-Bold"
     },

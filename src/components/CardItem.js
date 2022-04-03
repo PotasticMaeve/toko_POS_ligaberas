@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, Image } from 'react-native'
 import Ripple from 'react-native-material-ripple'
 import styles from '../stylesheets/Main'
@@ -6,7 +6,6 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { convertToIDR } from '../Helper';
 import { Actions } from 'react-native-router-flux';
 import ShimmerCard from './ShimmerCard';
-import { MainContext } from '../context/MainContext';
 
 const getImage = (imgName) => {
     if (imgName === "tas3") {
@@ -27,8 +26,7 @@ const getImage = (imgName) => {
 }
 
 const CardItem = (props) => {
-    const { loading } = React.useContext(MainContext)
-    const [ isLoading, setIsLoading ] = loading
+    const [isLoading, setIsLoading] = useState(true)
     
     useEffect(() => {
         setTimeout(() => {
