@@ -1,5 +1,5 @@
 import React from "react"
-import { Router, Scene } from "react-native-router-flux";
+import { Drawer, Router, Scene } from "react-native-router-flux";
 import {
     View,
     Text,
@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import Feed from "./pages/Feed";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import styles from "./stylesheets/Main";
+import SideMenu from "./components/SideMenu";
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -36,21 +37,23 @@ const Routes = () => {
     return (
         <Router backAndroidHandler={() => false}>
             <Scene key="root" hideNavBar={true}>
-                <Scene key="tabbar" tabs={true} tabBarStyle={{ height: 54, paddingBottom: 5, paddingTop: 7 }} showLabel={false}>
-                    <Scene key="Home" name="home" title="Home" icon={tabIcon} >
-                        <Scene key="Home" name="Home" component={Home} hideNavBar initial />
+                <Drawer key="drawerMenu" contentComponent={SideMenu} drawerPosition="left" hideNavBar>
+                    <Scene key="tabbar" tabs={true} tabBarStyle={{ height: 54, paddingBottom: 5, paddingTop: 7 }} showLabel={false}>
+                        <Scene key="Home" name="home" title="Home" icon={tabIcon} >
+                            <Scene key="Home" name="Home" component={Home} hideNavBar initial />
+                        </Scene>
+                        <Scene key="Feed" name="th-large" title="Feed" icon={tabIcon} hideNavBar>
+                            <Scene key="Feed" name="Feed" component={Feed} title="Feed" />
+                        </Scene>
+                        <Scene key="Transaksi" name="receipt" title="Transaksi" icon={tabIcon} hideNavBar>
+                            <Scene key="Transaksi" name="Transaksi" component={Transaksi} title="Transaksi" />
+                        </Scene>
                     </Scene>
-                    <Scene key="Feed" name="th-large" title="Feed" icon={tabIcon} hideNavBar>
-                        <Scene key="Feed" name="Feed" component={Feed} title="Feed" />
-                    </Scene>
-                    <Scene key="Transaksi" name="receipt" title="Transaksi" icon={tabIcon} hideNavBar>
-                        <Scene key="Transaksi" name="Transaksi" component={Transaksi} title="Transaksi" />
-                    </Scene>
-                </Scene>
+                </Drawer>
+                <Scene key="Auth" component={Auth} title="Auth" />
+                <Scene key="Wishlist" component={Wishlist} title="Wishlist" />
                 <Scene key="Keranjang" component={Keranjang} title="Keranjang" />
                 <Scene key="DetailCard" component={DetailCard} title="DetailCard" />
-                <Scene key="Wishlist" component={Wishlist} title="Wishlist" />
-                <Scene key="Auth" component={Auth} title="Auth" />
             </Scene>
         </Router>
     )

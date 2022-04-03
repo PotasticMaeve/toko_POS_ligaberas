@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Easing, TouchableOpacity } from 'react-native'
-import { View, Dimensions, StyleSheet, Animated, Text, Keyboard, Image } from "react-native"
+import { View, Dimensions, StyleSheet, Animated, Text, Image } from "react-native"
 import { TextInput } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import Ripple from 'react-native-material-ripple'
@@ -33,38 +33,38 @@ const Auth = () => {
         }).start()
     }
 
-    const animateInput = () => {
-        Animated.timing(inputAnimation, {
-            toValue: -height / 6,
-            duration: 500
-        }).start()
-    }
+    // const animateInput = () => {
+    //     Animated.timing(inputAnimation, {
+    //         toValue: -height / 6,
+    //         duration: 500
+    //     }).start()
+    // }
 
-    const reverseAnimateInput = () => {
-        Animated.timing(inputAnimation, {
-            toValue: 0,
-            duration: 500
-        }).start()
-    }
+    // const reverseAnimateInput = () => {
+    //     Animated.timing(inputAnimation, {
+    //         toValue: 0,
+    //         duration: 500
+    //     }).start()
+    // }
 
     useEffect(() => {
         animateContainer()
-        const keyboardDidShowListener = Keyboard.addListener(
-            'keyboardDidShow',
-            () => {
-                animateInput()
-            }
-        );
-        const keyboardDidHideListener = Keyboard.addListener(
-            'keyboardDidHide',
-            () => {
-                reverseAnimateInput()
-            }
-        );
-        return () => {
-            keyboardDidHideListener.remove();
-            keyboardDidShowListener.remove();
-        };
+        // const keyboardDidShowListener = Keyboard.addListener(
+        //     'keyboardDidShow',
+        //     () => {
+        //         animateInput()
+        //     }
+        // );
+        // const keyboardDidHideListener = Keyboard.addListener(
+        //     'keyboardDidHide',
+        //     () => {
+        //         reverseAnimateInput()
+        //     }
+        // );
+        // return () => {
+        //     keyboardDidHideListener.remove();
+        //     keyboardDidShowListener.remove();
+        // };
     }, [])
 
     const colorGradient = ['#f6b635', '#f3a337', '#eb8937']
@@ -76,21 +76,21 @@ const Auth = () => {
             </View>
             {loginActive ? (
                 <View style={[styles.centerAlign, { backgroundColor: "rgba(210, 210, 210, .9)", height: height }]}>
-                    <Animated.View style={[styles.inputContainer, animatedInput]}>
+                    <Animated.View style={[styles.inputContainer, animatedInput, { height: height / 2.2 }]}>
                         <Text style={[s.textBold, styles.title]}>login</Text>
                         <View style={{ marginVertical: 20 }}>
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Username"
-                                    style={[styles.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
+                                    style={[s.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
                                     spellCheck={false}
                                     autoCorrect={false}
-                                />
+                                    />
                             </View>
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Password"
-                                    style={[styles.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
+                                    style={[s.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
                                     spellCheck={false}
                                     autoCorrect={false}
                                     secureTextEntry
@@ -98,11 +98,11 @@ const Auth = () => {
                             </View>
                             <View style={styles.forgotpassWrap}>
                                 <TouchableOpacity>
-                                    <Text style={[s.textBold, { color: "#c08", fontSize: 12, marginRight: 3, textTransform: "capitalize" }]}>lupa password</Text>
+                                    <Text style={[s.textBold, { color: "#eb8937", fontSize: 12, marginRight: 3, textTransform: "capitalize" }]}>lupa password</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={{ alignItems: "center", marginTop: 20 }}>
+                        <View style={{ alignItems: "center", marginTop: 10 }}>
                             <Ripple
                                 rippleColor="#fff"
                             >
@@ -122,7 +122,7 @@ const Auth = () => {
                         </View>
                         <View style={{
                             width: width / 1.25,
-                            marginTop: 20,
+                            marginTop: 15,
                             borderRadius: 10,
                         }}
                         >
@@ -151,8 +151,8 @@ const Auth = () => {
                         <View style={{ marginVertical: 20 }}>
                             <View style={styles.input}>
                                 <TextInput
-                                    placeholder="Username"
-                                    style={[styles.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
+                                    placeholder="Nama Lengkap"
+                                    style={[s.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
                                     spellCheck={false}
                                     autoCorrect={false}
                                 />
@@ -160,7 +160,7 @@ const Auth = () => {
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Email"
-                                    style={[styles.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
+                                    style={[s.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
                                     spellCheck={false}
                                     autoCorrect={false}
                                 />
@@ -168,7 +168,7 @@ const Auth = () => {
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Password"
-                                    style={[styles.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
+                                    style={[s.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
                                     spellCheck={false}
                                     autoCorrect={false}
                                     secureTextEntry
