@@ -9,7 +9,7 @@ import Wishlist from "./pages/Wishlist";
 import Transaksi from "./pages/Transaksi";
 import Keranjang from "./pages/Keranjang";
 import DetailCard from "./pages/DetailCard";
-import Login from "./pages/Login";
+import Auth from "./pages/Auth";
 import Feed from "./pages/Feed";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import styles from "./stylesheets/Main";
@@ -50,7 +50,7 @@ const Routes = () => {
                 <Scene key="Keranjang" component={Keranjang} title="Keranjang" />
                 <Scene key="DetailCard" component={DetailCard} title="DetailCard" />
                 <Scene key="Wishlist" component={Wishlist} title="Wishlist" />
-                <Scene key="Login" component={Login} title="Login" />
+                <Scene key="Auth" component={Auth} title="Auth" />
             </Scene>
         </Router>
     )
