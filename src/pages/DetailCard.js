@@ -43,7 +43,7 @@ export default function DetailCard() {
                     zIndex: 999
                 }}
             >
-                <FontAwesome5 name={"arrow-left"} size={23} color='#ea2b1f' />
+                <FontAwesome5 name={"arrow-left"} size={23} color='#fafafa' />
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={() => Actions.Keranjang()}
@@ -54,7 +54,7 @@ export default function DetailCard() {
                     zIndex: 999,
                 }}
             >
-                <FontAwesome5 name={"shopping-cart"} solid size={19} color='#ea2b1f' />
+                <FontAwesome5 name={"shopping-cart"} solid size={19} color='#fafafa' />
             </TouchableOpacity>
             <Image
                 source={require("../../assets/images/sepatu1.jpg")}
