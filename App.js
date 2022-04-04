@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { StatusBar } from "react-native";
 import Routes from "./src/Routes";
 import Orientation from 'react-native-orientation';
-import { MainProvider } from "./src/context/MainContext";
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 const App = () => {
   useEffect(() => {
@@ -10,10 +10,10 @@ const App = () => {
   }, [])
 
   return (
-    <MainProvider>
+    <RootSiblingParent>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
       <Routes />
-    </MainProvider>
+    </RootSiblingParent>
   )
 }
 

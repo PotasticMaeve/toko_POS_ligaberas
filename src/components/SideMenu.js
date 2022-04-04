@@ -7,13 +7,23 @@ import s from "../stylesheets/Main"
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-root-toast';
 
 const SideMenu = () => {
     const [modalShow, setModalShow] = useState(false)
-
+    
     const confirmedLogout = () => {
         setModalShow(false)
         Actions.drawerClose()
+        Toast.show('Logout Berhasil', {
+            duration: Toast.durations.SHORT,
+            position: Toast.positions.BOTTOM,
+            backgroundColor: "#595959",
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+        });    
     }
 
     return (
