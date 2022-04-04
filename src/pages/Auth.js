@@ -230,7 +230,6 @@ const styles = StyleSheet.create({
     centerAlign: {
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#eb8937",
         width: width,
     },
     inputContainer: {

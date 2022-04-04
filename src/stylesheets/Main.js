@@ -9,20 +9,20 @@ const styles = StyleSheet.create({
     headerWrap : {
         display: "flex",
         backgroundColor: "#1C3165",
-        height: 94,
+        height: 85,
         paddingHorizontal: "4%",
-        paddingTop: "13%",
+        paddingTop: "11%",
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "flex-start",
         alignItems: "flex-start"
     },
     cartIcon: {
         display: "flex",
         flexDirection: "row",
-        justifyContent: "space-evenly",
+        justifyContent: "space-between",
         alignItems: "center",
         height: 38,
-        width: "25%"
+        width: "100%"
     },
     textField: {
         display: "flex",

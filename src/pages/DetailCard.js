@@ -43,7 +43,7 @@ export default function DetailCard() {
                     zIndex: 999
                 }}
             >
-                <FontAwesome5 name={"arrow-left"} size={23} color='#fafafa' />
+                <FontAwesome5 name={"angle-left"} size={27} color='#fafafa' />
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={() => Actions.Keranjang()}
