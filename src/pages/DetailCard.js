@@ -61,15 +61,6 @@ export default function DetailCard() {
                 style={{ height: 300, width: "auto" }}
                 resizeMode='cover'
             />
-            <View style={{
-                position: "absolute",
-                height: 300,
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center"
-            }}>
-            </View>
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
