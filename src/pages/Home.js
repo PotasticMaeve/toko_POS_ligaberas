@@ -1,6 +1,5 @@
 import { View, ScrollView } from "react-native"
-import React, { useEffect, useContext } from "react"
-import { MainContext } from "../context/MainContext"
+import React from "react"
 import Header from "../components/Header"
 import Slider from "../components/Slider"
 import Menu from "../components/Menu"

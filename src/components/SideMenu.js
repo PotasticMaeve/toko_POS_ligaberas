@@ -1,12 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Image } from 'react-native'
 import { Text } from 'react-native'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import s from "../stylesheets/Main"
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Modal from "react-native-modal";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const SideMenu = () => {
+    const [modalShow, setModalShow] = useState(false)
+
+    const confirmedLogout = () => {
+        setModalShow(false)
+        Actions.drawerClose()
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.user_bio}>
@@ -27,11 +36,53 @@ const SideMenu = () => {
                     <FontAwesome5 name={"receipt"} size={18} color="#e36414" />
                     <Text style={styles.menu_text}>Transaksi</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menu_item}>
+                <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>
                     <FontAwesome5 name={"sign-out-alt"} size={18} color="#e36414" />
                     <Text style={styles.menu_text}>Logout</Text>
                 </TouchableOpacity>
             </View>
+            {modalShow && (
+                <Modal
+                    isVisible={modalShow} style={{ justifyContent: "center", alignItems: "center" }}>
+                    <View
+                        style={{
+                            backgroundColor: "#fafafa",
+                            height: 150,
+                            width: 300,
+                            borderRadius: 10,
+                        }}>
+                            <View style={{ justifyContent: "center", alignItems: "center", paddingTop: 10 }}>
+                                <Icon name="warning" size={40} color="#d90429" />
+                                <Text style={[s.textSemiBold, { fontSize: 15 }]}>Yakin ingin keluar dari aplikasi?</Text>
+                            </View>
+                        <View style={{
+                            flexDirection: "row",
+                            justifyContent: "space-evenly",
+                            position: "absolute",
+                            width: "100%",
+                            height: 50,
+                            bottom: 0
+                        }}>
+                            <TouchableOpacity
+                                style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#eb8937", justifyContent: "center", alignItems: "center" }}
+                                onPress={() => setModalShow(false)}
+                                >
+                                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                                    <Text style={s.textSemiBold}>Tidak</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#ddd", justifyContent: "center", alignItems: "center" }}
+                                onPress={() => confirmedLogout()}
+                                >
+                                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                                    <Text style={s.textSemiBold}>Ya</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            )}
         </View>
     )
 }
