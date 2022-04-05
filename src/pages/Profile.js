@@ -14,7 +14,7 @@ const Profile = () => {
       <TouchableOpacity onPress={() => Actions.pop()}>
         <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
       </TouchableOpacity>
-      <Text style={[styles.textBold, { fontSize: 18, color: "#fff", marginLeft: 30}]}>Profile</Text>
+      <Text style={[styles.textBold, { fontSize: 17, color: "#fff", marginLeft: 30}]}>Profile</Text>
     </LinearGradient>
   )
 }

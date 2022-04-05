@@ -47,7 +47,7 @@ const Transaksi = () => {
                 <TouchableOpacity onPress={() => Actions.pop()}>
                     <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
                 </TouchableOpacity>
-                <Text style={[styles.textBold, { fontSize: 18, color: "#fff", marginLeft: 30 }]}>Transaksi</Text>
+                <Text style={[styles.textBold, { fontSize: 17, color: "#fff", marginLeft: 30 }]}>Transaksi</Text>
             </LinearGradient>
             <TabView
                 navigationState={{ index, routes }}
