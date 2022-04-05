@@ -1,32 +1,33 @@
 import React from 'react'
 import { View, Text, Image } from 'react-native'
 import Ripple from 'react-native-material-ripple'
+import { Actions } from 'react-native-router-flux'
 import styles from "../stylesheets/Main"
 
 const getImage = (imgName) => {
-    if (imgName === "swimwear") {
-        return require("../../assets/images/swimwear.png")
+    if (imgName === "beras") {
+        return require("../../assets/images/flour.png")
     }
-    if (imgName === "meal") {
-        return require("../../assets/images/meal.png")
+    if (imgName === "tepung") {
+        return require("../../assets/images/wheat.png")
     }
-    if (imgName === "iphone") {
-        return require("../../assets/images/iphone.png")
+    if (imgName === "daging") {
+        return require("../../assets/images/beef.png")
     }
-    if (imgName === "bag") {
-        return require("../../assets/images/bag.png")
+    if (imgName === "minyak") {
+        return require("../../assets/images/cooking-oil.png")
     }
-    if (imgName === "sneakers") {
-        return require("../../assets/images/sneakers.png")
+    if (imgName === "susu") {
+        return require("../../assets/images/milk.png")
     }
-    if (imgName === "chair") {
-        return require("../../assets/images/chair.png")
+    if (imgName === "telur") {
+        return require("../../assets/images/eggs.png")
     }
-    if (imgName === "lotion") {
-        return require("../../assets/images/lotion.png")
+    if (imgName === "teh") {
+        return require("../../assets/images/coffee.png")
     }
-    if (imgName === "badminton") {
-        return require("../../assets/images/badminton.png")
+    if (imgName === "bumbu") {
+        return require("../../assets/images/seasoning.png")
     }
 }
 
@@ -39,7 +40,12 @@ const MenuItem = (props) => {
             >
                 <Image
                     source={getImage(props.imgName)}
-                    style={{ height: 35, width: 35 }}
+                    style={{
+                        height: 50,
+                        width: 50,
+                        position: "absolute",
+                        top: -25,
+                    }}
                 />
             </Ripple>
             <View style={{ display: "flex", alignItems: "center", height: 18 }}>
@@ -50,7 +56,7 @@ const MenuItem = (props) => {
                         )
                     } else {
                         return (
-                            <Text style={[styles.textSemiBold, { fontSize: 12, marginTop: -10, color: "#595959" }]}>{props.text}</Text>
+                            <Text style={[styles.textSemiBold, { fontSize: 13, marginTop: -10, color: "#595959" }]}>{props.text}</Text>
                         )
                     }
                 })()}
