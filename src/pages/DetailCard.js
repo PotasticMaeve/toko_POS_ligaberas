@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, useWindowDimensions, Text, Image, TouchableOpacity } from 'react-native';
+import { useWindowDimensions, Text, Image, TouchableOpacity, View } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { Actions } from 'react-native-router-flux'
@@ -43,7 +43,7 @@ export default function DetailCard() {
                     zIndex: 999
                 }}
             >
-                <FontAwesome5 name={"angle-left"} size={29} color='#fafafa' />
+                <FontAwesome5 name={"angle-left"} size={29} color='#000' />
             </TouchableOpacity>
             <TouchableOpacity
                 onPress={() => Actions.Keranjang()}
@@ -54,13 +54,13 @@ export default function DetailCard() {
                     zIndex: 999,
                 }}
             >
-                <FontAwesome5 name={"shopping-cart"} solid size={19} color='#fafafa' />
+                <FontAwesome5 name={"shopping-cart"} solid size={19} color='#000' />
             </TouchableOpacity>
-            <Image
-                source={require("../../assets/images/sepatu1.jpg")}
-                style={{ height: 300, width: "auto" }}
-                resizeMode='cover'
-            />
+                <Image
+                    source={require("../../assets/images/teh.jpg")}
+                    style={{ height: 300, width: layout.width }}
+                    resizeMode='cover'
+                />
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}

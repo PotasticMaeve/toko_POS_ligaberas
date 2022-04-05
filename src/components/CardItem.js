@@ -8,20 +8,20 @@ import { Actions } from 'react-native-router-flux';
 import ShimmerCard from './ShimmerCard';
 
 const getImage = (imgName) => {
-    if (imgName === "tas3") {
-        return require("../../assets/images/tas3.jpg")
+    if (imgName === "kecap") {
+        return require("../../assets/images/kecap.jpg")
     }
-    if (imgName === "sepatu1") {
-        return require("../../assets/images/sepatu1.jpg")
+    if (imgName === "gula") {
+        return require("../../assets/images/gula.jpg")
     }
-    if (imgName === "lampu1") {
-        return require("../../assets/images/lampu1.jpg")
+    if (imgName === "susu") {
+        return require("../../assets/images/susu.jpeg")
     }
-    if (imgName === "tepung1") {
-        return require("../../assets/images/tepung1.jpg")
+    if (imgName === "tepung") {
+        return require("../../assets/images/tepung.jpg")
     }
-    if (imgName === "pan1") {
-        return require("../../assets/images/pan1.jpg")
+    if (imgName === "teh") {
+        return require("../../assets/images/teh.jpg")
     }
 }
 

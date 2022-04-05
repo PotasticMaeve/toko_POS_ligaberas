@@ -15,6 +15,15 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import styles from "./stylesheets/Main";
 import SideMenu from "./components/SideMenu";
 import SearchBar from "./components/SearchBar";
+import Beras from "./pages/Beras";
+import Tepung from "./pages/Tepung";
+import Daging from "./pages/Daging";
+import Minyak from "./pages/Minyak";
+import Susu from "./pages/Susu";
+import Telur from "./pages/Telur";
+import Teh from "./pages/Teh";
+import Bumbu from "./pages/Bumbu";
+
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -58,6 +67,14 @@ const Routes = () => {
                 <Scene key="SearchBar" component={SearchBar} title="SearchBar" />
                 <Scene key="Keranjang" component={Keranjang} title="Keranjang" />
                 <Scene key="Wishlist" component={Wishlist} title="Wishlist" />
+                <Scene key="Beras" component={Beras} title="Beras" />
+                <Scene key="Tepung" component={Tepung} title="Tepung" />
+                <Scene key="Daging" component={Daging} title="Daging" />
+                <Scene key="Minyak" component={Minyak} title="Minyak" />
+                <Scene key="Susu" component={Susu} title="Susu" />
+                <Scene key="Telur" component={Telur} title="Telur" />
+                <Scene key="Teh" component={Teh} title="Teh" />
+                <Scene key="Bumbu" component={Bumbu} title="Bumbu" />
             </Scene>
         </Router>
     )

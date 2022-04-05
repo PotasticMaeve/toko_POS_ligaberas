@@ -31,12 +31,40 @@ const getImage = (imgName) => {
     }
 }
 
+const getRoute = (imgName) => {
+    if (imgName === "beras") {
+        Actions.Beras()
+    }
+    if (imgName === "tepung") {
+        Actions.Tepung()
+    }
+    if (imgName === "daging") {
+        Actions.Daging()
+    }
+    if (imgName === "minyak") {
+        Actions.Minyak()
+    }
+    if (imgName === "susu") {
+        Actions.Susu()
+    }
+    if (imgName === "telur") {
+        Actions.Telur()
+    }
+    if (imgName === "teh") {
+        Actions.Teh()
+    }
+    if (imgName === "bumbu") {
+        Actions.Bumbu()
+    }
+}
+
 const MenuItem = (props) => {
     return (
         <View>
             <Ripple
                 style={[styles.imgMenu, { backgroundColor: props.color }]}
                 rippleColor="#fff"
+                onPress={() => getRoute(props.imgName)}
             >
                 <Image
                     source={getImage(props.imgName)}

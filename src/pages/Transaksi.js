@@ -38,12 +38,12 @@ const Transaksi = () => {
 
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
-        { key: 'first', title: 'Pesanan Dikirim' },
-        { key: 'second', title: 'Pesanan Tiba' },
+        { key: 'first', title: 'pesanan dikirim' },
+        { key: 'second', title: 'pesanan tiba' },
     ]);
     return (
         <>
-            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 50, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
                 <TouchableOpacity onPress={() => Actions.pop()}>
                     <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
                 </TouchableOpacity>

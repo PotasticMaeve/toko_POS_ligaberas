@@ -9,9 +9,9 @@ const styles = StyleSheet.create({
     headerWrap : {
         display: "flex",
         backgroundColor: "#1C3165",
-        height: 50,
+        height: 82,
         paddingHorizontal: "4%",
-        paddingTop: "2%",
+        paddingTop: 38,
         flexDirection: "row",
         justifyContent: "flex-start",
         alignItems: "flex-start"

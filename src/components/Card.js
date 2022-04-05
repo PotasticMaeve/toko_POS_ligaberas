@@ -4,11 +4,11 @@ import styles from '../stylesheets/Main'
 import CardItem from './CardItem'
 
 const dataList = [
-    { key: "1", nama: "tas3", title: "tas selempang dan jinjing tan kekinian", price: 25000, star: 4.8, sale: 90 },
-    { key: "2", nama: "sepatu1", title: "Techdoo Sepatu Sneakers Pria Sepatu Olahraga Lari Casual Import MC101", price: 25000, star: 4.9, sale: 20 },
-    { key: "3", nama: "lampu1", title: "Lampu Tidur si Pentol Quby Star Moly Soft Head Touch Dimmer Original", price: 355000, star: 4.9, sale: 25 },
-    { key: "4", nama: "tepung1", title: "Segitiga Biru Tepung Terigu 1000gr", price: 11500, star: 5, sale: 72 },
-    { key: "5", nama: "pan1", title: "Neochef Multipan 2 in 1 Masak Cepat Hemat Minyak Anti Lengket", price: 298000, star: 4.6, sale: 5 },
+    { key: "1", nama: "kecap", title: "bango kecap manis refil 550 ml", price: 23000, star: 4.8, sale: 90 },
+    { key: "2", nama: "gula", title: "gulaku hijau 1 kg pPremium", price: 15000, star: 4.9, sale: 20 },
+    { key: "3", nama: "susu", title: "susu diamond uht full cream 1 liter / susu UHT diamond", price: 15000, star: 4.9, sale: 25 },
+    { key: "4", nama: "tepung", title: "Tepung Terigu Kunci 1kg repack low protein flour", price: 9000, star: 5, sale: 72 },
+    { key: "5", nama: "teh", title: "teh celup sariwangi kantong 25 pcs", price: 8000, star: 4.6, sale: 5 },
 ]
 
 const formatFlatList = (dataList, numColumns) => {
