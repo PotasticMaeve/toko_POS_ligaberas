@@ -148,8 +148,8 @@ const styles = StyleSheet.create({
         bottom: -30,
         display: "flex",
         flexDirection: "row",
-        width: '75%',
-        justifyContent: "space-evenly"
+        left: 10, 
+        justifyContent: "flex-start"
     },
     containerTab: {
         flex: 1,

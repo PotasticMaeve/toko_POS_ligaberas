@@ -7,6 +7,27 @@ import styles from '../stylesheets/Main'
 
 const colorHeader = ['#f3a337', '#eb8937']
 
+const dataDummy = [
+    {
+        nama: "kecap",
+        title: "bango kecap manis refil 550 ml",
+        price: 23000,
+        stock: 5
+    },
+    {
+        nama: "gula",
+        title: "gulaku hijau 1 kg premium",
+        price: 15000,
+        stock: 8
+    },
+    {
+        nama: "susu",
+        title: "susu diamond uht full cream 1 liter / susu UHT diamond",
+        price: 15000,
+        stock: 4
+    },
+]
+
 const Wishlist = () => {
     return (
         <>
@@ -14,8 +35,10 @@ const Wishlist = () => {
                 <Text style={[styles.textBold, { fontSize: 17, color: "#fff" }]}>Wishlist</Text>
             </LinearGradient>
             <ScrollView style={{ paddingTop: 5, paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}>
-                <WishlistCard />
-                <WishlistCard />
+                {dataDummy.map((el, i) => (
+                    <WishlistCard key={i} exist={true} title={el.title} price={el.price} stock={el.stock} nama={el.nama} />
+                )
+                )}
                 <Space />
             </ScrollView>
         </>

@@ -58,9 +58,7 @@ const CardItem = (props) => {
                     <Text numberOfLines={2} style={[styles.textMedium, styles.titleCard]}>{props.title}</Text>
                     <Text style={[styles.textBold, styles.priceCard]}>{convertToIDR(props.price)}</Text>
                     <View style={styles.ratingWrap}>
-                        <FontAwesome5 name={"star"} solid size={14} color='#FFC400' />
-                        <Text style={[styles.textMedium, { fontSize: 12 }]}>{props.star.toString().length === 1 ? props.star + ".0" : props.star}</Text>
-                        <Text style={[styles.textMedium, { fontSize: 11.5, color: 'grey' }]}>| Terjual {props.sale}</Text>
+                        <Text style={[styles.textSemiBold, { fontSize: 11.5, color: '#27ae60' }]}>Stok {props.stock}</Text>
                     </View>
                 </View>
             </Ripple>
