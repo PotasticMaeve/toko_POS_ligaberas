@@ -46,6 +46,10 @@ const SideMenu = () => {
                     <FontAwesome5 name={"receipt"} size={18} color="#e36414" />
                     <Text style={styles.menu_text}>Transaksi</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Auth()}>
+                    <FontAwesome5 name={"lock"} size={18} color="#e36414" />
+                    <Text style={styles.menu_text}>Auth</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>
                     <FontAwesome5 name={"sign-out-alt"} size={18} color="#e36414" />
                     <Text style={styles.menu_text}>Logout</Text>

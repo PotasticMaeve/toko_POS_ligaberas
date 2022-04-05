@@ -5,7 +5,7 @@ import CardItem from './CardItem'
 
 const dataList = [
     { key: "1", nama: "kecap", title: "bango kecap manis refil 550 ml", price: 23000, star: 4.8, sale: 90 },
-    { key: "2", nama: "gula", title: "gulaku hijau 1 kg pPremium", price: 15000, star: 4.9, sale: 20 },
+    { key: "2", nama: "gula", title: "gulaku hijau 1 kg premium", price: 15000, star: 4.9, sale: 20 },
     { key: "3", nama: "susu", title: "susu diamond uht full cream 1 liter / susu UHT diamond", price: 15000, star: 4.9, sale: 25 },
     { key: "4", nama: "tepung", title: "Tepung Terigu Kunci 1kg repack low protein flour", price: 9000, star: 5, sale: 72 },
     { key: "5", nama: "teh", title: "teh celup sariwangi kantong 25 pcs", price: 8000, star: 4.6, sale: 5 },
