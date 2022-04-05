@@ -11,7 +11,7 @@ const App = () => {
 
   return (
     <RootSiblingParent>
-      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+      <StatusBar backgroundColor="#f3a337" barStyle="dark-content" />
       <Routes />
     </RootSiblingParent>
   )

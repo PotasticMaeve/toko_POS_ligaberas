@@ -14,7 +14,7 @@ import Auth from "./pages/Auth";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import styles from "./stylesheets/Main";
 import SideMenu from "./components/SideMenu";
-import SearchPage from "./pages/SearchPage";
+import SearchBar from "./components/SearchBar";
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -55,7 +55,7 @@ const Routes = () => {
                 <Scene key="Profile" component={Profile} title="Profile" />
                 <Scene key="Transaksi" component={Transaksi} title="Transaksi" />
                 <Scene key="DetailCard" component={DetailCard} title="DetailCard" />
-                <Scene key="SearchPage" component={SearchPage} title="SearchPage" />
+                <Scene key="SearchBar" component={SearchBar} title="SearchBar" />
                 <Scene key="Keranjang" component={Keranjang} title="Keranjang" />
                 <Scene key="Wishlist" component={Wishlist} title="Wishlist" />
             </Scene>

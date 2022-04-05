@@ -67,7 +67,7 @@ const Auth = () => {
         // };
     }, [])
 
-    const colorGradient = ['#f6b635', '#f3a337', '#eb8937']
+    const colorGradient = ['#f3a337', '#eb8937']
 
     return (
         <Animated.View style={[styles.container, animatedContainer]}>

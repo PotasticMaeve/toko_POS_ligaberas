@@ -141,7 +141,8 @@ const styles = StyleSheet.create({
     menu_text: {
         fontFamily: "Nunito-Bold",
         color: "#e36414",
-        marginLeft: 20
+        marginLeft: 20,
+        fontSize: 15
     }
 })
 
