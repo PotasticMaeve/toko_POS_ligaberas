@@ -29,7 +29,7 @@ const SideMenu = () => {
     return (
         <View style={styles.container}>
             <View style={styles.user_bio}>
-                <Image source={require("../../assets/images/bg-sidebar.jpg")} resizeMode="cover" style={{ height: 170, width: "100%" }} />
+                <Image source={require("../../assets/images/bg-sidebar.png")} resizeMode="cover" style={{ height: 170, width: "100%" }} />
                 <View style={styles.user_photo}>
                     <Image source={require("../../assets/images/user.png")} resizeMode="cover" style={{ height: "55%", width: "55%" }} />
                 </View>
@@ -113,12 +113,13 @@ const styles = StyleSheet.create({
         position: "absolute",
         height: 70,
         width: 70,
+        top: 40,
         borderRadius: 100,
         borderWidth: 2.5,
         borderColor: "#fafafa",
     },
     user_name: {
-        bottom: 20,
+        bottom: 30,
         position: "absolute",
     },
     username_text: {
