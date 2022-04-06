@@ -31,6 +31,15 @@ const Keranjang = () => {
       displayTotal()
   })
 
+  const removeItem = (id) => {
+    let list_cart = cart
+    let updatedCart = []
+    list_cart.map((el) =>
+      el.id !== id && updatedCart.push(el)
+    )
+    setCart(updatedCart)
+  }
+
   const displayTotal = () => {
     let total = 0
     cart.map((el) => {
@@ -41,7 +50,7 @@ const Keranjang = () => {
 
   useEffect(() => {
     calculateTotal()
-  }, [])
+  }, [cart])
 
 
   return (
@@ -51,7 +60,7 @@ const Keranjang = () => {
       </LinearGradient>
       <ScrollView style={{ paddingTop: 5, paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}>
         {cart.length > 0 && cart.map((el, i) => (
-          <KeranjangCard key={i} exist={true} data={el} calculate={calculateTotal} />
+          <KeranjangCard key={i} exist={true} data={el} calculate={calculateTotal} remove={removeItem} />
         )
         )}
         <View style={{ height: 50 }} />

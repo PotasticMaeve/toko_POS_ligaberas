@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { View, Text, TouchableHighlight } from 'react-native'
-import Ripple from 'react-native-material-ripple'
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
 import moment from "moment"
 import 'moment/locale/id'
@@ -27,7 +25,7 @@ const TransaksiCard = (props) => {
                 <TouchableHighlight style={{ padding: 10, borderRadius: 5 }}>
                     <View style={{ height: '100%', width: '100%', position: 'relative' }}>
                         <View style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: "#ccc" }}>
-                            <Text style={[styles.textBold, { fontSize: 15, color: '#c1121f', textTransform: "uppercase" }]}>INV-asdjdakw27482433</Text>
+                            <Text style={[styles.textBold, { fontSize: 15, color: "#27ae60", textTransform: "uppercase" }]}>INV-asdjdakw27482433</Text>
                         </View>
                         <View style={{ width: '100%', marginTop: 10 }}>
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 3 }}>
