@@ -38,10 +38,6 @@ const SideMenu = () => {
                 </View>
             </View>
             <View style={styles.menu}>
-                <TouchableOpacity style={[styles.menu_item]} onPress={() => Actions.Profile()}>
-                    <FontAwesome5 name={"user-alt"} size={18} color="#e36414" />
-                    <Text style={styles.menu_text}>Profile</Text>
-                </TouchableOpacity>
                 <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Transaksi()}>
                     <FontAwesome5 name={"receipt"} size={18} color="#e36414" />
                     <Text style={styles.menu_text}>Transaksi</Text>

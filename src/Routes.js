@@ -5,7 +5,6 @@ import {
     Text,
 } from 'react-native';
 import Home from "./pages/Home";
-import Profile from "./pages/Profile";
 import Keranjang from "./pages/Keranjang";
 import Wishlist from "./pages/Wishlist";
 import Transaksi from "./pages/Transaksi";
@@ -61,7 +60,6 @@ const Routes = () => {
                     </Scene>
                 </Drawer>
                 <Scene key="Auth" component={Auth} title="Auth" />
-                <Scene key="Profile" component={Profile} title="Profile" />
                 <Scene key="Transaksi" component={Transaksi} title="Transaksi" />
                 <Scene key="DetailCard" component={DetailCard} title="DetailCard" />
                 <Scene key="SearchBar" component={SearchBar} title="SearchBar" />
