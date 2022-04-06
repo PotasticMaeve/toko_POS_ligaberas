@@ -22,7 +22,7 @@ import Susu from "./pages/Susu";
 import Telur from "./pages/Telur";
 import Teh from "./pages/Teh";
 import Bumbu from "./pages/Bumbu";
-
+import Checkout from "./pages/Checkout";
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -73,6 +73,7 @@ const Routes = () => {
                 <Scene key="Telur" component={Telur} title="Telur" />
                 <Scene key="Teh" component={Teh} title="Teh" />
                 <Scene key="Bumbu" component={Bumbu} title="Bumbu" />
+                <Scene key="Checkout" component={Checkout} title="Checkout" />
             </Scene>
         </Router>
     )

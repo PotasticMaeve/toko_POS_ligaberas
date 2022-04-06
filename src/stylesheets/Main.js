@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-const WIDTH = Dimensions.get("window").width
+const { height, width } = Dimensions.get("window")
 const styles = StyleSheet.create({
     tabTitle: {
         fontSize: 11,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     imgMenu: {
         flex: 1,
         height: 30,
-        width: WIDTH / 4.8,
+        width: width / 4.8,
         backgroundColor: "#eaeaea",
         marginHorizontal: 6.5,
         marginTop: 40,
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
         flex: 1,
         display: "flex",
         backgroundColor: "#fff",
-        height: WIDTH / 1.5,
+        height: width / 1.5,
         marginHorizontal: 5,
         marginVertical: 8,
         borderRadius: 10,
@@ -111,12 +111,12 @@ const styles = StyleSheet.create({
         flex: 1,
         display: "flex",
         backgroundColor: "#fff",
-        height: WIDTH / 1.5,
+        height: width / 1.5,
         margin: 5,
         borderRadius: 10    
     },
     space: {
-        height: 30
+        height: height / 4
     },
     blankCard: {
         backgroundColor: "transparent"
