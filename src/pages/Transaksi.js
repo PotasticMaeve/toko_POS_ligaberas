@@ -5,16 +5,13 @@ import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
-import { View } from 'react-native';
+import PesananDikirim from '../components/PesananDikirim';
+import PesananTiba from '../components/PesananTiba';
 
 const colorHeader = ['#f3a337', '#eb8937']
 
-const pesanan_dikirim = () => {
-    return <View style={{ flex: 1, backgroundColor: "#fafafa" }}></View>
-}
-const pesanan_tiba = () => {
-    return <View style={{ flex: 1, backgroundColor: "#fafafa" }}></View>
-}
+const pesanan_dikirim = () => <PesananDikirim />
+const pesanan_tiba = () => <PesananTiba />
 
 const renderScene = SceneMap({
     first: pesanan_dikirim,

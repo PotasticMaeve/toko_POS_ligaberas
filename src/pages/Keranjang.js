@@ -50,8 +50,8 @@ const Keranjang = () => {
         <Text style={[styles.textBold, { fontSize: 17, color: "#fff" }]}>Keranjang</Text>
       </LinearGradient>
       <ScrollView style={{ paddingTop: 5, paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}>
-        {cart.length > 0 && cart.map((el) => (
-          <KeranjangCard exist={true} data={el} calculate={calculateTotal} />
+        {cart.length > 0 && cart.map((el, i) => (
+          <KeranjangCard key={i} exist={true} data={el} calculate={calculateTotal} />
         )
         )}
         <View style={{ height: 50 }} />
