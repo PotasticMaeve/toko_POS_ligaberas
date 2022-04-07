@@ -63,7 +63,7 @@ const SideMenu = () => {
                         }}>
                             <View style={{ justifyContent: "center", alignItems: "center", paddingTop: 10 }}>
                                 <Icon name="warning" size={40} color="#d90429" />
-                                <Text style={[s.textSemiBold, { fontSize: 15 }]}>Yakin ingin keluar dari aplikasi?</Text>
+                                <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium" }}>Yakin ingin keluar dari aplikasi?</Text>
                             </View>
                         <View style={{
                             flexDirection: "row",
@@ -78,7 +78,7 @@ const SideMenu = () => {
                                 onPress={() => setModalShow(false)}
                                 >
                                 <View style={{ justifyContent: "center", alignItems: "center" }}>
-                                    <Text style={s.textSemiBold}>Tidak</Text>
+                                    <Text style={{ fontFamily: "Poppins-Medium" }}>Tidak</Text>
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -86,7 +86,7 @@ const SideMenu = () => {
                                 onPress={() => confirmedLogout()}
                                 >
                                 <View style={{ justifyContent: "center", alignItems: "center" }}>
-                                    <Text style={s.textSemiBold}>Ya</Text>
+                                    <Text style={{ fontFamily: "Poppins-Medium" }}>Ya</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>

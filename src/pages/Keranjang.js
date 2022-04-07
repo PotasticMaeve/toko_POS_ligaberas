@@ -77,7 +77,7 @@ const Keranjang = () => {
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
-        height: 90,
+        height: 100,
         backgroundColor: "#fafafa",
         paddingHorizontal: 20,
         shadowColor: '#eaeaea',
@@ -110,7 +110,7 @@ const Keranjang = () => {
           }}
           onPress={() => Actions.Checkout()}
         >
-          <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 14, marginTop: 5 }}>checkout sekarang</Text>
+          <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>checkout sekarang</Text>
         </Ripple>
       </View>
     </>

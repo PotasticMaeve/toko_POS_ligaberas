@@ -47,12 +47,12 @@ const Auth = () => {
             {loginActive ? (
                 <View style={[styles.centerAlign, { backgroundColor: "rgba(210, 210, 210, .9)", height: height }]}>
                     <Animated.View style={[styles.inputContainer, animatedInput, { height: height / 2.2 }]}>
-                        <Text style={[s.textBold, styles.title]}>login</Text>
+                        <Text style={[{ fontFamily: "Poppins-SemiBold" }, styles.title]}>login</Text>
                         <View style={{ marginVertical: 20 }}>
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Username"
-                                    style={[s.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
+                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
                                     autoCorrect={false}
                                     />
@@ -60,7 +60,7 @@ const Auth = () => {
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Password"
-                                    style={[s.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
+                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
                                     autoCorrect={false}
                                     secureTextEntry
@@ -68,7 +68,7 @@ const Auth = () => {
                             </View>
                             <View style={styles.forgotpassWrap}>
                                 <TouchableOpacity>
-                                    <Text style={[s.textBold, { color: "#eb8937", fontSize: 12, marginRight: 3, textTransform: "capitalize" }]}>lupa password</Text>
+                                    <Text style={{ color: "#eb8937", fontSize: 12, marginRight: 3, textTransform: "capitalize", fontFamily: "Poppins-SemiBold" }}>lupa password</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -80,13 +80,13 @@ const Auth = () => {
                                     colors={colorGradient}
                                     style={{
                                         width: width / 1.25,
-                                        padding: 10,
+                                        paddingVertical: 10,
                                         borderRadius: 10,
                                         justifyContent: "center",
                                         alignItems: "center",
                                     }}
                                 >
-                                    <Text style={[{ textTransform: "uppercase", fontSize: 14, color: "#fff" }, s.textBold]}>login</Text>
+                                    <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>login</Text>
                                 </LinearGradient>
                             </Ripple>
                         </View>
@@ -101,14 +101,15 @@ const Auth = () => {
                                 onPress={() => setLoginActive(false)}
                             >
                                 <View style={{
-                                    padding: 10,
+                                    paddingHorizontal: 10,
+                                    paddingVertical: 7,
                                     borderRadius: 10,
                                     justifyContent: "center",
                                     alignItems: "center",
                                     borderWidth: 1.5,
                                     borderColor: "#eb8937",
                                 }}>
-                                    <Text style={[{ textTransform: "uppercase", fontSize: 14, color: "#eb8937" }, s.textBold]}>register</Text>
+                                    <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>register</Text>
                                 </View>
                             </Ripple>
                         </View>
@@ -117,12 +118,12 @@ const Auth = () => {
             ):(
                 <View style={[styles.centerAlign, { backgroundColor: "rgba(210, 210, 210, .9)", height: height }]}>
                     <Animated.View style={[styles.inputContainer, animatedInput, { height: height / 1.9 }]}>
-                        <Text style={[s.textBold, styles.title]}>register</Text>
+                        <Text style={[{ fontFamily: "Poppins-SemiBold" }, styles.title]}>register</Text>
                         <View style={{ marginVertical: 20 }}>
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Nama Lengkap"
-                                    style={[s.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
+                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
                                     autoCorrect={false}
                                 />
@@ -130,7 +131,7 @@ const Auth = () => {
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Email"
-                                    style={[s.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
+                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
                                     autoCorrect={false}
                                 />
@@ -138,7 +139,7 @@ const Auth = () => {
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Password"
-                                    style={[s.textMedium, { marginLeft: 3, fontSize: 14, color: "#595959" }]}
+                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
                                     autoCorrect={false}
                                     secureTextEntry
@@ -152,14 +153,15 @@ const Auth = () => {
                                 <LinearGradient
                                     colors={colorGradient}
                                     style={{
+                                        
                                         width: width / 1.25,
-                                        padding: 10,
+                                        paddingVertical: 10,
                                         borderRadius: 10,
                                         justifyContent: "center",
                                         alignItems: "center",
                                     }}
                                 >
-                                    <Text style={[{ textTransform: "uppercase", fontSize: 14, color: "#fff" }, s.textBold]}>register</Text>
+                                    <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>register</Text>
                                 </LinearGradient>
                             </Ripple>
                         </View>
@@ -174,14 +176,15 @@ const Auth = () => {
                                 onPress={() => setLoginActive(true)}
                             >
                                 <View style={{
-                                    padding: 10,
+                                    paddingHorizontal: 10,
+                                    paddingVertical: 7,
                                     borderRadius: 10,
                                     justifyContent: "center",
                                     alignItems: "center",
                                     borderWidth: 1.5,
                                     borderColor: "#eb8937",
                                 }}>
-                                    <Text style={[{ textTransform: "uppercase", fontSize: 14, color: "#eb8937" }, s.textBold]}>login</Text>
+                                    <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>login</Text>
                                 </View>
                             </Ripple>
                         </View>
@@ -227,6 +230,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fafafa",
         height: 45,
         borderRadius: 8,
+        justifyContent: "center",
         marginVertical: 10,
         shadowColor: '#aaa',
         shadowOffset: { width: 0, height: 2 },

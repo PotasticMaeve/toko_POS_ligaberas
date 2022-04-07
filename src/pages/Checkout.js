@@ -39,8 +39,8 @@ const Checkout = () => {
 
     useEffect(() => {
         displayTotalBarang()
-    },[])
-    
+    }, [])
+
     const displayTotalBarang = () => {
         let total = 0
         cart.map((el) => {
@@ -63,8 +63,8 @@ const Checkout = () => {
             <ScrollView showsVerticalScrollIndicator={false} style={{ paddingTop: 10, backgroundColor: "#fff", paddingHorizontal: 15 }}>
                 <View style={{ paddingVertical: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Alamat Pengiriman</Text>
-                    <Ripple rippleColor="#fff" style={{ paddingHorizontal: 20, paddingVertical: 5, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }}>
-                        <Text style={{ fontSize: 13, color: '#eb8937', fontFamily: "Poppins-SemiBold" }}>Ubah</Text>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }}>
+                        <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>
                 <View style={{ justifyContent: "flex-start", width: "100%", flexDirection: "row" }}>
@@ -82,8 +82,8 @@ const Checkout = () => {
                 </View>
                 <View style={{ paddingTop: 20, paddingBottom: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Konfirmasi Pesanan</Text>
-                    <Ripple rippleColor="#fff" style={{ paddingHorizontal: 20, paddingVertical: 5, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Keranjang()}>
-                        <Text style={{ fontSize: 13, color: '#eb8937', fontFamily: "Poppins-SemiBold" }}>Ubah</Text>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Keranjang()}>
+                        <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>
                 <View style={{ width: "100%" }}>
@@ -105,26 +105,27 @@ const Checkout = () => {
                         </View>
                     ))}
                 </View>
-                <View style={{ paddingTop: 20, paddingBottom: 10 }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: '#60a3bc' }}>Total Harga Barang</Text>
-                        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 14, color: '#60a3bc' }}>{convertToIDR(totalBarang)}</Text>
-                    </View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14, color: '#60a3bc' }}>Biaya Kirim</Text>
-                        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 14, color: '#60a3bc' }}>{convertToIDR(30000)}</Text>
-                    </View>
-                    <View style={{ borderTopWidth: 1, borderTopColor: "#ccc", height: 10, width: "100%", marginVertical: 5 }}></View>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                        <Text style={{ fontFamily: "Poppins-Bold", fontSize: 14, color: "#27ae60" }}>Total Bayar</Text>
-                        <Text style={{ fontFamily: "Poppins-Bold", fontSize: 14, color: "#27ae60" }}>{convertToIDR(grandTotal)}</Text>
-                    </View>
-                </View>
                 <Space />
+                <View style={{ height: 100 }}></View>
             </ScrollView>
-            <Ripple rippleColor="#fff" style={{ position: "absolute", left: 15, bottom: 20, height: 40, width: "90%", borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ fontSize: 14, color: '#fff', fontFamily: "Poppins-SemiBold" }}>Lanjutkan Pembayaran</Text>
-            </Ripple>
+            <View style={{ position: "absolute", left: 0, bottom: 30, paddingTop: 10, paddingBottom: 10, width: "100%", paddingHorizontal: 15, backgroundColor: "#fafafa" }}>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13.5, color: '#60a3bc' }}>Total Harga Barang</Text>
+                    <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 13.5, color: '#60a3bc' }}>{convertToIDR(totalBarang)}</Text>
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13.5, color: '#60a3bc' }}>Biaya Kirim</Text>
+                    <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 13.5, color: '#60a3bc' }}>{convertToIDR(30000)}</Text>
+                </View>
+                <View style={{ borderTopWidth: 1, borderTopColor: "#ccc", height: 10, width: "100%", marginVertical: 5 }}></View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>Total Bayar</Text>
+                    <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>{convertToIDR(grandTotal)}</Text>
+                </View>
+                <Ripple rippleColor="#fff" style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }}>
+                    <Text style={{ fontSize: 14, color: '#fff', fontFamily: "Poppins-SemiBold" }}>Lanjutkan Pembayaran</Text>
+                </Ripple>
+            </View>
         </>
     )
 }
