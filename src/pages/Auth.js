@@ -33,38 +33,8 @@ const Auth = () => {
         }).start()
     }
 
-    // const animateInput = () => {
-    //     Animated.timing(inputAnimation, {
-    //         toValue: -height / 6,
-    //         duration: 500
-    //     }).start()
-    // }
-
-    // const reverseAnimateInput = () => {
-    //     Animated.timing(inputAnimation, {
-    //         toValue: 0,
-    //         duration: 500
-    //     }).start()
-    // }
-
     useEffect(() => {
         animateContainer()
-        // const keyboardDidShowListener = Keyboard.addListener(
-        //     'keyboardDidShow',
-        //     () => {
-        //         animateInput()
-        //     }
-        // );
-        // const keyboardDidHideListener = Keyboard.addListener(
-        //     'keyboardDidHide',
-        //     () => {
-        //         reverseAnimateInput()
-        //     }
-        // );
-        // return () => {
-        //     keyboardDidHideListener.remove();
-        //     keyboardDidShowListener.remove();
-        // };
     }, [])
 
     const colorGradient = ['#f3a337', '#eb8937']

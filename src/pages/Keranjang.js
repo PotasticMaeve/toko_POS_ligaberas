@@ -101,10 +101,8 @@ const Keranjang = () => {
           rippleColor="#fff"
           style={{
             height: 40,
-            backgroundColor: "#fff",
             borderRadius: 10,
-            borderWidth: 1,
-            borderColor: "#eb8937",
+            backgroundColor: "#27ae60",
             overflow: 'hidden',
             width: "100%",
             justifyContent: "center",
@@ -112,7 +110,7 @@ const Keranjang = () => {
           }}
           onPress={() => Actions.Checkout()}
         >
-          <Text style={[styles.textBold, { color: "#eb8937", textTransform: "capitalize", fontSize: 15 }]}>checkout sekarang</Text>
+          <Text style={[styles.textBold, { color: "#fff", textTransform: "capitalize", fontSize: 15 }]}>checkout sekarang</Text>
         </Ripple>
       </View>
     </>

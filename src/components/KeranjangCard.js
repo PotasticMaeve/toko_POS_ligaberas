@@ -91,7 +91,7 @@ class KeranjangCard extends React.Component {
                                 </View>
                             </View>
                             <View style={{ display: 'flex', justifyContent: "space-between", flexDirection: 'row', marginTop: 10, justifyContent: "space-around", borderTopWidth: 1, borderTopColor: "#ccc", width: "100%", paddingTop: 10 }}>
-                                <FontAwesome5 name={"trash"} size={16} color="red" onPress={() => this.removeCartItem(this.props.data.id)}/>
+                                <FontAwesome5 name={"trash"} size={17} color="red" onPress={() => this.removeCartItem(this.props.data.id)}/>
                                 <Text style={[styles.textBold, { color: "#e36414" }]}>Subtotal</Text>
                                 <Text style={[styles.textBold, { color: "#e36414" }]}>{this.displaySubTotal()}</Text>
                             </View>
