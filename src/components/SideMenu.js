@@ -3,7 +3,6 @@ import { Image } from 'react-native'
 import { Text } from 'react-native'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import { Actions } from 'react-native-router-flux'
-import s from "../stylesheets/Main"
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -31,7 +30,7 @@ const SideMenu = () => {
             <View style={styles.user_bio}>
                 <Image source={require("../../assets/images/bg-sidebar.png")} resizeMode="cover" style={{ height: 170, width: "100%" }} />
                 <View style={styles.user_photo}>
-                    <Image source={require("../../assets/images/user.png")} resizeMode="cover" style={{ height: "55%", width: "55%" }} />
+                    <Image source={require("../../assets/images/profile.jpg")} resizeMode="cover" style={{ height: "100%", width: "100%" }} />
                 </View>
                 <View style={styles.user_name}>
                     <Text style={[styles.username_text, { fontFamily:"Poppins-SemiBold", textAlign: "center", color: "#fff", fontSize: 15 }]}>claudia felicia</Text>
@@ -42,9 +41,13 @@ const SideMenu = () => {
                     <FontAwesome5 name={"receipt"} size={18} color="#e36414" />
                     <Text style={styles.menu_text}>Transaksi</Text>
                 </TouchableOpacity>
+                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.DetailPengiriman()}>
+                    <FontAwesome5 name={"user-alt"} size={18} color="#e36414" />
+                    <Text style={styles.menu_text}>Profil</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Auth()}>
                     <FontAwesome5 name={"lock"} size={18} color="#e36414" />
-                    <Text style={styles.menu_text}>Auth</Text>
+                    <Text style={styles.menu_text}>Autentikasi</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>
                     <FontAwesome5 name={"sign-out-alt"} size={18} color="#e36414" />
@@ -117,6 +120,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         borderWidth: 2.5,
         borderColor: "#fafafa",
+        overflow: "hidden"
     },
     user_name: {
         bottom: 25,

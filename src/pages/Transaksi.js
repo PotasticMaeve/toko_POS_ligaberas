@@ -7,15 +7,18 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
 import PesananDikirim from '../components/PesananDikirim';
 import PesananTiba from '../components/PesananTiba';
+import PesananDiproses from '../components/PesananDiproses';
 
 const colorHeader = ['#f3a337', '#eb8937']
 
+const pesanan_diproses = () => <PesananDiproses />
 const pesanan_dikirim = () => <PesananDikirim />
 const pesanan_tiba = () => <PesananTiba />
 
 const renderScene = SceneMap({
-    first: pesanan_dikirim,
-    second: pesanan_tiba,
+    first: pesanan_diproses,
+    second: pesanan_dikirim,
+    third: pesanan_tiba,
 });
 
 const renderTabBar = props =>
@@ -35,8 +38,9 @@ const Transaksi = () => {
 
     const [index, setIndex] = React.useState(0);
     const [routes] = React.useState([
-        { key: 'first', title: 'pesanan dikirim' },
-        { key: 'second', title: 'pesanan tiba' },
+        { key: 'first', title: 'diproses' },
+        { key: 'second', title: 'dikirim' },
+        { key: 'third', title: 'selesai' },
     ]);
     return (
         <>

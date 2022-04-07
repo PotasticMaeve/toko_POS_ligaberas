@@ -144,7 +144,7 @@ const Checkout = () => {
             <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: "#fff", paddingHorizontal: 15 }}>
                 <View style={{ paddingVertical: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Alamat Pengiriman</Text>
-                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }}>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.DetailPengiriman()}>
                         <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>
