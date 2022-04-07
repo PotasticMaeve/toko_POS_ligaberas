@@ -33,16 +33,16 @@ const WishlistCard = (props) => {
                 <TouchableHighlight style={{ padding: 10, borderRadius: 5 }}>
                     <>
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
-                            <View style={{ height: "100%", width: 100, backgroundColor: "#eee" }} >
+                            <View style={{ height: "100%", width: 100 }} >
                                 <Image
                                     source={getImage(props.nama)}
                                     style={{ height: 80, width: "auto" }}
                                 />
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 20, justifyContent: 'space-around' }}>
-                                <Text numberOfLines={1} style={[styles.textSemiBold, { width: 200, fontSize: 13, textTransform: "capitalize" }]}>{props.title}</Text>
-                                <Text style={[styles.textSemiBold, { marginVertical: 5, fontSize: 13, color: '#60a3bc' }]}>{convertToIDR(props.price)}</Text>
-                                <Text style={[styles.textSemiBold, { marginVertical: 8, fontSize: 13, color: '#f5576c' }]}>Stok {props.stock}</Text>
+                                <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{props.title}</Text>
+                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{convertToIDR(props.price)}</Text>
+                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#f5576c' }}>Stok {props.stock}</Text>
                             </View>
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', marginTop: 10, justifyContent: "space-around" }}>
@@ -56,7 +56,7 @@ const WishlistCard = (props) => {
                                 </View>
                             </Ripple>
                             <Ripple rippleColor="#27ae60" style={{ height: 40, borderRadius: 10, borderWidth: 1, borderColor: '#27ae60', overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}>
-                                <Text style={[styles.textBold, { color: '#27ae60' }]}>Tambah ke Keranjang</Text>
+                                <Text style={{ color: '#27ae60', fontFamily: "Poppins-SemiBold", marginTop: 5, fontSize: 13 }}>Tambah ke Keranjang</Text>
                             </Ripple>
                         </View>
                     </>

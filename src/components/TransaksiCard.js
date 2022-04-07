@@ -25,24 +25,24 @@ const TransaksiCard = (props) => {
                 <TouchableHighlight style={{ padding: 10, borderRadius: 5 }}>
                     <View style={{ height: '100%', width: '100%', position: 'relative' }}>
                         <View style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: "#ccc" }}>
-                            <Text style={[styles.textBold, { fontSize: 15, color: "#27ae60", textTransform: "uppercase" }]}>INV-asdjdakw27482433</Text>
+                            <Text style={{ fontSize: 14, color: "#27ae60", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>INV-asdjdakw27482433</Text>
                         </View>
                         <View style={{ width: '100%', marginTop: 10 }}>
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 3 }}>
-                                <Text style={[styles.textSemiBold, { color: '#333', textTransform: "capitalize" }]}>tanggal : </Text>
-                                <Text style={[styles.textBold, { color: '#0185e5' }]}>{displayDate()}</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
+                                <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>tanggal : </Text>
+                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>{displayDate()}</Text>
                             </View>
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 3 }}>
-                                <Text style={[styles.textSemiBold, { color: '#333', textTransform: "capitalize" }]}>jenis item : </Text>
-                                <Text style={[styles.textBold, { color: '#0185e5' }]}>2 varian</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
+                                <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>jenis item : </Text>
+                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>2 varian</Text>
                             </View>
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 3 }}>
-                                <Text style={[styles.textSemiBold, { color: '#333', textTransform: "capitalize" }]}>jumlah item : </Text>
-                                <Text style={[styles.textBold, { color: '#0185e5' }]}>3 item</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
+                                <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>jumlah item : </Text>
+                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>3 item</Text>
                             </View>
-                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 3 }}>
-                                <Text style={[styles.textSemiBold, { color: "#27ae60", textTransform: "capitalize" }]}>total transaksi : </Text>
-                                <Text style={[styles.textBold, { color: "#27ae60" }]}>Rp 150.000</Text>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
+                                <Text style={{ fontSize: 13, color: "#27ae60", textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>total transaksi : </Text>
+                                <Text style={{ fontSize: 13, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>Rp 150.000</Text>
                             </View>
                         </View>
                     </View>

@@ -80,11 +80,11 @@ const MenuItem = (props) => {
                 {(() => {
                     if (props.text.length > 10) {
                         return (
-                            <Text style={[styles.textSemiBold, { fontSize: 11.5, marginTop: -10, color: "#595959" }]}>{props.text}</Text>
+                            <Text style={{ fontSize: 11, marginTop: -10, color: "#595959", fontFamily: "Poppins-SemiBold" }}>{props.text}</Text>
                         )
                     } else {
                         return (
-                            <Text style={[styles.textSemiBold, { fontSize: 13, marginTop: -10, color: "#595959" }]}>{props.text}</Text>
+                            <Text style={{ fontSize: 11.5, marginTop: -10, color: "#595959", fontFamily: "Poppins-SemiBold" }}>{props.text}</Text>
                         )
                     }
                 })()}

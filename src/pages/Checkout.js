@@ -87,8 +87,8 @@ const Checkout = () => {
                     </Ripple>
                 </View>
                 <View style={{ width: "100%" }}>
-                    {cart.map((el) => (
-                        <View style={{ flexDirection: "row", justifyContent: "flex-start", marginVertical: 5, padding: 5 }}>
+                    {cart.map((el, i) => (
+                        <View key={i} style={{ flexDirection: "row", justifyContent: "flex-start", marginVertical: 5, padding: 5 }}>
                             <View style={{ height: 60, width: 60 }} >
                                 <Image
                                     source={getImage(el.nama)}
@@ -122,7 +122,7 @@ const Checkout = () => {
                 </View>
                 <Space />
             </ScrollView>
-            <Ripple rippleColor="#fff" style={{ position: "absolute", left: 15, bottom: 20, height: 40, width: "90%", borderRadius: 10, backgroundColor: "#27ae60", justifyContent: "center", alignItems: "center" }}>
+            <Ripple rippleColor="#fff" style={{ position: "absolute", left: 15, bottom: 20, height: 40, width: "90%", borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }}>
                 <Text style={{ fontSize: 14, color: '#fff', fontFamily: "Poppins-SemiBold" }}>Lanjutkan Pembayaran</Text>
             </Ripple>
         </>

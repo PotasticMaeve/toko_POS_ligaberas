@@ -15,7 +15,7 @@ const Wishlist = () => {
     return (
         <>
             <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                <Text style={[styles.textBold, { fontSize: 17, color: "#fff" }]}>Wishlist</Text>
+                <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Wishlist</Text>
             </LinearGradient>
             <ScrollView style={{ paddingTop: 5, paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}>
                 {wishlist.map((el, i) => (

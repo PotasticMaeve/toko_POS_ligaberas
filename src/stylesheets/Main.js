@@ -4,7 +4,7 @@ const { height, width } = Dimensions.get("window")
 const styles = StyleSheet.create({
     tabTitle: {
         fontSize: 11,
-        fontFamily: "Nunito-Bold"
+        fontFamily: "Poppins-SemiBold"
     },
     headerWrap : {
         display: "flex",
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         borderRadius: 10    
     },
     space: {
-        height: height / 4
+        height: height / 5
     },
     blankCard: {
         backgroundColor: "transparent"
@@ -136,16 +136,16 @@ const styles = StyleSheet.create({
     },
     titleCard: { 
         textTransform: "capitalize", 
-        fontSize: 12 
+        fontSize: 11 
     },
     priceCard: { 
         textTransform: "capitalize", 
-        fontSize: 13, 
+        fontSize: 12, 
         marginVertical: 5 
     },
     ratingWrap: {
         position: "absolute",
-        bottom: -30,
+        bottom: 5,
         display: "flex",
         flexDirection: "row",
         left: 10, 
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     labelTab: {
         color: "#eb8937",
         alignSelf: 'center',
-        fontFamily: "Nunito-Bold",    
+        fontFamily: "Poppins-SemiBold",    
         textTransform: "uppercase"
     },
     textBold: {

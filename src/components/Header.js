@@ -14,8 +14,8 @@ const Header = () => {
                 <TouchableOpacity onPress={() => Actions.drawerOpen()}>
                     <FontAwesome5 name={"bars"} size={20} color='#FFFFFF' />
                 </TouchableOpacity>
-                <View>
-                    <Text style={[styles.textBold, { color: "#fff", fontSize: 17}]}>Toko Liga Beras</Text>
+                <View style={{ marginTop: 5 }}>
+                    <Text style={{ color: "#fff", fontSize: 16, fontFamily: "Poppins-SemiBold"}}>Toko Liga Beras</Text>
                 </View>
                 <TouchableOpacity onPress={() => Actions.SearchBar()}>
                     <FontAwesome5 name={"search"} size={20} color='#FFFFFF'/>

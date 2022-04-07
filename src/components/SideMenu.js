@@ -34,7 +34,7 @@ const SideMenu = () => {
                     <Image source={require("../../assets/images/user.png")} resizeMode="cover" style={{ height: "55%", width: "55%" }} />
                 </View>
                 <View style={styles.user_name}>
-                    <Text style={[styles.username_text, s.textBold, { textAlign: "center", color: "#fff", fontSize: 15 }]}>claudia felicia</Text>
+                    <Text style={[styles.username_text, { fontFamily:"Poppins-SemiBold", textAlign: "center", color: "#fff", fontSize: 15 }]}>claudia felicia</Text>
                 </View>
             </View>
             <View style={styles.menu}>
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
         borderColor: "#fafafa",
     },
     user_name: {
-        bottom: 30,
+        bottom: 25,
         position: "absolute",
     },
     username_text: {
@@ -134,16 +134,16 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         flexDirection: "row",
         justifyContent: "flex-start",
-        alignItems: "flex-start",
-        paddingVertical: 15,
+        alignItems: "center",
+        paddingVertical: 10,
         marginVertical: 3,
         paddingLeft: 10
     },
     menu_text: {
-        fontFamily: "Nunito-Bold",
+        fontFamily: "Poppins-SemiBold",
         color: "#e36414",
         marginLeft: 20,
-        fontSize: 15
+        fontSize: 14
     }
 })
 

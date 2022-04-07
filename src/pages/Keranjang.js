@@ -61,7 +61,7 @@ const Keranjang = () => {
   return (
     <>
       <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-        <Text style={[styles.textBold, { fontSize: 17, color: "#fff" }]}>Keranjang</Text>
+      <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Keranjang</Text>
       </LinearGradient>
       <ScrollView style={{ paddingTop: 5, paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}>
         {cart.length > 0 && cart.map((el, i) => (
@@ -94,15 +94,15 @@ const Keranjang = () => {
           justifyContent: 'space-between',
           paddingHorizontal: 10
         }}>
-          <Text style={[styles.textBold, { fontSize: 15, color: "#27ae60" }]}>Total Belanja</Text>
-          <Text style={[styles.textBold, { fontSize: 15, color: "#27ae60" }]}>{convertToIDR(total)}</Text>
+          <Text style={{ fontSize: 14, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>Total Belanja</Text>
+          <Text style={{ fontSize: 14, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>{convertToIDR(total)}</Text>
         </View>
         <Ripple
           rippleColor="#fff"
           style={{
             height: 40,
             borderRadius: 10,
-            backgroundColor: "#27ae60",
+            backgroundColor: '#eb8937',
             overflow: 'hidden',
             width: "100%",
             justifyContent: "center",
@@ -110,7 +110,7 @@ const Keranjang = () => {
           }}
           onPress={() => Actions.Checkout()}
         >
-          <Text style={[styles.textBold, { color: "#fff", textTransform: "capitalize", fontSize: 15 }]}>checkout sekarang</Text>
+          <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 14, marginTop: 5 }}>checkout sekarang</Text>
         </Ripple>
       </View>
     </>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, Image } from 'react-native'
 import Ripple from 'react-native-material-ripple'
 import styles from '../stylesheets/Main'
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { convertToIDR } from '../Helper';
 import { Actions } from 'react-native-router-flux';
 import ShimmerCard from './ShimmerCard';
@@ -55,11 +54,11 @@ const CardItem = (props) => {
                     paddingVertical: 5,
                     paddingHorizontal: 7
                 }}>
-                    <Text numberOfLines={2} style={[styles.textMedium, styles.titleCard]}>{props.title}</Text>
-                    <Text style={[styles.textBold, styles.priceCard]}>{convertToIDR(props.price)}</Text>
-                    <View style={styles.ratingWrap}>
-                        <Text style={[styles.textSemiBold, { fontSize: 11.5, color: '#27ae60' }]}>Stok {props.stock}</Text>
-                    </View>
+                    <Text numberOfLines={2} style={[styles.titleCard, { fontFamily: "Poppins-Regular" }]}>{props.title}</Text>
+                    <Text style={[styles.priceCard, {fontFamily: "Poppins-SemiBold"}]}>{convertToIDR(props.price)}</Text>
+                </View>
+                <View style={styles.ratingWrap}>
+                    <Text style={{ fontSize: 11.5, color: '#27ae60', fontFamily: "Poppins-SemiBold" }}>Stok {props.stock}</Text>
                 </View>
             </Ripple>
         )

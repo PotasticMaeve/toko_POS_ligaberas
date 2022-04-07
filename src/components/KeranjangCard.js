@@ -72,9 +72,9 @@ class KeranjangCard extends React.Component {
                                     />
                                 </View>
                                 <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around' }}>
-                                    <Text numberOfLines={1} style={[styles.textSemiBold, { width: 200, fontSize: 13, textTransform: "capitalize" }]}>{this.props.data.title}</Text>
-                                    <Text style={[styles.textSemiBold, { fontSize: 13, color: '#60a3bc' }]}>{convertToIDR(this.props.data.price)}</Text>
-                                    <Text style={[styles.textSemiBold, { fontSize: 13, color: '#e54b4b' }]}>Stok {this.props.data.stock}</Text>
+                                    <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{this.props.data.title}</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{convertToIDR(this.props.data.price)}</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#e54b4b' }}>Stok {this.props.data.stock}</Text>
                                 </View>
                             </View>
                             <View style={{ alignItems: "flex-end" }}>
@@ -83,7 +83,7 @@ class KeranjangCard extends React.Component {
                                         <FontAwesome5 name={"minus"} size={14} color="#fff" />
                                     </Ripple>
                                     <View style={{ borderBottomWidth: 1, borderBottomColor: "#ccc", width: 30, justifyContent: 'center', alignItems: "center" }}>
-                                        <Text style={[styles.textSemiBold, { fontSize: 15 }]}>{this.state.amount}</Text>
+                                        <Text style={{ fontSize: 14, fontFamily: "Poppins-SemiBold" }}>{this.state.amount}</Text>
                                     </View>
                                     <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => this.updateAmount(this.props.data.id, "plus")}>
                                         <FontAwesome5 name={"plus"} size={14} color="#fff" />
@@ -92,8 +92,8 @@ class KeranjangCard extends React.Component {
                             </View>
                             <View style={{ display: 'flex', justifyContent: "space-between", flexDirection: 'row', marginTop: 10, justifyContent: "space-around", borderTopWidth: 1, borderTopColor: "#ccc", width: "100%", paddingTop: 10 }}>
                                 <FontAwesome5 name={"trash"} size={17} color="red" onPress={() => this.removeCartItem(this.props.data.id)}/>
-                                <Text style={[styles.textBold, { color: "#e36414" }]}>Subtotal</Text>
-                                <Text style={[styles.textBold, { color: "#e36414" }]}>{this.displaySubTotal()}</Text>
+                                <Text style={{ color: "#e36414", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Subtotal</Text>
+                                <Text style={{ color: "#e36414", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>{this.displaySubTotal()}</Text>
                             </View>
                         </>
                     </TouchableHighlight>
