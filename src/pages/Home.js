@@ -17,7 +17,7 @@ const Home = () => {
         <Menu />
         <Label />
         <Card />
-        <Space />
+        <View style={{ height: 50 }}/>
       </ScrollView>
     </View>
   )

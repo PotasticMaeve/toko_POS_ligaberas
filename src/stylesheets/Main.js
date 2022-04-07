@@ -168,22 +168,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         fontFamily: "Poppins-SemiBold",    
         textTransform: "uppercase"
-    },
-    textBold: {
-        fontFamily: "Nunito-Bold"
-    },
-    textLight: {
-        fontFamily: "Nunito-Light"
-    },
-    textMedium: {
-        fontFamily: "Nunito-Medium"
-    },
-    textRegular: {
-        fontFamily: "Nunito-Regular"
-    },
-    textSemiBold: {
-        fontFamily: "Nunito-SemiBold"
-    },
+    }
 })
 
 export default styles

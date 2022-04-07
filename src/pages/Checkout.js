@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import {
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
-    ScrollView
+    ScrollView,
+    Alert
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
@@ -16,14 +17,21 @@ import { MainContext } from "../context/MainContext"
 import { Image } from 'react-native';
 import { convertToIDR } from '../Helper';
 import Space from '../components/Space';
+import Animated from 'react-native-reanimated';
+import BottomSheet from 'reanimated-bottom-sheet';
+import { CreditCardInput } from "react-native-credit-card-input";
 
 const colorGradient = ['#f3a337', '#eb8937']
 
 const Checkout = () => {
     const { data_cart } = useContext(MainContext)
-    const [cart, setCart] = data_cart
+    const [cart] = data_cart
     const [totalBarang, setTotalBarang] = useState(0)
     const [grandTotal, setGrandTotal] = useState(0)
+    const [creditData, setCreditData] = useState({})
+    const [showBottom, setShowBottom] = useState(false)
+    const bs = useRef(null)
+    const fall = new Animated.Value(1)
 
     const getImage = (imgName) => {
         if (imgName === "kecap") {
@@ -50,6 +58,79 @@ const Checkout = () => {
         setGrandTotal(total + 30000)
     }
 
+    const _onChange = form => setCreditData(form);
+
+    const renderInner = () => {
+        if (showBottom) {
+            return (
+                <View style={{
+                    height: "100%",
+                    padding: 20,
+                    backgroundColor: '#fff',
+                    paddingTop: 20,
+                }}>
+                    <Text style={{ fontSize: 16, color: "#000", textAlign: "center", fontFamily: "Poppins-SemiBold", marginBottom: 10 }}>Detail Pembayaran</Text>
+                    <CreditCardInput
+                        autoFocus
+                        requiresName
+                        requiresCVC
+                        placeholderColor="#bbb"
+                        onChange={_onChange}
+                        validColor="#27ae60"
+                        placeholderColor="#ccc"
+                        placeholders={{ number: "2222 2222 2222 2222", expiry: "MM/YY", cvc: "CVV", name: "Nama Lengkap" }}
+                        labels={{ number: "Nomor Kartu", expiry: "EXPIRY", cvc: "kode CVV", name: "Nama CardHolders" }}
+                        labelStyle={{ fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}
+                    />
+                    <Ripple
+                        rippleColor="#fff"
+                        style={{
+                            marginTop: 20,
+                            height: 40,
+                            borderRadius: 10,
+                            backgroundColor: '#eb8937',
+                            overflow: 'hidden',
+                            width: "100%",
+                            justifyContent: "center",
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>Bayar Sekarang</Text>
+                    </Ripple>
+                </View>
+            )
+        }
+    }
+
+    const renderHeader = () => {
+        return (
+            <View style={{
+                backgroundColor: '#fff',
+                paddingTop: 20,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+                borderTopColor: "#eaeaea",
+                borderLeftColor: "#eaeaea",
+                borderRightColor: "#eaeaea",
+                borderTopWidth: 1,
+                borderLeftWidth: 1,
+                borderRightWidth: 1
+            }}>
+                <View style={{
+                    alignItems: 'center',
+                }}>
+                    <View style={{
+                        width: 40,
+                        height: 4,
+                        borderRadius: 4,
+                        backgroundColor: '#00000040',
+                        marginBottom: 10,
+                    }}></View>
+                </View>
+            </View>
+        )
+    }
+
     return (
         <>
             <LinearGradient colors={colorGradient} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
@@ -60,7 +141,7 @@ const Checkout = () => {
                     <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold" }}>Checkout</Text>
                 </View>
             </LinearGradient>
-            <ScrollView showsVerticalScrollIndicator={false} style={{ paddingTop: 10, backgroundColor: "#fff", paddingHorizontal: 15 }}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: "#fff", paddingHorizontal: 15 }}>
                 <View style={{ paddingVertical: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Alamat Pengiriman</Text>
                     <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }}>
@@ -122,10 +203,19 @@ const Checkout = () => {
                     <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>Total Bayar</Text>
                     <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>{convertToIDR(grandTotal)}</Text>
                 </View>
-                <Ripple rippleColor="#fff" style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }}>
+                <Ripple rippleColor="#fff" style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }} onPress={() => { bs.current.snapTo(0); setShowBottom(true) }}>
                     <Text style={{ fontSize: 14, color: '#fff', fontFamily: "Poppins-SemiBold" }}>Lanjutkan Pembayaran</Text>
                 </Ripple>
             </View>
+            <BottomSheet
+                ref={bs}
+                snapPoints={[650, 0]}
+                renderContent={renderInner}
+                renderHeader={renderHeader}
+                initialSnap={1}
+                callbackNode={fall}
+                enabledGestureInteraction={true}
+            />
         </>
     )
 }
