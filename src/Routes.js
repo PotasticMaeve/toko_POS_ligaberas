@@ -13,7 +13,7 @@ import Auth from "./pages/Auth";
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import styles from "./stylesheets/Main";
 import SideMenu from "./components/SideMenu";
-import SearchBar from "./components/SearchBar";
+import Search from "./components/Search";
 import Beras from "./pages/Beras";
 import Tepung from "./pages/Tepung";
 import Daging from "./pages/Daging";
@@ -63,7 +63,7 @@ const Routes = () => {
                 <Scene key="Auth" component={Auth} title="Auth" />
                 <Scene key="Transaksi" component={Transaksi} title="Transaksi" />
                 <Scene key="DetailCard" component={DetailCard} title="DetailCard" />
-                <Scene key="SearchBar" component={SearchBar} title="SearchBar" />
+                <Scene key="Search" component={Search} title="Search" />
                 <Scene key="Keranjang" component={Keranjang} title="Keranjang" />
                 <Scene key="Wishlist" component={Wishlist} title="Wishlist" />
                 <Scene key="Beras" component={Beras} title="Beras" />

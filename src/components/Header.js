@@ -17,7 +17,7 @@ const Header = () => {
                 <View style={{ marginTop: 5 }}>
                     <Text style={{ color: "#fff", fontSize: 16, fontFamily: "Poppins-SemiBold"}}>Toko Liga Beras</Text>
                 </View>
-                <TouchableOpacity onPress={() => Actions.SearchBar()}>
+                <TouchableOpacity onPress={() => Actions.Search()}>
                     <FontAwesome5 name={"search"} size={20} color='#FFFFFF'/>
                 </TouchableOpacity>
             </View>

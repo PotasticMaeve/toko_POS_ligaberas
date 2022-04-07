@@ -66,13 +66,8 @@ const Auth = () => {
                                     secureTextEntry
                                 />
                             </View>
-                            <View style={styles.forgotpassWrap}>
-                                <TouchableOpacity>
-                                    <Text style={{ color: "#eb8937", fontSize: 12, marginRight: 3, textTransform: "capitalize", fontFamily: "Poppins-SemiBold" }}>lupa password</Text>
-                                </TouchableOpacity>
-                            </View>
                         </View>
-                        <View style={{ alignItems: "center", marginTop: 10 }}>
+                        <View style={{ alignItems: "center" }}>
                             <Ripple
                                 rippleColor="#fff"
                             >
@@ -238,10 +233,6 @@ const styles = StyleSheet.create({
         shadowRadius: 1,
         elevation: 2,
         paddingHorizontal: 10
-    },
-    forgotpassWrap: {
-        flex: .5,
-        alignItems: "flex-end"
     }
 })
 
