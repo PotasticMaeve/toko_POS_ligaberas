@@ -1,73 +1,26 @@
-import * as React from 'react';
-import { useWindowDimensions, Text, Image, TouchableOpacity, View } from 'react-native';
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import React from 'react'
+import { Text, TouchableOpacity } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
-import Deskripsi from '../components/Deskripsi';
-import Ulasan from '../components/Ulasan';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
 
-const renderScene = SceneMap({
-    first: Deskripsi,
-    second: Ulasan,
-});
+const colorHeader = ['#f3a337', '#eb8937']
 
-const renderTabBar = props =>
-    <TabBar {...props}
-        indicatorStyle={styles.indicatorTab}
-        style={styles.tabbar}
-        tabStyle={styles.tab}
-        renderLabel={({ route }) => (
-            <Text style={styles.labelTab}>
-                {route.title}
-            </Text>
-        )}
-    />;
-
-export default function DetailCard() {
-    const layout = useWindowDimensions();
-
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-        { key: 'first', title: 'deskripsi' },
-        { key: 'second', title: 'ulasan' },
-    ]);
+const DetailCard = () => {
     return (
         <>
-            <TouchableOpacity
-                onPress={() => Actions.pop()}
-                style={{
-                    position: "absolute",
-                    left: "5%",
-                    top: "5.5%",
-                    zIndex: 999
-                }}
-            >
-                <FontAwesome5 name={"angle-left"} size={29} color='#000' />
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={() => Actions.Keranjang()}
-                style={{
-                    position: "absolute",
-                    right: "5%",
-                    top: "6.1%",
-                    zIndex: 999,
-                }}
-            >
-                <FontAwesome5 name={"shopping-cart"} solid size={19} color='#000' />
-            </TouchableOpacity>
-                <Image
-                    source={require("../../assets/images/teh.jpg")}
-                    style={{ height: 300, width: layout.width }}
-                    resizeMode='cover'
-                />
-            <TabView
-                navigationState={{ index, routes }}
-                renderScene={renderScene}
-                renderTabBar={renderTabBar}
-                onIndexChange={setIndex}
-                initialLayout={{ width: layout.width }}
-            />
+            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                <TouchableOpacity onPress={() => Actions.pop()}>
+                    <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
+                </TouchableOpacity>
+                <Text style={{ fontSize: 16, color: "#fff", fontFamily: "Poppins-SemiBold", marginTop: 5 }}>DetailCard</Text>
+                <TouchableOpacity onPress={() => Actions.Search()}>
+                    <FontAwesome5 name={"search"} size={20} color='#fff' />
+                </TouchableOpacity>
+            </LinearGradient>
         </>
-    );
+    )
 }
+
+export default DetailCard

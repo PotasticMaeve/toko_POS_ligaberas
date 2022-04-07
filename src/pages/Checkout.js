@@ -5,7 +5,7 @@ import {
     TouchableOpacity,
     View,
     ScrollView,
-    Alert
+    SafeAreaView
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
@@ -17,9 +17,8 @@ import { MainContext } from "../context/MainContext"
 import { Image } from 'react-native';
 import { convertToIDR } from '../Helper';
 import Space from '../components/Space';
-import Animated from 'react-native-reanimated';
-import BottomSheet from 'reanimated-bottom-sheet';
 import { CreditCardInput } from "react-native-credit-card-input";
+import BottomSheet from "react-native-gesture-bottom-sheet";
 
 const colorGradient = ['#f3a337', '#eb8937']
 
@@ -29,9 +28,7 @@ const Checkout = () => {
     const [totalBarang, setTotalBarang] = useState(0)
     const [grandTotal, setGrandTotal] = useState(0)
     const [creditData, setCreditData] = useState({})
-    const [showBottom, setShowBottom] = useState(false)
     const bs = useRef(null)
-    const fall = new Animated.Value(1)
 
     const getImage = (imgName) => {
         if (imgName === "kecap") {
@@ -59,77 +56,6 @@ const Checkout = () => {
     }
 
     const _onChange = form => setCreditData(form);
-
-    const renderInner = () => {
-        if (showBottom) {
-            return (
-                <View style={{
-                    height: "100%",
-                    padding: 20,
-                    backgroundColor: '#fff',
-                    paddingTop: 20,
-                }}>
-                    <Text style={{ fontSize: 16, color: "#000", textAlign: "center", fontFamily: "Poppins-SemiBold", marginBottom: 10 }}>Detail Pembayaran</Text>
-                    <CreditCardInput
-                        autoFocus
-                        requiresName
-                        requiresCVC
-                        placeholderColor="#bbb"
-                        onChange={_onChange}
-                        validColor="#27ae60"
-                        placeholderColor="#ccc"
-                        placeholders={{ number: "2222 2222 2222 2222", expiry: "MM/YY", cvc: "CVV", name: "Nama Lengkap" }}
-                        labels={{ number: "Nomor Kartu", expiry: "EXPIRY", cvc: "kode CVV", name: "Nama CardHolders" }}
-                        labelStyle={{ fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}
-                    />
-                    <Ripple
-                        rippleColor="#fff"
-                        style={{
-                            marginTop: 20,
-                            height: 40,
-                            borderRadius: 10,
-                            backgroundColor: '#eb8937',
-                            overflow: 'hidden',
-                            width: "100%",
-                            justifyContent: "center",
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>Bayar Sekarang</Text>
-                    </Ripple>
-                </View>
-            )
-        }
-    }
-
-    const renderHeader = () => {
-        return (
-            <View style={{
-                backgroundColor: '#fff',
-                paddingTop: 20,
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                borderTopColor: "#eaeaea",
-                borderLeftColor: "#eaeaea",
-                borderRightColor: "#eaeaea",
-                borderTopWidth: 1,
-                borderLeftWidth: 1,
-                borderRightWidth: 1
-            }}>
-                <View style={{
-                    alignItems: 'center',
-                }}>
-                    <View style={{
-                        width: 40,
-                        height: 4,
-                        borderRadius: 4,
-                        backgroundColor: '#00000040',
-                        marginBottom: 10,
-                    }}></View>
-                </View>
-            </View>
-        )
-    }
 
     return (
         <>
@@ -203,25 +129,77 @@ const Checkout = () => {
                     <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>Total Bayar</Text>
                     <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>{convertToIDR(grandTotal)}</Text>
                 </View>
-                <Ripple rippleColor="#fff" style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }} onPress={() => { bs.current.snapTo(0); setShowBottom(true) }}>
+                <Ripple rippleColor="#fff" style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }} onPress={() => bs.current.show()}>
                     <Text style={{ fontSize: 14, color: '#fff', fontFamily: "Poppins-SemiBold" }}>Lanjutkan Pembayaran</Text>
                 </Ripple>
             </View>
-            <BottomSheet
-                ref={bs}
-                snapPoints={[650, 0]}
-                renderContent={renderInner}
-                renderHeader={renderHeader}
-                initialSnap={1}
-                callbackNode={fall}
-                enabledGestureInteraction={true}
-            />
+            <SafeAreaView style={s.container}>
+                <BottomSheet hasDraggableIcon ref={bs} height={450}>
+                    <View style={{
+                        padding: 20,
+                        paddingTop: 20,
+                    }}>
+                        <Text style={{ fontSize: 16, color: "#000", textAlign: "center", fontFamily: "Poppins-SemiBold", marginBottom: 10 }}>Detail Pembayaran</Text>
+                        <CreditCardInput
+                            autoFocus
+                            requiresName
+                            requiresCVC
+                            placeholderColor="#bbb"
+                            onChange={_onChange}
+                            validColor="#27ae60"
+                            placeholderColor="#ccc"
+                            placeholders={{ number: "2222 2222 2222 2222", expiry: "MM/YY", cvc: "CVV", name: "Nama Lengkap" }}
+                            labels={{ number: "Nomor Kartu", expiry: "EXPIRY", cvc: "kode CVV", name: "Nama CardHolders" }}
+                            labelStyle={{ fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}
+                        />
+                        <Ripple
+                            rippleColor="#fff"
+                            style={{
+                                marginTop: 20,
+                                height: 40,
+                                borderRadius: 10,
+                                backgroundColor: '#eb8937',
+                                overflow: 'hidden',
+                                width: "100%",
+                                justifyContent: "center",
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>Bayar Sekarang</Text>
+                        </Ripple>
+                    </View>
+                </BottomSheet>
+            </SafeAreaView>
         </>
     )
 }
 
 const s = StyleSheet.create({
-
+    button: {
+        height: 50,
+        width: 150,
+        backgroundColor: "#140078",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 20,
+        shadowColor: "#8559da",
+        shadowOpacity: 0.7,
+        shadowOffset: {
+            height: 4,
+            width: 4,
+        },
+        shadowRadius: 5,
+        elevation: 6,
+    },
+    text: {
+        color: "white",
+        fontWeight: "600",
+    },
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
 })
 
 export default Checkout
