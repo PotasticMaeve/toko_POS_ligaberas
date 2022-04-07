@@ -6,7 +6,6 @@ import Menu from "../components/Menu"
 import Label from "../components/Label"
 import styles from "../stylesheets/Main"
 import Card from "../components/Card"
-import Space from "../components/Space"
 
 const Home = () => {
   return (
@@ -17,7 +16,7 @@ const Home = () => {
         <Menu />
         <Label />
         <Card />
-        <View style={{ height: 50 }}/>
+        <View style={{ height: 30 }}/>
       </ScrollView>
     </View>
   )

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Dimensions } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import styles from '../stylesheets/Main'
 import LinearGradient from 'react-native-linear-gradient'
@@ -10,8 +10,6 @@ import { Actions } from 'react-native-router-flux'
 import Space from '../components/Space'
 
 const colorHeader = ['#f3a337', '#eb8937']
-
-const { height } = Dimensions.get("window")
 
 const Keranjang = () => {
   const { data_cart } = useContext(MainContext)

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Easing, TouchableOpacity } from 'react-native'
+import { Easing } from 'react-native'
 import { View, Dimensions, StyleSheet, Animated, Text, Image } from "react-native"
 import { TextInput } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import Ripple from 'react-native-material-ripple'
-import s from "../stylesheets/Main"
 
 const { width, height } = Dimensions.get("screen")
 
