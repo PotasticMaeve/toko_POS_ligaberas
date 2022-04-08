@@ -20,7 +20,7 @@ const DetailCard = () => {
                 <TouchableOpacity onPress={() => Actions.pop()}>
                     <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
                 </TouchableOpacity>
-                <View style={{ width: "37%", flexDirection: "row" }}>
+                <View style={{ width: "38%", flexDirection: "row" }}>
                     <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Search()}>
                         <FontAwesome5 name={"search"} size={20} color='#fff' />
                     </TouchableOpacity>
