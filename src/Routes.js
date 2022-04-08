@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useContext } from "react"
 import { Drawer, Router, Scene } from "react-native-router-flux";
 import {
     View,
@@ -24,6 +24,8 @@ import Teh from "./pages/Teh";
 import Bumbu from "./pages/Bumbu";
 import Checkout from "./pages/Checkout";
 import DetailPengiriman from "./pages/DetailPengiriman";
+import Config from "./pages/Config";
+import { MainContext } from "./context/MainContext";
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -44,28 +46,31 @@ const tabIcon = ({ name, focused, title }) => {
 };
 
 const Routes = () => {
+    const { token_access } = useContext(MainContext)
+    const [tokenAccess] = token_access
     return (
         <Router backAndroidHandler={() => false}>
             <Scene key="root" hideNavBar={true}>
                 <Drawer key="drawerMenu" contentComponent={SideMenu} drawerPosition="left" drawerWidth={250} hideNavBar>
                     <Scene key="tabbar" tabs={true} tabBarStyle={{ height: 54, paddingBottom: 5, paddingTop: 7 }} showLabel={false}>
                         <Scene key="Home" name="home" title="Home" icon={tabIcon} >
-                            <Scene key="Home" name="Home" component={Home} hideNavBar initial />
+                            <Scene key="Home" name="Home" component={Home} hideNavBar />
                         </Scene>
                         <Scene key="Wishlist" name="heart" title="Wishlist" icon={tabIcon} hideNavBar>
-                            <Scene key="Wishlist" name="Wishlist" component={Wishlist} title="Wishlist" />
+                            <Scene key="Wishlist" name="Wishlist" component={tokenAccess ? Wishlist : Auth} title="Wishlist" />
                         </Scene>
                         <Scene key="Keranjang" name="shopping-cart" title="Keranjang" icon={tabIcon} hideNavBar>
-                            <Scene key="Keranjang" name="Keranjang" component={Keranjang} title="Keranjang" />
+                            <Scene key="Keranjang" name="Keranjang" component={tokenAccess ? Keranjang : Auth} title="Keranjang" />
                         </Scene>
                     </Scene>
                 </Drawer>
-                <Scene key="Auth" component={Auth} title="Auth" />
-                <Scene key="Transaksi" component={Transaksi} title="Transaksi" />
+                <Scene key="Config" component={Config} title="Config" />
+                <Scene key="Auth" component={Auth} title="Auth"  />
+                <Scene key="Transaksi" component={tokenAccess ? Transaksi : Auth} title="Transaksi" />
                 <Scene key="DetailCard" component={DetailCard} title="DetailCard" />
                 <Scene key="Search" component={Search} title="Search" />
-                <Scene key="Keranjang" component={Keranjang} title="Keranjang" />
-                <Scene key="Wishlist" component={Wishlist} title="Wishlist" />
+                <Scene key="Keranjang" component={tokenAccess ? Keranjang : Auth} title="Keranjang" />
+                <Scene key="Wishlist" component={tokenAccess ? Wishlist : Auth} title="Wishlist" />
                 <Scene key="Beras" component={Beras} title="Beras" />
                 <Scene key="Tepung" component={Tepung} title="Tepung" />
                 <Scene key="Daging" component={Daging} title="Daging" />
@@ -75,7 +80,7 @@ const Routes = () => {
                 <Scene key="Teh" component={Teh} title="Teh" />
                 <Scene key="Bumbu" component={Bumbu} title="Bumbu" />
                 <Scene key="Checkout" component={Checkout} title="Checkout" />
-                <Scene key="DetailPengiriman" component={DetailPengiriman} title="DetailPengiriman" />
+                <Scene key="DetailPengiriman" component={tokenAccess ? DetailPengiriman : Auth} title="DetailPengiriman" />
             </Scene>
         </Router>
     )

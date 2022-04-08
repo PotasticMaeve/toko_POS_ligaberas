@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Image } from 'react-native'
 import { Text } from 'react-native'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
@@ -7,11 +7,15 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-root-toast';
+import { MainContext } from '../context/MainContext'
 
 const SideMenu = () => {
+    const { token_access } = useContext(MainContext)
+    const [tokenAccess, setTokenAccess] = token_access
     const [modalShow, setModalShow] = useState(false)
     
     const confirmedLogout = () => {
+        setTokenAccess("")
         setModalShow(false)
         Actions.drawerClose()
         Toast.show('Logout Berhasil', {
@@ -33,7 +37,7 @@ const SideMenu = () => {
                     <Image source={require("../../assets/images/profile.jpg")} resizeMode="cover" style={{ height: "100%", width: "100%" }} />
                 </View>
                 <View style={styles.user_name}>
-                    <Text style={[styles.username_text, { fontFamily:"Poppins-SemiBold", textAlign: "center", color: "#fff", fontSize: 15 }]}>claudia felicia</Text>
+                    <Text style={[styles.username_text, { fontFamily:"Poppins-SemiBold", textAlign: "center", color: "#fff", fontSize: 15 }]}>guest</Text>
                 </View>
             </View>
             <View style={styles.menu}>
@@ -45,14 +49,12 @@ const SideMenu = () => {
                     <FontAwesome5 name={"user-alt"} size={18} color="#e36414" />
                     <Text style={styles.menu_text}>Profil</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Auth()}>
-                    <FontAwesome5 name={"lock"} size={18} color="#e36414" />
-                    <Text style={styles.menu_text}>Autentikasi</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>
-                    <FontAwesome5 name={"sign-out-alt"} size={18} color="#e36414" />
-                    <Text style={styles.menu_text}>Logout</Text>
-                </TouchableOpacity>
+                {tokenAccess ? (
+                    <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>
+                        <FontAwesome5 name={"sign-out-alt"} size={18} color="#e36414" />
+                        <Text style={styles.menu_text}>Logout</Text>
+                    </TouchableOpacity>
+                ):[]}
             </View>
             {modalShow && (
                 <Modal

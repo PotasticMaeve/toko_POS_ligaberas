@@ -1,16 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import React, { useEffect, useState, useContext } from 'react'
 import { Easing } from 'react-native'
 import { View, Dimensions, StyleSheet, Animated, Text, Image } from "react-native"
 import { TextInput } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import Ripple from 'react-native-material-ripple'
+import { Actions } from 'react-native-router-flux'
+import { MainContext } from '../context/MainContext'
 
 const { width, height } = Dimensions.get("screen")
 
 const Auth = () => {
+    const { backend_url, token_access, token_refresh } = useContext(MainContext)
+    const [backendURL] = backend_url
+    const [tokenAccess, setTokenAccess] = token_access
+    const [tokenRefresh, setTokenRefresh] = token_refresh
     const [screenAnimation] = useState(new Animated.Value(height))
     const [inputAnimation] = useState(new Animated.Value(0))
     const [loginActive, setLoginActive] = useState(true)
+    const [username, setUsername] = useState("")
+    const [password, setPassword] = useState("")
 
     const animatedContainer = {
         height: screenAnimation
@@ -32,6 +41,21 @@ const Auth = () => {
         }).start()
     }
 
+    const sendData = () => {
+        axios.post(`${backendURL}/api/v1/token/`, {
+            username: username,
+            password: password
+        })
+        .then((res) => {
+            const access = res.data.access
+            const refresh = res.data.refresh
+            if (access) {
+                setTokenAccess(access)
+                setTokenRefresh(refresh)
+            }
+        })
+    }
+
     useEffect(() => {
         animateContainer()
     }, [])
@@ -45,7 +69,7 @@ const Auth = () => {
             </View>
             {loginActive ? (
                 <View style={[styles.centerAlign, { backgroundColor: "rgba(210, 210, 210, .9)", height: height }]}>
-                    <Animated.View style={[styles.inputContainer, animatedInput, { height: height / 2.2 }]}>
+                    <Animated.View style={[styles.inputContainer, animatedInput, { height: height / 1.9 }]}>
                         <Text style={[{ fontFamily: "Poppins-SemiBold" }, styles.title]}>login</Text>
                         <View style={{ marginVertical: 20 }}>
                             <View style={styles.input}>
@@ -54,7 +78,11 @@ const Auth = () => {
                                     style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
                                     autoCorrect={false}
-                                    />
+                                    autoCapitalize='none'
+                                    name="username"
+                                    value={username}
+                                    onChangeText={new_text => setUsername(new_text)}
+                                />
                             </View>
                             <View style={styles.input}>
                                 <TextInput
@@ -63,12 +91,17 @@ const Auth = () => {
                                     spellCheck={false}
                                     autoCorrect={false}
                                     secureTextEntry
+                                    autoCapitalize='none'
+                                    value={password}
+                                    name="password"
+                                    onChangeText={new_text => setPassword(new_text)}
                                 />
                             </View>
                         </View>
                         <View style={{ alignItems: "center" }}>
                             <Ripple
                                 rippleColor="#fff"
+                                onPress={() => sendData()}
                             >
                                 <LinearGradient
                                     colors={colorGradient}
@@ -107,9 +140,32 @@ const Auth = () => {
                                 </View>
                             </Ripple>
                         </View>
+                        <View style={{
+                            width: width / 1.25,
+                            marginTop: 15,
+                            borderRadius: 10,
+                        }}
+                        >
+                            <Ripple
+                                rippleColor="#eaeaea"
+                                onPress={() => Actions.Config()}
+                            >
+                                <View style={{
+                                    paddingHorizontal: 10,
+                                    paddingVertical: 7,
+                                    borderRadius: 10,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    borderWidth: 1.5,
+                                    borderColor: "#eb8937",
+                                }}>
+                                    <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>config</Text>
+                                </View>
+                            </Ripple>
+                        </View>
                     </Animated.View>
                 </View >
-            ):(
+            ) : (
                 <View style={[styles.centerAlign, { backgroundColor: "rgba(210, 210, 210, .9)", height: height }]}>
                     <Animated.View style={[styles.inputContainer, animatedInput, { height: height / 1.9 }]}>
                         <Text style={[{ fontFamily: "Poppins-SemiBold" }, styles.title]}>register</Text>
@@ -119,6 +175,7 @@ const Auth = () => {
                                     placeholder="Nama Lengkap"
                                     style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
+                                    autoCapitalize='none'
                                     autoCorrect={false}
                                 />
                             </View>
@@ -127,6 +184,7 @@ const Auth = () => {
                                     placeholder="Email"
                                     style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
+                                    autoCapitalize='none'
                                     autoCorrect={false}
                                 />
                             </View>
@@ -135,6 +193,7 @@ const Auth = () => {
                                     placeholder="Password"
                                     style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
+                                    autoCapitalize='none'
                                     autoCorrect={false}
                                     secureTextEntry
                                 />
@@ -147,7 +206,7 @@ const Auth = () => {
                                 <LinearGradient
                                     colors={colorGradient}
                                     style={{
-                                        
+
                                         width: width / 1.25,
                                         paddingVertical: 10,
                                         borderRadius: 10,
