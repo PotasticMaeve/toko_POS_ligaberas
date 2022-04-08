@@ -22,13 +22,13 @@ const DetailCard = () => {
                 </TouchableOpacity>
                 <View style={{ width: "38%", flexDirection: "row" }}>
                     <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Search()}>
-                        <FontAwesome5 name={"search"} size={20} color='#fff' />
+                        <FontAwesome5 name={"search"} size={19} color='#fff' />
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Wishlist()}>
-                        <Icon name={"heart"} size={20} color="#fff" />
+                        <Icon name={"heart"} size={19} color="#fff" />
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang()}>
-                        <FontAwesome5 name={"shopping-cart"} size={20} color='#fff' />
+                        <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
                     </TouchableOpacity>
                 </View>
             </LinearGradient>
