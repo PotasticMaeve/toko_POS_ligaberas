@@ -79,11 +79,11 @@ const Checkout = () => {
                         <Icon name="location" size={24} color='#eb8937' />
                     </View>
                     <View style={{ marginLeft: 20, flexDirection: "column", justifyContent: "space-around" }}>
-                        <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: '#aaa', fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>claudia felicia permatasari</Text>
-                        <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: '#aaa', fontFamily: "Poppins-Medium" }}>+62 8123-4567-8910</Text>
+                        <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>claudia felicia permatasari</Text>
+                        <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium" }}>+62 8123-4567-8910</Text>
                         <View style={{ marginTop: 10 }}>
-                            <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: '#aaa', fontFamily: "Poppins-Medium" }}>Jl Wijaya Kusuma No. 17 </Text>
-                            <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: '#aaa', fontFamily: "Poppins-Medium" }}>Kranggan Permai, Jatisampurna</Text>
+                            <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>Jl Wijaya Kusuma No. 17 </Text>
+                            <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>Kranggan Permai, Jatisampurna</Text>
                         </View>
                     </View>
                 </View>

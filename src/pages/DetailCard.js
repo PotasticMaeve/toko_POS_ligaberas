@@ -65,7 +65,6 @@ const DetailCard = () => {
                 shadowRadius: 1,
                 elevation: 3,
             }}>
-
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-around" }}>
                     <Ripple
                         rippleColor="#fff"
