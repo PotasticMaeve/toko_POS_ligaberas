@@ -20,9 +20,17 @@ const DetailCard = () => {
                 <TouchableOpacity onPress={() => Actions.pop()}>
                     <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => Actions.Search()}>
-                    <FontAwesome5 name={"search"} size={20} color='#fff' />
-                </TouchableOpacity>
+                <View style={{ width: "37%", flexDirection: "row" }}>
+                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Search()}>
+                        <FontAwesome5 name={"search"} size={20} color='#fff' />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Wishlist()}>
+                        <Icon name={"heart"} size={20} color="#fff" />
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang()}>
+                        <FontAwesome5 name={"shopping-cart"} size={20} color='#fff' />
+                    </TouchableOpacity>
+                </View>
             </LinearGradient>
             <ScrollView style={{ width: "100%" }} showsVerticalScrollIndicator={false}>
                 <Image source={require("../../assets/images/susu.jpeg")} resizeMode="stretch" style={{ height: 350, width: "100%" }} />
