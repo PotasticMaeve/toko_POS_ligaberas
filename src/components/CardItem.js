@@ -6,31 +6,13 @@ import { convertToIDR } from '../Helper';
 import { Actions } from 'react-native-router-flux';
 import ShimmerCard from './ShimmerCard';
 
-const getImage = (imgName) => {
-    if (imgName === "kecap") {
-        return require("../../assets/images/kecap.jpg")
-    }
-    if (imgName === "gula") {
-        return require("../../assets/images/gula.jpg")
-    }
-    if (imgName === "susu") {
-        return require("../../assets/images/susu.jpeg")
-    }
-    if (imgName === "tepung") {
-        return require("../../assets/images/tepung.jpg")
-    }
-    if (imgName === "teh") {
-        return require("../../assets/images/teh.jpg")
-    }
-}
-
 const CardItem = (props) => {
     const [isLoading, setIsLoading] = useState(true)
     
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false)
-        }, 1500)
+        }, 500)
     }, [])
 
     if (isLoading) {
@@ -46,7 +28,7 @@ const CardItem = (props) => {
             >
                 <View style={styles.imgCardWrap}>
                     <Image
-                        source={getImage(props.nama)}
+                        source={{ uri: props.photo }}
                         style={styles.imgCard}
                     />
                 </View>
@@ -54,11 +36,11 @@ const CardItem = (props) => {
                     paddingVertical: 5,
                     paddingHorizontal: 7
                 }}>
-                    <Text numberOfLines={2} style={[styles.titleCard, { fontFamily: "Poppins-Regular" }]}>{props.title}</Text>
-                    <Text style={[styles.priceCard, {fontFamily: "Poppins-SemiBold"}]}>{convertToIDR(props.price)}</Text>
+                    <Text numberOfLines={2} style={[styles.titleCard, { fontFamily: "Poppins-Regular" }]}>{props.nama_barang}</Text>
+                    <Text style={[styles.priceCard, {fontFamily: "Poppins-SemiBold"}]}>{convertToIDR(props.harga)}</Text>
                 </View>
                 <View style={styles.ratingWrap}>
-                    <Text style={{ fontSize: 11.5, color: '#27ae60', fontFamily: "Poppins-SemiBold" }}>Stok {props.stock}</Text>
+                    <Text style={{ fontSize: 11.5, color: '#27ae60', fontFamily: "Poppins-SemiBold" }}>Stok {props.qty}</Text>
                 </View>
             </Ripple>
         )

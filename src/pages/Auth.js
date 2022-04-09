@@ -1,25 +1,29 @@
 import axios from 'axios'
 import React, { useEffect, useState, useContext } from 'react'
-import { Easing } from 'react-native'
-import { View, Dimensions, StyleSheet, Animated, Text, Image } from "react-native"
-import { TextInput } from 'react-native-gesture-handler'
+import { Easing, ActivityIndicator } from 'react-native'
+import { View, Dimensions, StyleSheet, Animated, Text, Image, Keyboard } from "react-native"
+import { TextInput, TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import Ripple from 'react-native-material-ripple'
+import Icon from "react-native-vector-icons/Entypo"
 import { Actions } from 'react-native-router-flux'
 import { MainContext } from '../context/MainContext'
 
 const { width, height } = Dimensions.get("screen")
 
 const Auth = () => {
-    const { backend_url, token_access, token_refresh } = useContext(MainContext)
+    const { backend_url, token_access, token_refresh, data_profil } = useContext(MainContext)
     const [backendURL] = backend_url
     const [tokenAccess, setTokenAccess] = token_access
+    const [profil, setProfil] = data_profil
     const [tokenRefresh, setTokenRefresh] = token_refresh
     const [screenAnimation] = useState(new Animated.Value(height))
     const [inputAnimation] = useState(new Animated.Value(0))
     const [loginActive, setLoginActive] = useState(true)
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [showPass, setShowPass] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     const animatedContainer = {
         height: screenAnimation
@@ -42,18 +46,23 @@ const Auth = () => {
     }
 
     const sendData = () => {
-        axios.post(`${backendURL}/api/v1/token/`, {
-            username: username,
-            password: password
-        })
-        .then((res) => {
-            const access = res.data.access
-            const refresh = res.data.refresh
-            if (access) {
-                setTokenAccess(access)
-                setTokenRefresh(refresh)
-            }
-        })
+        if(username !== "" && password !== ""){
+            setIsLoading(true)
+            Keyboard.dismiss()
+            axios.post(`${backendURL}/api/v1/token/`, {
+                username: username,
+                password: password
+            }).then((res) => {
+                const access = res.data.access
+                const refresh = res.data.refresh
+                if (access) {
+                    setTokenAccess(access)
+                    setTokenRefresh(refresh)
+                    setProfil({ ...profil, username: username })
+                    setIsLoading(false)
+                }
+            })
+        }
     }
 
     useEffect(() => {
@@ -84,18 +93,38 @@ const Auth = () => {
                                     onChangeText={new_text => setUsername(new_text)}
                                 />
                             </View>
-                            <View style={styles.input}>
-                                <TextInput
-                                    placeholder="Password"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
-                                    spellCheck={false}
-                                    autoCorrect={false}
-                                    secureTextEntry
-                                    autoCapitalize='none'
-                                    value={password}
-                                    name="password"
-                                    onChangeText={new_text => setPassword(new_text)}
-                                />
+                            <View style={[styles.input, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
+                                {showPass ? (
+                                    <TextInput
+                                        placeholder="Password"
+                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "85%" }}
+                                        spellCheck={false}
+                                        autoCorrect={false}
+                                        autoCapitalize='none'
+                                        value={password}
+                                        name="password"
+                                        onChangeText={new_text => setPassword(new_text)}
+                                    />
+                                ) : (
+                                    <TextInput
+                                        placeholder="Password"
+                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "85%" }}
+                                        spellCheck={false}
+                                        autoCorrect={false}
+                                        autoCapitalize='none'
+                                        secureTextEntry
+                                        value={password}
+                                        name="password"
+                                        onChangeText={new_text => setPassword(new_text)}
+                                    />
+                                )}
+                                <TouchableOpacity onPress={() => setShowPass(!showPass)}>
+                                    {showPass ? (
+                                        <Icon name="eye-with-line" size={20} color="#eb8937" />
+                                    ) : (
+                                        <Icon name="eye" size={20} color="#eb8937" />
+                                    )}
+                                </TouchableOpacity>
                             </View>
                         </View>
                         <View style={{ alignItems: "center" }}>
@@ -113,7 +142,11 @@ const Auth = () => {
                                         alignItems: "center",
                                     }}
                                 >
-                                    <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>login</Text>
+                                    {isLoading ? (
+                                        <ActivityIndicator color="#fff" />
+                                    ) : (
+                                        <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>login</Text>
+                                    )}
                                 </LinearGradient>
                             </Ripple>
                         </View>
@@ -172,7 +205,7 @@ const Auth = () => {
                         <View style={{ marginVertical: 20 }}>
                             <View style={styles.input}>
                                 <TextInput
-                                    placeholder="Nama Lengkap"
+                                    placeholder="Username"
                                     style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
                                     autoCapitalize='none'

@@ -8,11 +8,13 @@ import styles from '../stylesheets/Main'
 export const MainContext = React.createContext()
 
 export const MainProvider = (props) => {
-    const [backendURL, setBackendURL] = useState("http://192.168.18.38:8000")
+    const [backendURL, setBackendURL] = useState("http://192.168.18.48:8000")
     const [tokenAccess, setTokenAccess] = useState("")
     const [tokenRefresh, setTokenRefresh] = useState("")
     const [isLoading, setIsLoading] = useState(true)
     const [currentScene, setCurrentScene] = useState("")
+    const [profil, setProfil] = useState({})
+    const [produk, setProduk] = useState([])
     const [wishlist, setWishlist] = useState([
         {
             id: 1,
@@ -81,6 +83,8 @@ export const MainProvider = (props) => {
             backend_url: [backendURL, setBackendURL],
             token_access: [tokenAccess, setTokenAccess],
             token_refresh: [tokenRefresh, setTokenRefresh],
+            data_profil: [profil, setProfil],
+            data_produk: [produk, setProduk],
         }}>
             {props.children}
         </MainContext.Provider>

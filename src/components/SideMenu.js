@@ -10,12 +10,14 @@ import Toast from 'react-native-root-toast';
 import { MainContext } from '../context/MainContext'
 
 const SideMenu = () => {
-    const { token_access } = useContext(MainContext)
+    const { token_access, data_profil } = useContext(MainContext)
     const [tokenAccess, setTokenAccess] = token_access
     const [modalShow, setModalShow] = useState(false)
-    
+    const [profil, setProfil] = data_profil
+
     const confirmedLogout = () => {
         setTokenAccess("")
+        setProfil({})
         setModalShow(false)
         Actions.drawerClose()
         Toast.show('Logout Berhasil', {
@@ -26,7 +28,7 @@ const SideMenu = () => {
             animation: true,
             hideOnPress: true,
             delay: 0,
-        });    
+        });
     }
 
     return (
@@ -37,7 +39,11 @@ const SideMenu = () => {
                     <Image source={require("../../assets/images/profile.jpg")} resizeMode="cover" style={{ height: "100%", width: "100%" }} />
                 </View>
                 <View style={styles.user_name}>
-                    <Text style={[styles.username_text, { fontFamily:"Poppins-SemiBold", textAlign: "center", color: "#fff", fontSize: 15 }]}>guest</Text>
+                    {Object.keys(profil).length !== 0 ? (
+                        <Text style={[styles.username_text, { fontFamily: "Poppins-SemiBold", textAlign: "center", color: "#fff", fontSize: 15 }]}>{profil.username}</Text>
+                    ) : (
+                        <Text style={[styles.username_text, { fontFamily: "Poppins-SemiBold", textAlign: "center", color: "#fff", fontSize: 15 }]}>guest</Text>
+                    )}
                 </View>
             </View>
             <View style={styles.menu}>
@@ -54,7 +60,7 @@ const SideMenu = () => {
                         <FontAwesome5 name={"sign-out-alt"} size={18} color="#e36414" />
                         <Text style={styles.menu_text}>Logout</Text>
                     </TouchableOpacity>
-                ):[]}
+                ) : []}
             </View>
             {modalShow && (
                 <Modal
@@ -66,10 +72,10 @@ const SideMenu = () => {
                             width: 300,
                             borderRadius: 10,
                         }}>
-                            <View style={{ justifyContent: "center", alignItems: "center", paddingTop: 10 }}>
-                                <Icon name="warning" size={40} color="#d90429" />
-                                <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium" }}>Yakin ingin keluar dari aplikasi?</Text>
-                            </View>
+                        <View style={{ justifyContent: "center", alignItems: "center", paddingTop: 10 }}>
+                            <Icon name="warning" size={40} color="#d90429" />
+                            <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium" }}>Yakin ingin keluar dari aplikasi?</Text>
+                        </View>
                         <View style={{
                             flexDirection: "row",
                             justifyContent: "space-evenly",
@@ -81,7 +87,7 @@ const SideMenu = () => {
                             <TouchableOpacity
                                 style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#eb8937", justifyContent: "center", alignItems: "center" }}
                                 onPress={() => setModalShow(false)}
-                                >
+                            >
                                 <View style={{ justifyContent: "center", alignItems: "center" }}>
                                     <Text style={{ fontFamily: "Poppins-Medium" }}>Tidak</Text>
                                 </View>
@@ -89,7 +95,7 @@ const SideMenu = () => {
                             <TouchableOpacity
                                 style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#ddd", justifyContent: "center", alignItems: "center" }}
                                 onPress={() => confirmedLogout()}
-                                >
+                            >
                                 <View style={{ justifyContent: "center", alignItems: "center" }}>
                                     <Text style={{ fontFamily: "Poppins-Medium" }}>Ya</Text>
                                 </View>
