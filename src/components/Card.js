@@ -24,6 +24,7 @@ const Card = (props) => {
         }
         return (
             <CardItem
+                id={item.id}
                 photo={item.photo}
                 nama_barang={item.nama_barang}
                 harga={item.harga}

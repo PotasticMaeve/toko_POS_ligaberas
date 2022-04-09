@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Text, TouchableOpacity, Image, View, ScrollView, Dimensions } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Ripple from 'react-native-material-ripple';
@@ -7,13 +7,27 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import Icon from 'react-native-vector-icons/AntDesign'
 import styles from '../stylesheets/Main'
 import { convertToIDR } from '../Helper';
+import axios from 'axios';
 
 const { width, height } = Dimensions.get("window")
 
 const colorHeader = ['#f3a337', '#eb8937']
 
-const DetailCard = () => {
+const DetailCard = (props) => {
     const [favorite, setFavorite] = useState(false)
+    const [data, setData] = useState({})
+
+    const getData = () => {
+        axios.get(`http://192.168.18.48:8000/api/v1/product/${props.id}/`)
+            .then((res) => {
+                setData(res.data);
+            })
+    }
+
+    useEffect(() => {
+        getData()
+    }, [])
+
     return (
         <>
             <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
@@ -33,7 +47,7 @@ const DetailCard = () => {
                 </View>
             </LinearGradient>
             <ScrollView style={{ width: "100%" }} showsVerticalScrollIndicator={false}>
-                <Image source={require("../../assets/images/susu.jpeg")} resizeMode="stretch" style={{ height: 350, width: "100%" }} />
+                <Image source={{ uri: data.photo }} resizeMode="stretch" style={{ height: 350, width: "100%" }} />
                 <View style={{
                     width: "100%",
                     minHeight: 300,
@@ -44,15 +58,11 @@ const DetailCard = () => {
                     paddingTop: 10,
                     backgroundColor: "#fafafa",
                 }}>
-                    <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 15, textTransform: "capitalize" }]}>susu diamond uht full cream 1 liter / susu UHT diamond</Text>
-                    <Text style={[{ marginVertical: 10, fontFamily: "Poppins-SemiBold", fontSize: 15, textTransform: "capitalize", color: '#60a3bc' }]}>{convertToIDR(15000)}</Text>
+                    <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 15, textTransform: "capitalize" }]}>{data.nama_barang}</Text>
+                    <Text style={[{ marginVertical: 10, fontFamily: "Poppins-SemiBold", fontSize: 15, textTransform: "capitalize", color: '#60a3bc' }]}>{data.harga && convertToIDR(data.harga)}</Text>
                     <View style={{ marginTop: 10 }}>
                         <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: '#27ae60' }]}>Deskripsi Produk</Text>
-                        <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 13.5, textTransform: "capitalize", color: "#6b705c" }]}>isi : 1 Liter (1000 ml) EXP : FEBRUARI 2023</Text>
-                    </View>
-                    <View style={{ marginTop: 10 }}>
-                        <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: '#27ae60' }]}>Keterangan</Text>
-                        <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 13.5, textTransform: "capitalize", color: "#6b705c" }]}>Nikmati Susu enak dengan harga terjangkau. Merupakan Susu UHT, yang memiliki expired panjang, sehingga mudah untuk disimpan. Dapat disimpan diluar kulkas (Jika belum dibuka), dengan suhu ruangan yang tidak lembab.</Text>
+                        <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 13.5, textTransform: "capitalize", color: "#6b705c" }]}>{data.deskripsi}</Text>
                     </View>
                 </View>
                 <View style={{ height: 100, backgroundColor: "#fafafa", top: -10 }} />

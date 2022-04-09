@@ -24,7 +24,7 @@ const CardItem = (props) => {
             <Ripple
                 style={styles.cardItemWrap}
                 rippleColor="#fff"
-                onPress={() => Actions.DetailCard()}
+                onPress={() => Actions.DetailCard({id: props.id})}
             >
                 <View style={styles.imgCardWrap}>
                     <Image
