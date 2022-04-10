@@ -8,6 +8,7 @@ import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-root-toast';
 import { MainContext } from '../context/MainContext'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SideMenu = () => {
     const { token_access, data_profil } = useContext(MainContext)
@@ -29,6 +30,8 @@ const SideMenu = () => {
             hideOnPress: true,
             delay: 0,
         });
+        AsyncStorage.removeItem("wishlist");
+        return true
     }
 
     return (

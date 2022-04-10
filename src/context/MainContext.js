@@ -15,35 +15,8 @@ export const MainProvider = (props) => {
     const [currentScene, setCurrentScene] = useState("")
     const [profil, setProfil] = useState({})
     const [produk, setProduk] = useState([])
-    const [wishlist, setWishlist] = useState([
-        {
-            id: 1,
-            nama: "kecap",
-            qty: 1,
-            title: "bango kecap manis refil 550 ml",
-            price: 23000,
-            stock: 5,
-            total: 0
-        },
-        {
-            id: 2,
-            nama: "gula",
-            qty: 1,
-            title: "gulaku hijau 1 kg premium",
-            price: 15000,
-            stock: 8,
-            total: 0
-        },
-        {
-            id: 3,
-            nama: "susu",
-            qty: 1,
-            title: "susu diamond uht full cream 1 liter / susu UHT diamond",
-            price: 15000,
-            stock: 4,
-            total: 0
-        },
-    ])
+    const [wishlist, setWishlist] = useState([])
+    const [favorite, setFavorite] = useState([])
     const [cart, setCart] = useState([
         {
             id: 1,
@@ -85,6 +58,7 @@ export const MainProvider = (props) => {
             token_refresh: [tokenRefresh, setTokenRefresh],
             data_profil: [profil, setProfil],
             data_produk: [produk, setProduk],
+            id_favorite: [favorite, setFavorite]
         }}>
             {props.children}
         </MainContext.Provider>

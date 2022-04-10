@@ -8,6 +8,7 @@ import Ripple from 'react-native-material-ripple'
 import Icon from "react-native-vector-icons/Entypo"
 import { Actions } from 'react-native-router-flux'
 import { MainContext } from '../context/MainContext'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get("screen")
 
@@ -46,7 +47,7 @@ const Auth = () => {
     }
 
     const sendData = () => {
-        if(username !== "" && password !== ""){
+        if (username !== "" && password !== "") {
             setIsLoading(true)
             Keyboard.dismiss()
             axios.post(`${backendURL}/api/v1/token/`, {

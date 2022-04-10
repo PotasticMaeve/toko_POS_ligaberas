@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Text, TouchableOpacity, Image, View, ScrollView, Dimensions } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Ripple from 'react-native-material-ripple';
@@ -8,25 +8,38 @@ import Icon from 'react-native-vector-icons/AntDesign'
 import styles from '../stylesheets/Main'
 import { convertToIDR } from '../Helper';
 import axios from 'axios';
+import { MainContext } from '../context/MainContext';
 
 const { width, height } = Dimensions.get("window")
 
 const colorHeader = ['#f3a337', '#eb8937']
 
 const DetailCard = (props) => {
-    const [favorite, setFavorite] = useState(false)
+    const { backend_url } = useContext(MainContext)
+    const [backendURL] = backend_url
     const [data, setData] = useState({})
+    const [fav, setFav] = useState(false)
 
     const getData = () => {
-        axios.get(`http://192.168.18.48:8000/api/v1/product/${props.id}/`)
+        axios.get(`${backendURL}/api/v1/product/${props.id}/`)
             .then((res) => {
-                setData(res.data);
+                let url = backendURL
+                let photo = url + res.data.photo
+                setData({ ...res.data, photo: photo });
             })
     }
 
     useEffect(() => {
         getData()
     }, [])
+
+    const addToWishlist = () => {
+        setFav(true)
+    }
+
+    const removeFromWishlist = () => {
+        setFav(false)
+    }
 
     return (
         <>
@@ -58,7 +71,7 @@ const DetailCard = (props) => {
                     paddingTop: 10,
                     backgroundColor: "#fafafa",
                 }}>
-                    <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 15, textTransform: "capitalize" }]}>{data.nama_barang}</Text>
+                    <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 15, textTransform: "capitalize" }]}>{data.nama}</Text>
                     <Text style={[{ marginVertical: 10, fontFamily: "Poppins-SemiBold", fontSize: 15, textTransform: "capitalize", color: '#60a3bc' }]}>{data.harga && convertToIDR(data.harga)}</Text>
                     <View style={{ marginTop: 10 }}>
                         <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: '#27ae60' }]}>Deskripsi Produk</Text>
@@ -84,19 +97,27 @@ const DetailCard = (props) => {
                 elevation: 3,
             }}>
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-around" }}>
-                    <Ripple
-                        rippleColor="#fff"
-                        style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
-                        onPress={() => setFavorite(!favorite)}
-                    >
-                        <View style={{ padding: 8, margin: 10 }}>
-                            {favorite ? (
-                                <Icon name={"heart"} size={20} color="red" />
-                            ) : (
-                                <FontAwesome5 name={"heart"} size={20} color="red" />
-                            )}
-                        </View>
-                    </Ripple>
+                    {fav ? (
+                        <Ripple
+                            rippleColor="#fff"
+                            style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
+                            onPress={() => removeFromWishlist()}
+                        >
+                            <View style={{ padding: 8, margin: 10 }}>
+                                <Icon name={"heart"} size={20} color="red" onPress={() => setFav(false)} />
+                            </View>
+                        </Ripple>
+                    ) : (
+                        <Ripple
+                            rippleColor="#fff"
+                            style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
+                            onPress={() => addToWishlist()}
+                        >
+                            <View style={{ padding: 8, margin: 10 }}>
+                                <FontAwesome5 name={"heart"} size={20} color="red" onPress={() => setFav(true)} />
+                            </View>
+                        </Ripple>
+                    )}
                     <Ripple rippleColor="#fff" style={{ height: 40, borderRadius: 10, backgroundColor: '#eb8937', overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}>
                         <Text style={{ color: '#fff', fontFamily: "Poppins-SemiBold", marginTop: 5, fontSize: 13 }}>Tambah ke Keranjang</Text>
                     </Ripple>

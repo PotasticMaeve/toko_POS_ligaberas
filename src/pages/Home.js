@@ -7,15 +7,17 @@ import Label from "../components/Label"
 import styles from "../stylesheets/Main"
 import Card from "../components/Card"
 import axios from "axios"
+import Wishlist from "./Wishlist"
 
 const Home = () => {
-  const [ data, setData ] = useState([])
+  const [data, setData] = useState([])
+  const [wishlist, setWishlist] = useState([])
 
   const getData = () => {
     axios.get("http://192.168.18.48:8000/api/v1/product/")
-    .then((res) => {
-      setData(res.data.data);
-    })
+      .then((res) => {
+        setData(res.data.data);
+      })
   }
 
   useEffect(() => {
@@ -29,8 +31,10 @@ const Home = () => {
         <Slider />
         <Menu />
         <Label />
-        <Card data={data} />
-        <View style={{ height: 30 }}/>
+        <Card
+          data={data}
+        />
+        <View style={{ height: 30 }} />
       </ScrollView>
     </View>
   )
