@@ -9,8 +9,7 @@ import styles from '../stylesheets/Main'
 import { convertToIDR } from '../Helper';
 import axios from 'axios';
 import { MainContext } from '../context/MainContext';
-
-const { width, height } = Dimensions.get("window")
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const colorHeader = ['#f3a337', '#eb8937']
 
@@ -27,6 +26,26 @@ const DetailCard = (props) => {
                 let photo = url + res.data.photo
                 setData({ ...res.data, photo: photo });
             })
+        AsyncStorage.getItem("customerID").then(data => {
+            if (data !== null) {
+                let id = data
+                axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${id}`)
+                    .then((res) => {
+                        let data_wishlist = res.data.data.items
+                        let products_id = []
+                        if (data_wishlist.length > 0) {
+                            data_wishlist.map(el => {
+                                products_id.push(el.id)
+                            })
+                        }
+                        if(products_id.includes(props.id)){
+                            setFav(true)
+                        }else{
+                            setFav(false)
+                        }
+                    })
+            }
+        })
     }
 
     useEffect(() => {
@@ -34,7 +53,17 @@ const DetailCard = (props) => {
     }, [])
 
     const addToWishlist = () => {
-        setFav(true)
+        AsyncStorage.getItem("customerID").then(data => {
+            if (data !== null) {
+                let id = data
+                axios.post(`${backendURL}/api/v1/wishlist/`, {
+                    customer: id,
+                    product: props.id
+                }).then((res) => {
+                    setFav(true)
+                })
+            }
+        })
     }
 
     const removeFromWishlist = () => {

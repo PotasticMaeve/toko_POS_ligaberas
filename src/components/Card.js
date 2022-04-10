@@ -1,6 +1,5 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { FlatList, SafeAreaView, View } from 'react-native'
-import { MainContext } from '../context/MainContext'
 import styles from '../stylesheets/Main'
 import CardItem from './CardItem'
 
@@ -15,7 +14,7 @@ const Card = (props) => {
         }
         return dataList
     }
-    
+
     const renderCard = ({ item }) => {
         if (item.empty) {
             return (
@@ -29,6 +28,7 @@ const Card = (props) => {
                 nama_barang={item.nama_barang}
                 harga={item.harga}
                 qty={item.qty}
+                fav="true"
             />
         )
     }

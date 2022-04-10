@@ -22,7 +22,7 @@ class KeranjangCard extends React.Component {
             }
         }
         if (type === 'plus') {
-            if(amount < this.props.data.stock){
+            if(amount < this.props.data.product.qty){
                 amount += 1
             }
         }
@@ -35,23 +35,13 @@ class KeranjangCard extends React.Component {
     }
 
     displaySubTotal = () => {
-        let subtotal = this.props.data.price * this.state.amount
+        let subtotal = this.props.data.product.harga * this.state.amount
         return convertToIDR(subtotal)
     }
 
-    getImage = (imgName) => {
-        if (imgName === "kecap") {
-            return require("../../assets/images/kecap.jpg")
-        }
-        if (imgName === "gula") {
-            return require("../../assets/images/gula.jpg")
-        }
-        if (imgName === "susu") {
-            return require("../../assets/images/susu.jpeg")
-        }
-    }
-
     render(){
+        let photo = this.props.data.product.photo
+        let image = "http://192.168.18.48:8000" + photo
         if (this.state.existCart) {
             return (
                 <View style={[styles.cardItemWrap, {
@@ -67,31 +57,31 @@ class KeranjangCard extends React.Component {
                             <View style={{ display: 'flex', flexDirection: 'row' }}>
                                 <View style={{ height: "100%", width: 100, backgroundColor: "#eee" }} >
                                     <Image
-                                        source={this.getImage(this.props.data.nama)}
+                                        source={{uri: image}}
                                         style={{ height: 80, width: "auto" }}
                                     />
                                 </View>
                                 <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around' }}>
-                                    <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{this.props.data.title}</Text>
-                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{convertToIDR(this.props.data.price)}</Text>
-                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#e54b4b' }}>Stok {this.props.data.stock}</Text>
+                                    <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{this.props.data.product.nama}</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{convertToIDR(this.props.data.product.harga)}</Text>
+                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#e54b4b' }}>Stok {this.props.data.product.qty}</Text>
                                 </View>
                             </View>
                             <View style={{ alignItems: "flex-end" }}>
                                 <View style={{ flexDirection: "row", width: "40%", justifyContent: 'space-around' }}>
-                                    <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => this.updateAmount(this.props.data.id, "min")}>
+                                    <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => this.updateAmount(this.props.data.product.id, "min")}>
                                         <FontAwesome5 name={"minus"} size={14} color="#fff" />
                                     </Ripple>
                                     <View style={{ borderBottomWidth: 1, borderBottomColor: "#ccc", width: 30, justifyContent: 'center', alignItems: "center" }}>
                                         <Text style={{ fontSize: 14, fontFamily: "Poppins-SemiBold" }}>{this.state.amount}</Text>
                                     </View>
-                                    <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => this.updateAmount(this.props.data.id, "plus")}>
+                                    <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => this.updateAmount(this.props.data.product.id, "plus")}>
                                         <FontAwesome5 name={"plus"} size={14} color="#fff" />
                                     </Ripple>
                                 </View>
                             </View>
                             <View style={{ display: 'flex', justifyContent: "space-between", flexDirection: 'row', marginTop: 10, justifyContent: "space-around", borderTopWidth: 1, borderTopColor: "#ccc", width: "100%", paddingTop: 10 }}>
-                                <FontAwesome5 name={"trash"} size={17} color="red" onPress={() => this.removeCartItem(this.props.data.id)}/>
+                                <FontAwesome5 name={"trash"} size={17} color="red" onPress={() => this.removeCartItem(this.props.data.product.id)}/>
                                 <Text style={{ color: "#e36414", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Subtotal</Text>
                                 <Text style={{ color: "#e36414", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>{this.displaySubTotal()}</Text>
                             </View>

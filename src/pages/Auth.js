@@ -8,21 +8,25 @@ import Ripple from 'react-native-material-ripple'
 import Icon from "react-native-vector-icons/Entypo"
 import { Actions } from 'react-native-router-flux'
 import { MainContext } from '../context/MainContext'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const { width, height } = Dimensions.get("screen")
 
 const Auth = () => {
-    const { backend_url, token_access, token_refresh, data_profil } = useContext(MainContext)
+    const { backend_url, data_profil, token_refresh, token_access } = useContext(MainContext)
     const [backendURL] = backend_url
-    const [tokenAccess, setTokenAccess] = token_access
     const [profil, setProfil] = data_profil
     const [tokenRefresh, setTokenRefresh] = token_refresh
+    const [tokenAccess, setTokenAccess] = token_access
     const [screenAnimation] = useState(new Animated.Value(height))
     const [inputAnimation] = useState(new Animated.Value(0))
     const [loginActive, setLoginActive] = useState(true)
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
+    const [usernameLogin, setUsernameLogin] = useState("")
+    const [usernameRegister, setUsernameRegister] = useState("")
+    const [passwordLogin, setPasswordLogin] = useState("")
+    const [passwordRegister, setPasswordRegister] = useState("")
+    const [nama, setNama] = useState("")
+    const [email, setEmail] = useState("")
     const [showPass, setShowPass] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 
@@ -46,22 +50,44 @@ const Auth = () => {
         }).start()
     }
 
-    const sendData = () => {
-        if (username !== "" && password !== "") {
+    const login = async () => {
+        if (usernameLogin !== "" && passwordLogin !== "") {
             setIsLoading(true)
             Keyboard.dismiss()
-            axios.post(`${backendURL}/api/v1/token/`, {
-                username: username,
-                password: password
+            await axios.post(`${backendURL}/api/v1/token/`, {
+                username: usernameLogin,
+                password: passwordLogin
             }).then((res) => {
                 const access = res.data.access
                 const refresh = res.data.refresh
                 if (access) {
-                    setTokenAccess(access)
-                    setTokenRefresh(refresh)
-                    setProfil({ ...profil, username: username })
+                    AsyncStorage.setItem("tokenAccess", JSON.stringify(access)).then(() => {
+                        setTokenAccess(access)
+                    })
+                    AsyncStorage.setItem("tokenRefresh", JSON.stringify(refresh)).then(() => {
+                        setTokenRefresh(refresh)
+                    })
+                    AsyncStorage.setItem("customerUsername", JSON.stringify(usernameLogin)).then(() => {
+                        setProfil({...profil, username: usernameLogin})
+                    })
                     setIsLoading(false)
                 }
+            })
+        }
+    }
+
+    const register = () => {
+        if (usernameRegister !== "" && email !== "" && nama !== "" && passwordRegister !== "") {
+            setIsLoading(true)
+            Keyboard.dismiss()
+            axios.post(`${backendURL}/api/v1/customer/`, {
+                username: usernameRegister,
+                password: passwordRegister,
+                email: email,
+                nama: nama
+            }).then(() => {
+                setIsLoading(false)
+                Actions.Auth()
             })
         }
     }
@@ -89,9 +115,9 @@ const Auth = () => {
                                     spellCheck={false}
                                     autoCorrect={false}
                                     autoCapitalize='none'
-                                    name="username"
-                                    value={username}
-                                    onChangeText={new_text => setUsername(new_text)}
+                                    name="usernameLogin"
+                                    value={usernameLogin}
+                                    onChangeText={new_text => setUsernameLogin(new_text)}
                                 />
                             </View>
                             <View style={[styles.input, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
@@ -102,9 +128,9 @@ const Auth = () => {
                                         spellCheck={false}
                                         autoCorrect={false}
                                         autoCapitalize='none'
-                                        value={password}
-                                        name="password"
-                                        onChangeText={new_text => setPassword(new_text)}
+                                        value={passwordLogin}
+                                        name="passwordLogin"
+                                        onChangeText={new_text => setPasswordLogin(new_text)}
                                     />
                                 ) : (
                                     <TextInput
@@ -114,16 +140,16 @@ const Auth = () => {
                                         autoCorrect={false}
                                         autoCapitalize='none'
                                         secureTextEntry
-                                        value={password}
-                                        name="password"
-                                        onChangeText={new_text => setPassword(new_text)}
+                                        value={passwordLogin}
+                                        name="passwordLogin"
+                                        onChangeText={new_text => setPasswordLogin(new_text)}
                                     />
                                 )}
                                 <TouchableOpacity onPress={() => setShowPass(!showPass)}>
                                     {showPass ? (
-                                        <Icon name="eye-with-line" size={20} color="#eb8937" />
-                                    ) : (
                                         <Icon name="eye" size={20} color="#eb8937" />
+                                    ) : (
+                                        <Icon name="eye-with-line" size={20} color="#eb8937" />
                                     )}
                                 </TouchableOpacity>
                             </View>
@@ -131,7 +157,7 @@ const Auth = () => {
                         <View style={{ alignItems: "center" }}>
                             <Ripple
                                 rippleColor="#fff"
-                                onPress={() => sendData()}
+                                onPress={() => login()}
                             >
                                 <LinearGradient
                                     colors={colorGradient}
@@ -201,7 +227,7 @@ const Auth = () => {
                 </View >
             ) : (
                 <View style={[styles.centerAlign, { backgroundColor: "rgba(210, 210, 210, .9)", height: height }]}>
-                    <Animated.View style={[styles.inputContainer, animatedInput, { height: height / 1.9 }]}>
+                    <Animated.View style={[styles.inputContainer, animatedInput, { height: height / 1.6 }]}>
                         <Text style={[{ fontFamily: "Poppins-SemiBold" }, styles.title]}>register</Text>
                         <View style={{ marginVertical: 20 }}>
                             <View style={styles.input}>
@@ -209,8 +235,23 @@ const Auth = () => {
                                     placeholder="Username"
                                     style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
-                                    autoCapitalize='none'
                                     autoCorrect={false}
+                                    autoCapitalize='none'
+                                    name="usernameRegister"
+                                    value={usernameRegister}
+                                    onChangeText={new_text => setUsernameRegister(new_text)}
+                                />
+                            </View>
+                            <View style={styles.input}>
+                                <TextInput
+                                    placeholder="nama"
+                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
+                                    spellCheck={false}
+                                    autoCorrect={false}
+                                    autoCapitalize='none'
+                                    name="nama"
+                                    value={nama}
+                                    onChangeText={new_text => setNama(new_text)}
                                 />
                             </View>
                             <View style={styles.input}>
@@ -218,29 +259,55 @@ const Auth = () => {
                                     placeholder="Email"
                                     style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
                                     spellCheck={false}
-                                    autoCapitalize='none'
                                     autoCorrect={false}
+                                    autoCapitalize='none'
+                                    name="Email"
+                                    value={email}
+                                    onChangeText={new_text => setEmail(new_text)}
                                 />
                             </View>
-                            <View style={styles.input}>
-                                <TextInput
-                                    placeholder="Password"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
-                                    spellCheck={false}
-                                    autoCapitalize='none'
-                                    autoCorrect={false}
-                                    secureTextEntry
-                                />
+                            <View style={[styles.input, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
+                                {showPass ? (
+                                    <TextInput
+                                        placeholder="Password"
+                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "85%" }}
+                                        spellCheck={false}
+                                        autoCorrect={false}
+                                        autoCapitalize='none'
+                                        value={passwordRegister}
+                                        name="passwordRegister"
+                                        onChangeText={new_text => setPasswordRegister(new_text)}
+                                    />
+                                ) : (
+                                    <TextInput
+                                        placeholder="Password"
+                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "85%" }}
+                                        spellCheck={false}
+                                        autoCorrect={false}
+                                        autoCapitalize='none'
+                                        secureTextEntry
+                                        value={passwordRegister}
+                                        name="passwordRegister"
+                                        onChangeText={new_text => setPasswordRegister(new_text)}
+                                    />
+                                )}
+                                <TouchableOpacity onPress={() => setShowPass(!showPass)}>
+                                    {showPass ? (
+                                        <Icon name="eye" size={20} color="#eb8937" />
+                                    ) : (
+                                        <Icon name="eye-with-line" size={20} color="#eb8937" />
+                                    )}
+                                </TouchableOpacity>
                             </View>
                         </View>
                         <View style={{ alignItems: "center", marginTop: 4 }}>
                             <Ripple
                                 rippleColor="#fff"
+                                onPress={() => register()}
                             >
                                 <LinearGradient
                                     colors={colorGradient}
                                     style={{
-
                                         width: width / 1.25,
                                         paddingVertical: 10,
                                         borderRadius: 10,
@@ -248,7 +315,11 @@ const Auth = () => {
                                         alignItems: "center",
                                     }}
                                 >
-                                    <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>register</Text>
+                                    {isLoading ? (
+                                        <ActivityIndicator color="#fff" />
+                                    ) : (
+                                        <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>register</Text>
+                                    )}
                                 </LinearGradient>
                             </Ripple>
                         </View>

@@ -8,62 +8,71 @@ import { MainContext } from "../context/MainContext"
 import Ripple from 'react-native-material-ripple'
 import { Actions } from 'react-native-router-flux'
 import Space from '../components/Space'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from 'axios'
 
 const colorHeader = ['#f3a337', '#eb8937']
 
 const Keranjang = () => {
-  const { data_cart } = useContext(MainContext)
-  const [cart, setCart] = data_cart
+  const { backend_url } = useContext(MainContext)
+  const [backendURL] = backend_url
   const [total, setTotal] = useState(0)
+  const [data, setData] = useState([])
+
+  const getData = () => {
+    AsyncStorage.getItem("customerID").then(data => {
+      if (data !== null) {
+        let id = data
+        axios.get(`${backendURL}/api/v1/cart_item/?customer_id=${id}`)
+          .then((res) => {
+            if (res.status === 200) {
+              let cart_item_data = res.data.data
+              setData(cart_item_data);
+            }
+          })
+      }
+    })
+  }
+  useEffect(() => {
+    getData()
+  }, [])
 
   const calculateTotal = useCallback((id, amount) => {
-    let list_cart = cart
+    let list_cart = data
     let total = 0
-    let qty = 0
+    let jumlah = 0
     list_cart.map((el) => {
-      if (el.id === id) {
-        qty = amount
+      if (el.product.id === id) {
+        jumlah = amount
       } else {
-        qty = el.qty
+        jumlah = el.qty
       }
-      total = qty * el.price
-      el.qty = qty
-      el.total = total
+      total = jumlah * el.product.harga
+      setTotal(total);
     })
-    setCart(list_cart)
-    displayTotal()
   })
 
-  const removeItem = (id) => {
-    let list_cart = cart
-    let updatedCart = []
-    list_cart.map((el) =>
-      el.id !== id && updatedCart.push(el)
-    )
-    setCart(updatedCart)
-  }
-
-  const displayTotal = () => {
-    let total = 0
-    cart.map((el) => {
-      total += el.total
-    })
-    setTotal(total)
-  }
+  // const removeItem = (id) => {
+  //   let list_cart = cart
+  //   let updatedCart = []
+  //   list_cart.map((el) =>
+  //     el.id !== id && updatedCart.push(el)
+  //   )
+  //   setCart(updatedCart)
+  // }
 
   useEffect(() => {
     calculateTotal()
-  }, [cart])
-
+  }, [data])
 
   return (
     <>
       <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-      <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Keranjang</Text>
+        <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Keranjang</Text>
       </LinearGradient>
       <ScrollView style={{ paddingTop: 5, paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}>
-        {cart.length > 0 && cart.map((el, i) => (
-          <KeranjangCard key={i} exist={true} data={el} calculate={calculateTotal} remove={removeItem} />
+        {data.length > 0 && data.map((el, i) => (
+          <KeranjangCard key={i} exist={true} data={el} calculate={calculateTotal} />
         )
         )}
         <Space />
