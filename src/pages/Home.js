@@ -8,59 +8,27 @@ import styles from "../stylesheets/Main"
 import Card from "../components/Card"
 import axios from "axios"
 import { MainContext } from "../context/MainContext"
-import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Home = () => {
-  const { data_profil, backend_url } = useContext(MainContext)
-  const [profil, setProfil] = data_profil
+  const { backend_url } = useContext(MainContext)
   const [backendURL] = backend_url
   const [data, setData] = useState([])
 
   const getData = () => {
     axios.get(`${backendURL}/api/v1/product/`)
       .then((res) => {
-        setData(res.data.data);
+        if (res.data.status === 200) {
+          setData(res.data.data);
+        }
       })
-    AsyncStorage.getItem("tokenAccess").then(data => {
-      if (data !== null) {
-        let tokenAccess = JSON.parse(data)
-        let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-        axios.get(`${backendURL}/api/v1/customer/?username=${profil.username}`, key)
-          .then((res) => {
-            if (res.data.status !== 204) {
-              let customer_id = res.data.data.customer_id
-
-              AsyncStorage.setItem("customerID", JSON.stringify(customer_id)).then(() => (
-                console.log("customer id saved")
-              ))
-            } else {
-              console.log("belum login lu");
-            }
-          })
-          .catch((err) => {
-            if (err.response.status === 401) {
-              AsyncStorage.getItem("tokenRefresh").then(data => {
-                if (data !== null) {
-                  let tokenRefresh = JSON.parse(data)
-                  axios
-                    .post(`${backendURL}/api/v1/token/refresh/`, {
-                      refresh: tokenRefresh
-                    })
-                    .then(res => {
-                      tokenAccess = res.data.access
-                      AsyncStorage.setItem("tokenAccess", JSON.stringify(tokenAccess))
-                    })
-                }
-              })
-            }
-          })
-      }
-    })
+      .catch((err) => {
+        console.log(err);
+        alert("Terjadi Kesalahan Saat Memuat Produk")
+      })
   }
 
-  useEffect(async () => {
-    const getProducts = await getData()
-    getProducts
+  useEffect(() => {
+    getData()
   }, [])
 
   return (
@@ -70,9 +38,7 @@ const Home = () => {
         <Slider />
         <Menu />
         <Label />
-        <Card
-          data={data}
-        />
+        <Card data={data} />
         <View style={{ height: 30 }} />
       </ScrollView>
     </View>

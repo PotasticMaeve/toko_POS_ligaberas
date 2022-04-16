@@ -77,17 +77,7 @@ const MenuItem = (props) => {
                 />
             </Ripple>
             <View style={{ display: "flex", alignItems: "center", height: 18 }}>
-                {(() => {
-                    if (props.text.length > 10) {
-                        return (
-                            <Text style={{ fontSize: 11, marginTop: -10, color: "#595959", fontFamily: "Poppins-SemiBold" }}>{props.text}</Text>
-                        )
-                    } else {
-                        return (
-                            <Text style={{ fontSize: 11.5, marginTop: -10, color: "#595959", fontFamily: "Poppins-SemiBold" }}>{props.text}</Text>
-                        )
-                    }
-                })()}
+                <Text style={{ fontSize: 11, marginTop: -10, color: "#595959", fontFamily: "Poppins-SemiBold" }}>{props.text}</Text>
             </View>
         </View>
     )

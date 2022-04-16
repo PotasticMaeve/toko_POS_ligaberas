@@ -37,7 +37,7 @@ const CardItem = (props) => {
                     paddingHorizontal: 7
                 }}>
                     <Text numberOfLines={2} style={[styles.titleCard, { fontFamily: "Poppins-Regular" }]}>{props.nama_barang}</Text>
-                    <Text style={[styles.priceCard, {fontFamily: "Poppins-SemiBold"}]}>{convertToIDR(props.harga)}</Text>
+                    <Text style={[styles.priceCard, {fontFamily: "Poppins-SemiBold", color: "#60a3bc"}]}>{convertToIDR(props.harga)}</Text>
                 </View>
                 <View style={styles.ratingWrap}>
                     <Text style={{ fontSize: 11.5, color: '#27ae60', fontFamily: "Poppins-SemiBold" }}>Stok {props.qty}</Text>

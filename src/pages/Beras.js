@@ -1,5 +1,5 @@
 import { Text, ScrollView } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import styles from '../stylesheets/Main'
 import LinearGradient from 'react-native-linear-gradient'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -8,18 +8,22 @@ import { Actions } from 'react-native-router-flux'
 import Card from "../components/Card"
 import Space from '../components/Space'
 import axios from 'axios'
+import { MainContext } from '../context/MainContext'
 
 const colorHeader = ['#f3a337', '#eb8937']
 
 const Beras = () => {
   const [ data, setData ] = useState([])
+  const { backend_url } = useContext(MainContext)
+  const [ backendURL ] = backend_url
 
   const getData = () => {
-    axios.get("http://192.168.18.48:8000/api/v1/product/")
+    axios.get(`${backendURL}/api/v1/product/`)
     .then((res) => {
       setData(res.data.data);
     })
   }
+
 
   useEffect(() => {
     getData()

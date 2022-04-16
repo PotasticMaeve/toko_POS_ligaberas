@@ -8,16 +8,15 @@ import Ripple from 'react-native-material-ripple'
 import Icon from "react-native-vector-icons/Entypo"
 import { Actions } from 'react-native-router-flux'
 import { MainContext } from '../context/MainContext'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { setStorage } from '../Helper'
 
 const { width, height } = Dimensions.get("screen")
 
 const Auth = () => {
-    const { backend_url, data_profil, token_refresh, token_access } = useContext(MainContext)
+    const { backend_url, authorized, data_username } = useContext(MainContext)
     const [backendURL] = backend_url
-    const [profil, setProfil] = data_profil
-    const [tokenRefresh, setTokenRefresh] = token_refresh
-    const [tokenAccess, setTokenAccess] = token_access
+    const [isAuthorized, setIsAuthorized] = authorized
+    const [username, setUsername] = data_username
     const [screenAnimation] = useState(new Animated.Value(height))
     const [inputAnimation] = useState(new Animated.Value(0))
     const [loginActive, setLoginActive] = useState(true)
@@ -61,16 +60,12 @@ const Auth = () => {
                 const access = res.data.access
                 const refresh = res.data.refresh
                 if (access) {
-                    AsyncStorage.setItem("tokenAccess", JSON.stringify(access)).then(() => {
-                        setTokenAccess(access)
-                    })
-                    AsyncStorage.setItem("tokenRefresh", JSON.stringify(refresh)).then(() => {
-                        setTokenRefresh(refresh)
-                    })
-                    AsyncStorage.setItem("customerUsername", JSON.stringify(usernameLogin)).then(() => {
-                        setProfil({...profil, username: usernameLogin})
-                    })
+                    setIsAuthorized(true)
                     setIsLoading(false)
+                    setUsername(usernameLogin)
+                    setStorage("tokenAccess", access)
+                    setStorage("tokenRefresh", refresh)
+                    setStorage("customerUsername", usernameLogin)
                 }
             })
         }
@@ -87,7 +82,6 @@ const Auth = () => {
                 nama: nama
             }).then(() => {
                 setIsLoading(false)
-                Actions.Auth()
             })
         }
     }

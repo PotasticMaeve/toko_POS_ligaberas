@@ -8,21 +8,17 @@ import styles from '../stylesheets/Main'
 export const MainContext = React.createContext()
 
 export const MainProvider = (props) => {
-    const [backendURL, setBackendURL] = useState("http://192.168.18.48:8000")
-    const [tokenAccess, setTokenAccess] = useState("")
-    const [tokenRefresh, setTokenRefresh] = useState("")
+    const [backendURL, setBackendURL] = useState("http://192.168.18.50:8000")
     const [isLoading, setIsLoading] = useState(true)
-    const [currentScene, setCurrentScene] = useState("")
-    const [profil, setProfil] = useState({})
+    const [IsAuthorized, setIsAuthorized] = useState(false)
+    const [username, setUsername] = useState("")
 
     return (
         <MainContext.Provider value={{
             loading: [isLoading, setIsLoading],
-            scene: [currentScene, setCurrentScene],
             backend_url: [backendURL, setBackendURL],
-            token_access: [tokenAccess, setTokenAccess],
-            token_refresh: [tokenRefresh, setTokenRefresh],
-            data_profil: [profil, setProfil],
+            authorized: [IsAuthorized, setIsAuthorized],
+            data_username: [username, setUsername],
         }}>
             {props.children}
         </MainContext.Provider>

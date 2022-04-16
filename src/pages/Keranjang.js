@@ -10,6 +10,7 @@ import { Actions } from 'react-native-router-flux'
 import Space from '../components/Space'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
+import { setStorage, setRefreshToken } from '../Helper'
 
 const colorHeader = ['#f3a337', '#eb8937']
 
@@ -20,19 +21,41 @@ const Keranjang = () => {
   const [data, setData] = useState([])
 
   const getData = () => {
-    AsyncStorage.getItem("customerID").then(data => {
+    AsyncStorage.getItem("tokenAccess").then(data => {
       if (data !== null) {
-        let id = data
-        axios.get(`${backendURL}/api/v1/cart_item/?customer_id=${id}`)
-          .then((res) => {
-            if (res.status === 200) {
-              let cart_item_data = res.data.data
-              setData(cart_item_data);
-            }
-          })
+        let tokenAccess = JSON.parse(data)
+        let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+        AsyncStorage.getItem("customerUsername").then(result => {
+          let username = JSON.parse(result)
+          if (username !== null) {
+            axios.get(`${backendURL}/api/v1/customer/?username=${username}`, key)
+              .then((res) => {
+                if (res.status === 200) {
+                  let customer_id = res.data.data.customer_id
+                  setStorage("customerID", customer_id)
+                  axios.get(`${backendURL}/api/v1/cart_item/?customer_id=${customer_id}`, key)
+                    .then((res) => {
+                      if (res.status === 200) {
+                        let cart_item_data = res.data.data
+                        setData(cart_item_data);
+                      } else {
+                        setRefreshToken()
+                      }
+                    })
+                } else {
+                  console.log("no customer ID [cart]");
+                }
+              })
+          } else {
+            console.log("no customer username [cart]");
+          }
+        })
+      } else {
+        console.log("no access [cart]");
       }
     })
   }
+
   useEffect(() => {
     getData()
   }, [])

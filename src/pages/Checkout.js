@@ -19,28 +19,20 @@ import { convertToIDR } from '../Helper';
 import Space from '../components/Space';
 import { CreditCardInput } from "react-native-credit-card-input";
 import BottomSheet from "react-native-gesture-bottom-sheet";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { setStorage, setRefreshToken } from '../Helper'
 
 const colorGradient = ['#f3a337', '#eb8937']
 
 const Checkout = () => {
-    const { data_cart } = useContext(MainContext)
-    const [cart] = data_cart
+    const { backend_url } = useContext(MainContext)
+    const [backendURL] = backend_url
+    const [data, setData] = useState([])
     const [totalBarang, setTotalBarang] = useState(0)
     const [grandTotal, setGrandTotal] = useState(0)
     const [creditData, setCreditData] = useState({})
     const bs = useRef(null)
-
-    const getImage = (imgName) => {
-        if (imgName === "kecap") {
-            return require("../../assets/images/kecap.jpg")
-        }
-        if (imgName === "gula") {
-            return require("../../assets/images/gula.jpg")
-        }
-        if (imgName === "susu") {
-            return require("../../assets/images/susu.jpeg")
-        }
-    }
 
     useEffect(() => {
         displayTotalBarang()
@@ -48,11 +40,44 @@ const Checkout = () => {
 
     const displayTotalBarang = () => {
         let total = 0
-        cart.map((el) => {
-            total += el.total
+        AsyncStorage.getItem("tokenAccess").then(data => {
+            if (data !== null) {
+                let tokenAccess = JSON.parse(data)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerUsername").then(result => {
+                    let username = JSON.parse(result)
+                    if (username !== null) {
+                        axios.get(`${backendURL}/api/v1/customer/?username=${username}`, key)
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    let customer_id = res.data.data.customer_id
+                                    setStorage("customerID", customer_id)
+                                    axios.get(`${backendURL}/api/v1/cart_item/?customer_id=${customer_id}`, key)
+                                        .then((res) => {
+                                            if (res.status === 200) {
+                                                let cart_item_data = res.data.data
+                                                setData(cart_item_data);
+                                                cart_item_data.map((el) => {
+                                                    total += el.total
+                                                })
+                                                setTotalBarang(total)
+                                                setGrandTotal(total + 30000)
+                                            } else {
+                                                setRefreshToken()
+                                            }
+                                        })
+                                } else {
+                                    console.log("no customer ID [checkout]");
+                                }
+                            })
+                    } else {
+                        console.log("no customer username [checkout]");
+                    }
+                })
+            } else {
+                console.log("no access [checkout]");
+            }
         })
-        setTotalBarang(total)
-        setGrandTotal(total + 30000)
     }
 
     const _onChange = form => setCreditData(form);
@@ -94,23 +119,27 @@ const Checkout = () => {
                     </Ripple>
                 </View>
                 <View style={{ width: "100%" }}>
-                    {cart.map((el, i) => (
-                        <View key={i} style={{ flexDirection: "row", justifyContent: "flex-start", marginVertical: 5, padding: 5 }}>
-                            <View style={{ height: 60, width: 60 }} >
-                                <Image
-                                    source={getImage(el.nama)}
-                                    style={{ height: 60, width: "auto" }}
-                                />
+                    {data.map((el, i) => {
+                        let photo = backendURL + el.product.photo
+                        return (
+                            <View key={i} style={{ flexDirection: "row", justifyContent: "flex-start", marginVertical: 5, padding: 5 }}>
+                                <View style={{ height: 60, width: 60 }} >
+                                    <Image
+                                        source={{ uri: photo }}
+                                        style={{ height: 60, width: "auto" }}
+                                    />
+                                </View>
+                                <View style={{ marginLeft: 10, flexDirection: "column" }}>
+                                    <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12 }}>{el.product.nama}</Text>
+                                    <Text numberOfLines={1} style={{ marginTop: 2, width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 13, color: '#60a3bc' }}>{convertToIDR(el.product.harga)}</Text>
+                                </View>
+                                <View style={{ height: 60, width: 60, justifyContent: "center", alignItems: "center" }} >
+                                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13, color: "#27ae60" }}>x {el.qty}</Text>
+                                </View>
                             </View>
-                            <View style={{ marginLeft: 10, flexDirection: "column" }}>
-                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12 }}>{el.title}</Text>
-                                <Text numberOfLines={1} style={{ marginTop: 2, width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 13, color: '#60a3bc' }}>{convertToIDR(el.price)}</Text>
-                            </View>
-                            <View style={{ height: 60, width: 60, justifyContent: "center", alignItems: "center" }} >
-                                <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13, color: "#27ae60" }}>x {el.qty}</Text>
-                            </View>
-                        </View>
-                    ))}
+                        )
+                    }
+                    )}
                 </View>
                 <Space />
                 <View style={{ height: 100 }}></View>
@@ -164,6 +193,7 @@ const Checkout = () => {
                                 justifyContent: "center",
                                 alignItems: 'center',
                             }}
+                            onPress={() => alert("Pembayaran Diproses")}
                         >
                             <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>Bayar Sekarang</Text>
                         </Ripple>

@@ -8,10 +8,14 @@ import Icon from 'react-native-vector-icons/Feather'
 import styles from '../stylesheets/Main'
 import Space from "../components/Space"
 import Ripple from 'react-native-material-ripple';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const colorHeader = ['#f3a337', '#eb8937']
 
 const DetailPengiriman = () => {
+    
+
     return (
         <>
             <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
@@ -32,7 +36,7 @@ const DetailPengiriman = () => {
                     elevation: 3,
                 }}>
                     <View style={{ height: 100, width: 100, borderRadius: 100, overflow: "hidden" }}>
-                        <Image source={require("../../assets/images/profile.jpg")} resizeMode="cover" style={{ height: "100%", width: "100%" }} />
+                        <Image source={require("../../assets/images/profile.png")} resizeMode="cover" style={{ height: "100%", width: "100%" }} />
                     </View>
                 </View>
                 <View style={{ paddingHorizontal: 15, paddingTop: 20 }}>

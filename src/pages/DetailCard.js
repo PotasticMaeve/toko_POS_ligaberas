@@ -22,28 +22,75 @@ const DetailCard = (props) => {
     const getData = () => {
         axios.get(`${backendURL}/api/v1/product/${props.id}/`)
             .then((res) => {
-                let url = backendURL
-                let photo = url + res.data.photo
-                setData({ ...res.data, photo: photo });
-            })
-        AsyncStorage.getItem("customerID").then(data => {
-            if (data !== null) {
-                let id = data
-                axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${id}`)
-                    .then((res) => {
-                        let data_wishlist = res.data.data.items
-                        let products_id = []
-                        if (data_wishlist.length > 0) {
-                            data_wishlist.map(el => {
-                                products_id.push(el.id)
-                            })
-                        }
-                        if(products_id.includes(props.id)){
-                            setFav(true)
-                        }else{
-                            setFav(false)
+                if (res.status == 200) {
+                    let url = backendURL
+                    let photo = url + res.data.photo
+                    setData({ ...res.data, photo: photo });
+                } else {
+                    AsyncStorage.getItem("tokenRefresh").then(data => {
+                        if (data !== null) {
+                            let tokenRefresh = JSON.parse(data)
+                            axios
+                                .post(`${backendURL}/api/v1/token/refresh/`, {
+                                    refresh: tokenRefresh
+                                })
+                                .then(res => {
+                                    tokenAccess = res.data.access
+                                    AsyncStorage.setItem("tokenAccess", JSON.stringify(tokenAccess))
+                                    console.log("access baru [detail card]");
+                                })
                         }
                     })
+                }
+            })
+
+        AsyncStorage.getItem("tokenAccess").then(data => {
+            if (data !== null) {
+                let tokenAccess = JSON.parse(data)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+
+                AsyncStorage.getItem("customerID").then(id => {
+                    if (id !== null) {
+                        axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${id}`, key)
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    let data_wishlist = res.data.data.items
+                                    let products_id = []
+                                    if (data_wishlist.length > 0) {
+                                        data_wishlist.map(el => {
+                                            products_id.push(el.id)
+                                        })
+                                    }
+                                    if (products_id.includes(props.id)) {
+                                        setFav(true)
+                                    } else {
+                                        setFav(false)
+                                    }
+                                } else {
+                                    AsyncStorage.getItem("tokenRefresh").then(data => {
+                                        if (data !== null) {
+                                            let tokenRefresh = JSON.parse(data)
+                                            axios
+                                                .post(`${backendURL}/api/v1/token/refresh/`, {
+                                                    refresh: tokenRefresh
+                                                })
+                                                .then(res => {
+                                                    tokenAccess = res.data.access
+                                                    AsyncStorage.setItem("tokenAccess", JSON.stringify(tokenAccess))
+                                                    console.log("access baru [detail card]");
+                                                })
+                                        }
+                                    })
+                                }
+                            })
+                            .catch(err => {
+                                console.log("400 nih");
+                                console.log(err);
+                            })
+                    }else{
+                        Actions.Auth()
+                    }
+                })
             }
         })
     }

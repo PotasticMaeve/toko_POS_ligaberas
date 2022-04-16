@@ -41,7 +41,7 @@ class KeranjangCard extends React.Component {
 
     render(){
         let photo = this.props.data.product.photo
-        let image = "http://192.168.18.48:8000" + photo
+        let image = "http://192.168.18.50:8000" + photo
         if (this.state.existCart) {
             return (
                 <View style={[styles.cardItemWrap, {

@@ -46,8 +46,9 @@ const tabIcon = ({ name, focused, title }) => {
 };
 
 const Routes = () => {
-    const { token_access } = useContext(MainContext)
-    const [tokenAccess] = token_access
+    const { authorized } = useContext(MainContext)
+    const [ isAuthorized ] = authorized
+
     return (
         <Router backAndroidHandler={() => false}>
             <Scene key="root" hideNavBar={true}>
@@ -57,20 +58,20 @@ const Routes = () => {
                             <Scene key="Home" name="Home" component={Home} hideNavBar />
                         </Scene>
                         <Scene key="Wishlist" name="heart" title="Wishlist" icon={tabIcon} hideNavBar>
-                            <Scene key="Wishlist" name="Wishlist" component={tokenAccess ? Wishlist : Auth} title="Wishlist" />
+                            <Scene key="Wishlist" name="Wishlist" component={isAuthorized ? Wishlist : Auth} title="Wishlist" />
                         </Scene>
                         <Scene key="Keranjang" name="shopping-cart" title="Keranjang" icon={tabIcon} hideNavBar>
-                            <Scene key="Keranjang" name="Keranjang" component={tokenAccess ? Keranjang : Auth} title="Keranjang" />
+                            <Scene key="Keranjang" name="Keranjang" component={isAuthorized ? Keranjang : Auth} title="Keranjang" />
                         </Scene>
                     </Scene>
                 </Drawer>
                 <Scene key="Config" component={Config} title="Config" />
-                <Scene key="Auth" component={Auth} title="Auth"  />
-                <Scene key="Transaksi" component={tokenAccess ? Transaksi : Auth} title="Transaksi" />
+                <Scene key="Auth" component={Auth} title="Auth" />
+                <Scene key="Transaksi" component={isAuthorized ? Transaksi : Auth} title="Transaksi" />
                 <Scene key="DetailCard" component={DetailCard} title="DetailCard" />
                 <Scene key="Search" component={Search} title="Search" />
-                <Scene key="Keranjang" component={tokenAccess ? Keranjang : Auth} title="Keranjang" />
-                <Scene key="Wishlist" component={tokenAccess ? Wishlist : Auth} title="Wishlist" />
+                <Scene key="Keranjang" component={isAuthorized ? Keranjang : Auth} title="Keranjang" />
+                <Scene key="Wishlist" component={isAuthorized ? Wishlist : Auth} title="Wishlist" />
                 <Scene key="Beras" component={Beras} title="Beras" />
                 <Scene key="Tepung" component={Tepung} title="Tepung" />
                 <Scene key="Daging" component={Daging} title="Daging" />
@@ -80,7 +81,7 @@ const Routes = () => {
                 <Scene key="Teh" component={Teh} title="Teh" />
                 <Scene key="Bumbu" component={Bumbu} title="Bumbu" />
                 <Scene key="Checkout" component={Checkout} title="Checkout" />
-                <Scene key="DetailPengiriman" component={tokenAccess ? DetailPengiriman : Auth} title="DetailPengiriman" />
+                <Scene key="DetailPengiriman" component={isAuthorized ? DetailPengiriman : Auth} title="DetailPengiriman" />
             </Scene>
         </Router>
     )

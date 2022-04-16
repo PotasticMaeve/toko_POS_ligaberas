@@ -7,18 +7,16 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-root-toast';
-import { MainContext } from '../context/MainContext'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MainContext } from '../context/MainContext'
 
 const SideMenu = () => {
-    const { token_access, data_profil } = useContext(MainContext)
-    const [tokenAccess, setTokenAccess] = token_access
+    const { authorized, data_username } = useContext(MainContext)
+    const [isAuthorized, setIsAuthorized] = authorized
+    const [username, setUsername] = data_username
     const [modalShow, setModalShow] = useState(false)
-    const [profil, setProfil] = data_profil
 
     const confirmedLogout = () => {
-        setTokenAccess("")
-        setProfil({})
         setModalShow(false)
         Actions.drawerClose()
         Toast.show('Logout Berhasil', {
@@ -30,8 +28,12 @@ const SideMenu = () => {
             hideOnPress: true,
             delay: 0,
         });
-        AsyncStorage.removeItem("wishlist");
-        return true
+        AsyncStorage.removeItem("tokenAccess")
+        AsyncStorage.removeItem("tokenRefresh")
+        AsyncStorage.removeItem("customerID")
+        AsyncStorage.removeItem("customerUsername")
+        setIsAuthorized(false)
+        setUsername("")
     }
 
     return (
@@ -39,11 +41,11 @@ const SideMenu = () => {
             <View style={styles.user_bio}>
                 <Image source={require("../../assets/images/bg-sidebar.png")} resizeMode="cover" style={{ height: 170, width: "100%" }} />
                 <View style={styles.user_photo}>
-                    <Image source={require("../../assets/images/profile.jpg")} resizeMode="cover" style={{ height: "100%", width: "100%" }} />
+                    <Image source={require("../../assets/images/profile.png")} resizeMode="cover" style={{ height: "100%", width: "100%" }} />
                 </View>
                 <View style={styles.user_name}>
-                    {Object.keys(profil).length !== 0 ? (
-                        <Text style={[styles.username_text, { fontFamily: "Poppins-SemiBold", textAlign: "center", color: "#fff", fontSize: 15 }]}>{profil.username}</Text>
+                    {username !== "" ? (
+                        <Text style={[styles.username_text, { fontFamily: "Poppins-SemiBold", textAlign: "center", color: "#fff", fontSize: 15 }]}>{username}</Text>
                     ) : (
                         <Text style={[styles.username_text, { fontFamily: "Poppins-SemiBold", textAlign: "center", color: "#fff", fontSize: 15 }]}>guest</Text>
                     )}
@@ -58,7 +60,7 @@ const SideMenu = () => {
                     <FontAwesome5 name={"user-alt"} size={18} color="#e36414" />
                     <Text style={styles.menu_text}>Profil</Text>
                 </TouchableOpacity>
-                {tokenAccess ? (
+                {isAuthorized ? (
                     <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>
                         <FontAwesome5 name={"sign-out-alt"} size={18} color="#e36414" />
                         <Text style={styles.menu_text}>Logout</Text>
@@ -159,6 +161,11 @@ const styles = StyleSheet.create({
         color: "#e36414",
         marginLeft: 20,
         fontSize: 14
+    },
+    shimmer: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center"
     }
 })
 
