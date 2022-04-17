@@ -6,9 +6,9 @@ import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Ionicons';
-import Toast from 'react-native-root-toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MainContext } from '../context/MainContext'
+import { toast } from '../Helper'
 
 const SideMenu = () => {
     const { authorized, data_username } = useContext(MainContext)
@@ -19,15 +19,7 @@ const SideMenu = () => {
     const confirmedLogout = () => {
         setModalShow(false)
         Actions.drawerClose()
-        Toast.show('Logout Berhasil', {
-            duration: Toast.durations.SHORT,
-            position: Toast.positions.BOTTOM,
-            backgroundColor: "#595959",
-            shadow: true,
-            animation: true,
-            hideOnPress: true,
-            delay: 0,
-        });
+        toast("Logout Berhasil", "success")
         AsyncStorage.removeItem("tokenAccess")
         AsyncStorage.removeItem("tokenRefresh")
         AsyncStorage.removeItem("customerID")

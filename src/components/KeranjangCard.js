@@ -40,8 +40,6 @@ class KeranjangCard extends React.Component {
     }
 
     render(){
-        let photo = this.props.data.product.photo
-        let image = "http://192.168.18.50:8000" + photo
         if (this.state.existCart) {
             return (
                 <View style={[styles.cardItemWrap, {
@@ -57,7 +55,7 @@ class KeranjangCard extends React.Component {
                             <View style={{ display: 'flex', flexDirection: 'row' }}>
                                 <View style={{ height: "100%", width: 100, backgroundColor: "#eee" }} >
                                     <Image
-                                        source={{uri: image}}
+                                        source={{uri: this.props.data.product.photo}}
                                         style={{ height: 80, width: "auto" }}
                                     />
                                 </View>

@@ -74,8 +74,9 @@ const Wishlist = () => {
 
     return (
         <>
-            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                 <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Wishlist</Text>
+                <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }} onPress={() => getData()}>Refresh</Text>
             </LinearGradient>
             <ScrollView style={{ paddingTop: 5, paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}>
                 {isLoading ? (
@@ -85,9 +86,8 @@ const Wishlist = () => {
                     </>
                 ) : [
                     data.map((el, i) => {
-                        let photo = backendURL + el.photo
                         return (
-                            <WishlistCard cartId={cartId} key={i} exist={true} id={el.id} nama={el.nama} harga={el.harga} qty={el.qty} photo={photo} />
+                            <WishlistCard cartId={cartId} key={i} exist={true} id={el.id} nama={el.nama} harga={el.harga} qty={el.qty} photo={el.photo} />
                         )
                     })
                 ]}

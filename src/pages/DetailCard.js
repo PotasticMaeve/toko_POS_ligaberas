@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Text, TouchableOpacity, Image, View, ScrollView, Dimensions } from 'react-native';
+import { Text, TouchableOpacity, Image, View, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Ripple from 'react-native-material-ripple';
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import Icon from 'react-native-vector-icons/AntDesign'
 import styles from '../stylesheets/Main'
-import { convertToIDR } from '../Helper';
+import { convertToIDR, toast } from '../Helper';
 import axios from 'axios';
 import { MainContext } from '../context/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -18,14 +18,14 @@ const DetailCard = (props) => {
     const [backendURL] = backend_url
     const [data, setData] = useState({})
     const [fav, setFav] = useState(false)
+    const [cartId, setCartId] = useState(0)
+    const [isLoading, setIsLoading] = useState(false)
 
     const getData = () => {
         axios.get(`${backendURL}/api/v1/product/${props.id}/`)
             .then((res) => {
                 if (res.status == 200) {
-                    let url = backendURL
-                    let photo = url + res.data.photo
-                    setData({ ...res.data, photo: photo });
+                    setData(res.data);
                 } else {
                     AsyncStorage.getItem("tokenRefresh").then(data => {
                         if (data !== null) {
@@ -87,7 +87,7 @@ const DetailCard = (props) => {
                                 console.log("400 nih");
                                 console.log(err);
                             })
-                    }else{
+                    } else {
                         Actions.Auth()
                     }
                 })
@@ -108,13 +108,65 @@ const DetailCard = (props) => {
                     product: props.id
                 }).then((res) => {
                     setFav(true)
+                    toast("Wishlist Berhasil Ditambahkan", "info")
                 })
             }
         })
     }
 
     const removeFromWishlist = () => {
-        setFav(false)
+        AsyncStorage.getItem("customerID").then(data => {
+            if (data !== null) {
+                let id = JSON.parse(data)
+                axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${id}`)
+                .then((res) => {
+                    let wishlist_id = res.data.wishlist_id
+                    axios.delete(`${backendURL}/api/v1/wishlist/${wishlist_id}/`)
+                    .then(res => {
+                        setFav(false)
+                        toast("Wishlist Berhasil Dihapus", "danger")
+                    })
+                })
+            }
+        })
+    }
+
+    const addToKeranjang = () => {
+        setIsLoading(true)
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(value => {
+                    if (value !== null) {
+                        let customer_id = JSON.parse(value)
+                        axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    let cart_id = res.data.data.id
+                                    setCartId(cart_id)
+                                    axios.post(`${backendURL}/api/v1/cart_item/`, {
+                                        cart: cart_id,
+                                        product: props.id,
+                                        qty: 1
+                                    })
+                                    .then(res => {
+                                        setIsLoading(false)
+                                        toast("Keranjang Berhasil Ditambahkan", "success")
+                                    })
+                                    .catch((err) => {
+                                        console.log(err);
+                                    })
+                                } else {
+                                    setRefreshToken()
+                                }
+                            })
+                    }
+                })
+            } else {
+                console.log("no access [detailcard]");
+            }
+        })
     }
 
     return (
@@ -194,8 +246,16 @@ const DetailCard = (props) => {
                             </View>
                         </Ripple>
                     )}
-                    <Ripple rippleColor="#fff" style={{ height: 40, borderRadius: 10, backgroundColor: '#eb8937', overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}>
-                        <Text style={{ color: '#fff', fontFamily: "Poppins-SemiBold", marginTop: 5, fontSize: 13 }}>Tambah ke Keranjang</Text>
+                    <Ripple
+                        onPress={() => addToKeranjang()}
+                        rippleColor="#fff"
+                        style={{ height: 40, borderRadius: 10, backgroundColor: '#eb8937', overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
+                    >
+                        {isLoading ? (
+                            <ActivityIndicator color="#fff" />
+                        ) : (
+                            <Text style={{ color: '#fff', fontFamily: "Poppins-SemiBold", marginTop: 5, fontSize: 13 }}>Tambah ke Keranjang</Text>
+                        )}
                     </Ripple>
                 </View>
             </View>

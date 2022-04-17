@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { StatusBar } from "react-native";
 import Routes from "./src/Routes";
 import Orientation from 'react-native-orientation';
-import { RootSiblingParent } from 'react-native-root-siblings';
 import { MainProvider } from "./src/context/MainContext";
+import FlashMessage from "react-native-flash-message";
 
 const App = () => {
   useEffect(() => {
@@ -12,10 +12,9 @@ const App = () => {
 
   return (
     <MainProvider>
-      <RootSiblingParent>
-        <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-        <Routes />
-      </RootSiblingParent>
+      <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
+      <Routes />
+      <FlashMessage position="top" />
     </MainProvider>
   )
 }

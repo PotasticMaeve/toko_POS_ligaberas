@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { showMessage, hideStatusBar, statusBarHeight } from "react-native-flash-message";
 
 const convertToIDR = (numb) => {
     const format = numb.toString().split('').reverse().join('');
@@ -27,8 +28,26 @@ const setRefreshToken = () => {
     })
 }
 
+export const toast = (msg, type) => {
+    showMessage({
+        message: msg,
+        type: type,
+        statusBarHeight: 20,
+        style: {
+            paddingTop: 30,
+            justifyContent: "flex-end",
+            alignItems: "center"
+        },
+        titleStyle: {
+            textTransform: "capitalize",
+            fontFamily: "Poppins-Medium"
+        }
+    });
+}
+
 module.exports = {
     convertToIDR: convertToIDR,
     setStorage: setStorage,
-    setRefreshToken: setRefreshToken
+    setRefreshToken: setRefreshToken,
+    toast: toast
 }

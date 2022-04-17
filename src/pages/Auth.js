@@ -8,7 +8,7 @@ import Ripple from 'react-native-material-ripple'
 import Icon from "react-native-vector-icons/Entypo"
 import { Actions } from 'react-native-router-flux'
 import { MainContext } from '../context/MainContext'
-import { setStorage } from '../Helper'
+import { toast, setStorage } from '../Helper'
 
 const { width, height } = Dimensions.get("screen")
 
@@ -50,24 +50,35 @@ const Auth = () => {
     }
 
     const login = async () => {
+        setIsLoading(true)
         if (usernameLogin !== "" && passwordLogin !== "") {
-            setIsLoading(true)
             Keyboard.dismiss()
             await axios.post(`${backendURL}/api/v1/token/`, {
                 username: usernameLogin,
                 password: passwordLogin
             }).then((res) => {
-                const access = res.data.access
-                const refresh = res.data.refresh
-                if (access) {
-                    setIsAuthorized(true)
+                if(res.status === 200){
+                    const access = res.data.access
+                    const refresh = res.data.refresh
+                    if (access) {
+                        toast(`Selamat Datang, ${usernameLogin}`, "success")
+                        setIsLoading(false)
+                        setIsAuthorized(true)
+                        setUsername(usernameLogin)
+                        setStorage("tokenAccess", access)
+                        setStorage("tokenRefresh", refresh)
+                        setStorage("customerUsername", usernameLogin)
+                    }
+                }
+            }).catch((err) => {
+                if(err.response.status === 401){
+                    toast("Login Gagal", "danger")
                     setIsLoading(false)
-                    setUsername(usernameLogin)
-                    setStorage("tokenAccess", access)
-                    setStorage("tokenRefresh", refresh)
-                    setStorage("customerUsername", usernameLogin)
                 }
             })
+        }else{
+            toast("Form Wajib Diisi", "info")
+            setIsLoading(false)
         }
     }
 
@@ -342,7 +353,6 @@ const Auth = () => {
                         </View>
                     </Animated.View>
                 </View >
-
             )}
         </Animated.View >
     )

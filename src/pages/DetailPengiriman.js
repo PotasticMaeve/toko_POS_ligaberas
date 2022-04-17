@@ -1,20 +1,79 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { View } from 'react-native';
-import { Text, TouchableOpacity, StyleSheet, Image, TextInput } from 'react-native';
+import { Text, TouchableOpacity, StyleSheet, Image, TextInput, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import Icon from 'react-native-vector-icons/Feather'
+import Icons from 'react-native-vector-icons/Fontisto'
 import styles from '../stylesheets/Main'
 import Space from "../components/Space"
 import Ripple from 'react-native-material-ripple';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { MainContext } from "../context/MainContext"
+import { toast } from "../Helper"
 
 const colorHeader = ['#f3a337', '#eb8937']
 
 const DetailPengiriman = () => {
-    
+    const [profil, setProfil] = useState({})
+    const { backend_url } = useContext(MainContext)
+    const [backendURL] = backend_url
+    const [isLoading, setIsLoading] = useState(false)
+
+    const detailProfil = () => {
+        AsyncStorage.getItem("customerUsername").then(value => {
+            if (value !== null) {
+                let username = JSON.parse(value)
+                axios.get(`${backendURL}/api/v1/customer/?username=${username}`)
+                    .then((res) => {
+                        setProfil(res.data.data);
+                    })
+                    .catch((err) => {
+                        alert("Gagal Memuat Data Profil")
+                    })
+            }
+        })
+    }
+
+    const saveProfil = () => {
+        setIsLoading(true)
+        let data = profil
+        let payloadUpdate = {
+            ...data,
+            nama: profil.nama,
+            gender: profil.gender,
+            phone: profil.phone,
+            alamat: profil.alamat
+        }
+
+        let body = JSON.stringify(payloadUpdate)
+        axios
+            .put(`${backendURL}/api/v1/customer/${profil.customer_id}/`, body, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((res) => {
+                let nama = res.data.nama
+                let gender = res.data.gender
+                let phone = res.data.phone
+                let alamat = res.data.alamat
+                toast("Berhasil Menyimpan Profil", "success")
+                setTimeout(() => {
+                    setIsLoading(false)
+                }, 1000);
+                setProfil({ ...profil, nama: nama, gender: gender, phone: phone, alamat: alamat });
+            })
+            .catch((err) => {
+                alert("Gagal Menyimpan Data Profil")
+            });
+    }
+
+    useEffect(() => {
+        detailProfil()
+    }, [])
 
     return (
         <>
@@ -48,6 +107,22 @@ const DetailPengiriman = () => {
                             placeholder="Nama Lengkap"
                             style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", borderBottomWidth: .5, borderBottomColor: "#ccd", width: "90%", marginLeft: 10 }}
                             spellCheck={false}
+                            value={profil && profil.nama}
+                            onChangeText={new_text => setProfil({ ...profil, nama: new_text })}
+                            autoCorrect={false}
+                        />
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <View style={{ justifyContent: "center", alignItems: "center" }}>
+                            <Icon name={"smile"} size={20} color='#eb8937' />
+                        </View>
+                        <TextInput
+                            placeholder="Username"
+                            style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", borderBottomWidth: .5, borderBottomColor: "#ccd", width: "90%", marginLeft: 10 }}
+                            spellCheck={false}
+                            editable={false}
+                            selectTextOnFocus={false}
+                            value={profil && profil.username}
                             autoCorrect={false}
                         />
                     </View>
@@ -59,6 +134,9 @@ const DetailPengiriman = () => {
                             placeholder="Email"
                             style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", borderBottomWidth: .5, borderBottomColor: "#ccd", width: "90%", marginLeft: 10 }}
                             spellCheck={false}
+                            editable={false}
+                            selectTextOnFocus={false}
+                            value={profil && profil.email}
                             autoCorrect={false}
                         />
                     </View>
@@ -70,6 +148,21 @@ const DetailPengiriman = () => {
                             placeholder="No Telp"
                             style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", borderBottomWidth: .5, borderBottomColor: "#ccd", width: "90%", marginLeft: 10 }}
                             spellCheck={false}
+                            value={profil && profil.phone}
+                            onChangeText={new_text => setProfil({ ...profil, phone: new_text })}
+                            autoCorrect={false}
+                        />
+                    </View>
+                    <View style={{ flexDirection: "row" }}>
+                        <View style={{ justifyContent: "center", alignItems: "center" }}>
+                            <Icons name={"venus-mars"} size={20} color='#eb8937' />
+                        </View>
+                        <TextInput
+                            placeholder="Jenis Kelamin"
+                            style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", borderBottomWidth: .5, borderBottomColor: "#ccd", width: "90%", marginLeft: 10 }}
+                            spellCheck={false}
+                            value={profil && profil.gender}
+                            onChangeText={new_text => setProfil({ ...profil, gender: new_text })}
                             autoCorrect={false}
                         />
                     </View>
@@ -81,44 +174,21 @@ const DetailPengiriman = () => {
                             placeholder="Alamat"
                             style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", borderBottomWidth: .5, borderBottomColor: "#ccd", width: "90%", marginLeft: 10 }}
                             spellCheck={false}
+                            value={profil && profil.alamat}
+                            onChangeText={new_text => setProfil({ ...profil, alamat: new_text })}
                             autoCorrect={false}
                         />
                     </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <View style={{ justifyContent: "center", alignItems: "center" }}>
-                            <Icon name={"map-pin"} size={20} color='#eb8937' />
-                        </View>
-                        <TextInput
-                            placeholder="Kelurahan / Kecamatan"
-                            style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", borderBottomWidth: .5, borderBottomColor: "#ccd", width: "90%", marginLeft: 10 }}
-                            spellCheck={false}
-                            autoCorrect={false}
-                        />
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <View style={{ justifyContent: "center", alignItems: "center" }}>
-                            <Icon name={"map-pin"} size={20} color='#eb8937' />
-                        </View>
-                        <TextInput
-                            placeholder="Kota"
-                            style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", borderBottomWidth: .5, borderBottomColor: "#ccd", width: "90%", marginLeft: 10 }}
-                            spellCheck={false}
-                            autoCorrect={false}
-                        />
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <View style={{ justifyContent: "center", alignItems: "center" }}>
-                            <Icon name={"book"} size={20} color='#eb8937' />
-                        </View>
-                        <TextInput
-                            placeholder="Kodepos"
-                            style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", borderBottomWidth: .5, borderBottomColor: "#ccd", width: "90%", marginLeft: 10 }}
-                            spellCheck={false}
-                            autoCorrect={false}
-                        />
-                    </View>
-                    <Ripple rippleColor="#fff" style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center", marginTop: 30 }}>
-                        <Text style={{ fontSize: 14, color: '#fff', fontFamily: "Poppins-SemiBold" }}>Simpan</Text>
+                    <Ripple
+                        rippleColor="#fff"
+                        style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center", marginTop: 30 }}
+                        onPress={() => saveProfil()}
+                    >
+                        {isLoading ? (
+                            <ActivityIndicator color="#fff" />
+                        ) : (
+                            <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>simpan</Text>
+                        )}
                     </Ripple>
                 </View>
             </View>
