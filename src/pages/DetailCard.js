@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Text, TouchableOpacity, Image, View, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
+import { Text, TouchableOpacity, Image, View, ScrollView, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Ripple from 'react-native-material-ripple';
 import { Actions } from 'react-native-router-flux'
@@ -20,6 +20,7 @@ const DetailCard = (props) => {
     const [fav, setFav] = useState(false)
     const [cartId, setCartId] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
+    const [numberCart, setNumberCart] = useState(0)
 
     const getData = () => {
         axios.get(`${backendURL}/api/v1/product/${props.id}/`)
@@ -54,11 +55,12 @@ const DetailCard = (props) => {
                         axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${id}`, key)
                             .then((res) => {
                                 if (res.status === 200) {
-                                    let data_wishlist = res.data.data.items
+                                    let data_wishlist = res.data.data
+
                                     let products_id = []
                                     if (data_wishlist.length > 0) {
                                         data_wishlist.map(el => {
-                                            products_id.push(el.id)
+                                            products_id.push(el.product.id)
                                         })
                                     }
                                     if (products_id.includes(props.id)) {
@@ -84,11 +86,8 @@ const DetailCard = (props) => {
                                 }
                             })
                             .catch(err => {
-                                console.log("400 nih");
                                 console.log(err);
                             })
-                    } else {
-                        Actions.Auth()
                     }
                 })
             }
@@ -97,6 +96,7 @@ const DetailCard = (props) => {
 
     useEffect(() => {
         getData()
+        displayNumberCart()
     }, [])
 
     const addToWishlist = () => {
@@ -108,25 +108,31 @@ const DetailCard = (props) => {
                     product: props.id
                 }).then((res) => {
                     setFav(true)
-                    toast("Wishlist Berhasil Ditambahkan", "info")
+                    toast("Wishlist Berhasil Ditambahkan", "success")
                 })
             }
         })
     }
 
     const removeFromWishlist = () => {
-        AsyncStorage.getItem("customerID").then(data => {
-            if (data !== null) {
-                let id = JSON.parse(data)
-                axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${id}`)
-                .then((res) => {
-                    let wishlist_id = res.data.wishlist_id
-                    axios.delete(`${backendURL}/api/v1/wishlist/${wishlist_id}/`)
+        let id_produk = props.id
+        AsyncStorage.getItem("customerID").then(value => {
+            if (value !== null) {
+                let customer_id = JSON.parse(value)
+                axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`)
                     .then(res => {
-                        setFav(false)
-                        toast("Wishlist Berhasil Dihapus", "danger")
+                        let wishlist_data = res.data.data
+                        wishlist_data.map(el => {
+                            if (el.product.id === id_produk) {
+                                let wishlist_id = el.wishlist_id
+                                axios.delete(`${backendURL}/api/v1/wishlist/${wishlist_id}/`)
+                                    .then(res => {
+                                        toast("Wishlist Berhasil Dihapus", "danger")
+                                        setFav(false)
+                                    })
+                            }
+                        })
                     })
-                })
             }
         })
     }
@@ -150,13 +156,15 @@ const DetailCard = (props) => {
                                         product: props.id,
                                         qty: 1
                                     })
-                                    .then(res => {
-                                        setIsLoading(false)
-                                        toast("Keranjang Berhasil Ditambahkan", "success")
-                                    })
-                                    .catch((err) => {
-                                        console.log(err);
-                                    })
+                                        .then(res => {
+                                            setIsLoading(false)
+                                            toast("Keranjang Berhasil Ditambahkan", "success")
+                                            displayNumberCart()
+                                        })
+                                        .catch((err) => {
+                                            setIsLoading(false)
+                                            toast("Keranjang Gagal Ditambahkan", "danger")
+                                        })
                                 } else {
                                     setRefreshToken()
                                 }
@@ -165,6 +173,18 @@ const DetailCard = (props) => {
                 })
             } else {
                 console.log("no access [detailcard]");
+            }
+        })
+    }
+
+    const displayNumberCart = () => {
+        AsyncStorage.getItem("customerID").then(value => {
+            if (value !== null) {
+                let customer_id = JSON.parse(value)
+                axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`)
+                    .then(res => {
+                        setNumberCart(res.data.data.total_cart_item);
+                    })
             }
         })
     }
@@ -183,6 +203,9 @@ const DetailCard = (props) => {
                         <Icon name={"heart"} size={19} color="#fff" />
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang()}>
+                        <View style={{ position: "absolute", paddingHorizontal: 5, paddingVertical: 0, borderRadius: 100, backgroundColor: "red", zIndex: 99, top: -10, right: -10, justifyContent: "center", alignItems: "center" }}>
+                            <Text style={{ fontSize: 10, color: "#fff", fontFamily: "Poppins-SemiBold" }}>{numberCart}</Text>
+                        </View>
                         <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
                     </TouchableOpacity>
                 </View>

@@ -44,12 +44,9 @@ const Transaksi = () => {
     ]);
     return (
         <>
-            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
-                <TouchableOpacity onPress={() => Actions.pop()}>
-                    <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
-                </TouchableOpacity>
-                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Transaksi</Text>
-            </LinearGradient>
+            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Transaksi</Text>
+      </LinearGradient>
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}

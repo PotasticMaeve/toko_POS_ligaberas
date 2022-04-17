@@ -8,6 +8,7 @@ import styles from "../stylesheets/Main"
 import Card from "../components/Card"
 import axios from "axios"
 import { MainContext } from "../context/MainContext"
+import { toast } from "../Helper"
 
 const Home = () => {
   const { backend_url } = useContext(MainContext)
@@ -22,8 +23,7 @@ const Home = () => {
         }
       })
       .catch((err) => {
-        console.log(err);
-        alert("Terjadi Kesalahan Saat Memuat Produk")
+        toast("Gagal Memuat Data Produk", "danger")
       })
   }
 

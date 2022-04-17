@@ -6,6 +6,7 @@ import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Modal from "react-native-modal";
 import Icon from 'react-native-vector-icons/Ionicons';
+import Icons from "react-native-vector-icons/AntDesign"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MainContext } from '../context/MainContext'
 import { toast } from '../Helper'
@@ -44,13 +45,21 @@ const SideMenu = () => {
                 </View>
             </View>
             <View style={styles.menu}>
-                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Transaksi()}>
-                    <FontAwesome5 name={"receipt"} size={18} color="#e36414" />
-                    <Text style={styles.menu_text}>Transaksi</Text>
+                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Wishlist()}>
+                    <Icons name={"heart"} size={19} color="#e36414" style={{ marginLeft: 1 }} />
+                    <Text style={styles.menu_text}>Wishlist</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.DetailPengiriman()}>
-                    <FontAwesome5 name={"user-alt"} size={18} color="#e36414" />
-                    <Text style={styles.menu_text}>Profil</Text>
+                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Keranjang()}>
+                    <FontAwesome5 name={"shopping-cart"} size={18} color="#e36414" />
+                    <Text style={styles.menu_text}>Keranjang</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Customers()}>
+                    <FontAwesome5 name={"users"} size={18} color="#e36414" />
+                    <Text style={styles.menu_text}>Pelanggan</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Products()}>
+                    <FontAwesome5 name={"box-open"} size={18} color="#e36414" />
+                    <Text style={styles.menu_text}>Produk</Text>
                 </TouchableOpacity>
                 {isAuthorized ? (
                     <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>

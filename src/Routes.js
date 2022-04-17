@@ -25,6 +25,8 @@ import Bumbu from "./pages/Bumbu";
 import Checkout from "./pages/Checkout";
 import DetailPengiriman from "./pages/DetailPengiriman";
 import Config from "./pages/Config";
+import Customers from "./pages/Customers";
+import Products from "./pages/Products";
 import { MainContext } from "./context/MainContext";
 
 const tabIcon = ({ name, focused, title }) => {
@@ -57,11 +59,11 @@ const Routes = () => {
                         <Scene key="Home" name="home" title="Home" icon={tabIcon} >
                             <Scene key="Home" name="Home" component={Home} hideNavBar />
                         </Scene>
-                        <Scene key="Wishlist" name="heart" title="Wishlist" icon={tabIcon} hideNavBar>
-                            <Scene key="Wishlist" name="Wishlist" component={isAuthorized ? Wishlist : Auth} title="Wishlist" />
+                        <Scene key="Transaksi" name="receipt" title="Transaksi" icon={tabIcon} hideNavBar>
+                            <Scene key="Transaksi" name="Transaksi" component={isAuthorized ? Transaksi : Auth} title="Transaksi" />
                         </Scene>
-                        <Scene key="Keranjang" name="shopping-cart" title="Keranjang" icon={tabIcon} hideNavBar>
-                            <Scene key="Keranjang" name="Keranjang" component={isAuthorized ? Keranjang : Auth} title="Keranjang" />
+                        <Scene key="DetailPengiriman" name="user-alt" title="Profil" icon={tabIcon} hideNavBar>
+                            <Scene key="DetailPengiriman" name="DetailPengiriman" component={isAuthorized ? DetailPengiriman : Auth} title="DetailPengiriman" />
                         </Scene>
                     </Scene>
                 </Drawer>
@@ -82,6 +84,8 @@ const Routes = () => {
                 <Scene key="Bumbu" component={Bumbu} title="Bumbu" />
                 <Scene key="Checkout" component={Checkout} title="Checkout" />
                 <Scene key="DetailPengiriman" component={isAuthorized ? DetailPengiriman : Auth} title="DetailPengiriman" />
+                <Scene key="Customers" component={isAuthorized ? Customers : Auth} title="Customers" />
+                <Scene key="Products" component={isAuthorized ? Products : Auth} title="Products" />
             </Scene>
         </Router>
     )

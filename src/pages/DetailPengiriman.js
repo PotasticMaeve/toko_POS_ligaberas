@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View } from 'react-native';
-import { Text, TouchableOpacity, StyleSheet, Image, TextInput, ActivityIndicator } from 'react-native';
+import { Text, StyleSheet, Image, TextInput, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
-import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import Icon from 'react-native-vector-icons/Feather'
 import Icons from 'react-native-vector-icons/Fontisto'
@@ -77,11 +76,8 @@ const DetailPengiriman = () => {
 
     return (
         <>
-            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
-                <TouchableOpacity onPress={() => Actions.pop()}>
-                    <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
-                </TouchableOpacity>
-                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Profil</Text>
+            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Profil</Text>
             </LinearGradient>
             <View style={{ paddingTop: 15, backgroundColor: "#fff", height: "100%" }}>
                 <View style={{

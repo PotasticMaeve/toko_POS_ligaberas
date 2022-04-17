@@ -1,21 +1,54 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { View, Text, TouchableHighlight, Image } from 'react-native'
 import Ripple from 'react-native-material-ripple'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { MainContext } from '../context/MainContext'
-import { convertToIDR } from '../Helper'
+import { convertToIDR, toast } from '../Helper'
 import styles from '../stylesheets/Main'
 
 const WishlistCard = (props) => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
+    const [isLoading, setIsLoading] = useState(false)
+
     const addToCart = () => {
-        axios.post(`${backendURL}/api/v1/cart_item/`, {
-            cart: props.cartId,
-            product: props.id,
-            qty: 1
-        }).then((res) => {})
+        setIsLoading(true)
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(value => {
+                    if (value !== null) {
+                        let customer_id = JSON.parse(value)
+                        axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    let cart_id = res.data.data.id
+                                    axios.post(`${backendURL}/api/v1/cart_item/`, {
+                                        cart: cart_id,
+                                        product: props.id,
+                                        qty: 1
+                                    })
+                                        .then(res => {
+                                            setIsLoading(false)
+                                            toast("Keranjang Berhasil Ditambahkan", "success")
+                                        })
+                                        .catch((err) => {
+                                            setIsLoading(false)
+                                            toast("Keranjang Gagal Ditambahkan", "danger")
+                                        })
+                                } else {
+                                    setRefreshToken()
+                                }
+                            })
+                    }
+                })
+            } else {
+                console.log("no access [detailcard]");
+            }
+        })
     }
 
     return (
@@ -46,7 +79,7 @@ const WishlistCard = (props) => {
                         <Ripple
                             rippleColor="red"
                             style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
-                            onPress={() => { }}
+                            onPress={() => props.remove(props.id)}
                         >
                             <View style={{ padding: 8, margin: 10 }}>
                                 <FontAwesome5 name={"trash"} size={16} color="red" />

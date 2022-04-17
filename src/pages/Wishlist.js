@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Text, ScrollView } from 'react-native'
+import { Text, ScrollView, TouchableOpacity } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import Space from '../components/Space'
 import WishlistCard from '../components/WishlistCard'
@@ -7,8 +7,10 @@ import styles from '../stylesheets/Main'
 import { MainContext } from "../context/MainContext"
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { setStorage, setRefreshToken } from '../Helper'
+import { setStorage, setRefreshToken, toast } from '../Helper'
 import ShimmerWishlist from '../components/ShimmerWishlist'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import { Actions } from 'react-native-router-flux'
 
 const colorHeader = ['#f3a337', '#eb8937']
 
@@ -35,8 +37,7 @@ const Wishlist = () => {
                                     axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`, key)
                                         .then((res) => {
                                             if (res.status === 200) {
-                                                let wishlist_data = res.data.data.items
-                                                setData(wishlist_data);
+                                                setData(res.data.data)
                                             } else {
                                                 setRefreshToken()
                                             }
@@ -65,7 +66,31 @@ const Wishlist = () => {
         })
     }
 
+    const removeItem = (id) => {
+        let id_produk = id
+        AsyncStorage.getItem("customerID").then(value => {
+            if (value !== null) {
+                let customer_id = JSON.parse(value)
+                axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`)
+                    .then(res => {
+                        let wishlist_data = res.data.data
+                        wishlist_data.map(el => {
+                            if (el.product.id === id_produk) {
+                                let wishlist_id = el.wishlist_id
+                                axios.delete(`${backendURL}/api/v1/wishlist/${wishlist_id}/`)
+                                    .then(res => {
+                                        toast("Produk Berhasil Dihapus", "danger")
+                                        getData()
+                                    })
+                            }
+                        })
+                    })
+            }
+        })
+    }
+
     useEffect(() => {
+        setIsLoading(true)
         getData()
         setTimeout(() => {
             setIsLoading(false)
@@ -74,9 +99,11 @@ const Wishlist = () => {
 
     return (
         <>
-            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Wishlist</Text>
-                <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }} onPress={() => getData()}>Refresh</Text>
+            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                <TouchableOpacity onPress={() => Actions.pop()}>
+                    <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
+                </TouchableOpacity>
+                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Wishlist</Text>
             </LinearGradient>
             <ScrollView style={{ paddingTop: 5, paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}>
                 {isLoading ? (
@@ -85,9 +112,9 @@ const Wishlist = () => {
                         <ShimmerWishlist />
                     </>
                 ) : [
-                    data.map((el, i) => {
+                    data && data.length > 0 && data.map((el, i) => {
                         return (
-                            <WishlistCard cartId={cartId} key={i} exist={true} id={el.id} nama={el.nama} harga={el.harga} qty={el.qty} photo={el.photo} />
+                            <WishlistCard cartId={cartId} key={i} exist={true} id={el.product.id} nama={el.product.nama_barang} harga={el.product.harga} qty={el.product.qty} photo={el.product.photo} remove={removeItem} />
                         )
                     })
                 ]}
