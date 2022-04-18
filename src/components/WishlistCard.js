@@ -32,6 +32,7 @@ const WishlistCard = (props) => {
                                         qty: 1
                                     })
                                         .then(res => {
+                                            props.responsiveAddKeranjang && props.responsiveAddKeranjang()
                                             setIsLoading(false)
                                             toast("Keranjang Berhasil Ditambahkan", "success")
                                         })

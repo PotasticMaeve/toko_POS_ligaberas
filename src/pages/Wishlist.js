@@ -114,7 +114,7 @@ const Wishlist = (props) => {
                 ) : [
                     data && data.length > 0 && data.map((el, i) => {
                         return (
-                            <WishlistCard responsiveDeleteWishlist={props.responsiveDeleteWishlist} cartId={cartId} key={i} exist={true} id={el.product.id} nama={el.product.nama_barang} harga={el.product.harga} qty={el.product.qty} photo={el.product.photo} removeItem={removeItem} />
+                            <WishlistCard responsiveDeleteWishlist={props.responsiveDeleteWishlist} responsiveAddKeranjang={props.responsiveAddKeranjang} cartId={cartId} key={i} exist={true} id={el.product.id} nama={el.product.nama_barang} harga={el.product.harga} qty={el.product.qty} photo={el.product.photo} removeItem={removeItem} />
                         )
                     })
                 ]}

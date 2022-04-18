@@ -105,7 +105,7 @@ const DetailCard = (props) => {
                                     let data_wishlist = res.data.data
                                     if (data_wishlist.length > 0) {
                                         data_wishlist.map(el => {
-                                            if(el.product.id === target_delete_id){
+                                            if (el.product.id === target_delete_id) {
                                                 setFav(false)
                                             }
                                         })
@@ -132,14 +132,30 @@ const DetailCard = (props) => {
                     .then(res => {
                         let cart_left = []
                         let cart_list = res.data.data.cart_data
-                        if(cart_list.length > 0){
+                        if (cart_list.length > 0) {
                             cart_list.map(el => {
-                                if(el.id !== target_delete_id){
+                                if (el.id !== target_delete_id) {
                                     cart_left.push(el)
                                 }
                             })
                             setNumberCart(cart_left.length);
-                        } 
+                        }
+                    })
+            }
+        })
+    }
+
+    const responsiveAddKeranjang = () => {
+        AsyncStorage.getItem("customerID").then(value => {
+            if (value !== null) {
+                let customer_id = JSON.parse(value)
+                axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`)
+                    .then(res => {
+                        let cart_list = res.data.data.cart_data
+                        if (cart_list.length > 0) {
+                            let cart_num = cart_list.length
+                            setNumberCart(cart_num);
+                        }
                     })
             }
         })
@@ -229,7 +245,7 @@ const DetailCard = (props) => {
                     <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Search()}>
                         <FontAwesome5 name={"search"} size={19} color='#fff' />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Wishlist({ responsiveDeleteWishlist: responsiveDeleteWishlist })}>
+                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Wishlist({ responsiveDeleteWishlist: responsiveDeleteWishlist, responsiveAddKeranjang: responsiveAddKeranjang })}>
                         <Icon name={"heart"} size={19} color="#fff" />
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang({ responsiveDeleteKeranjang: responsiveDeleteKeranjang })}>
@@ -302,7 +318,7 @@ const DetailCard = (props) => {
                         <Ripple
                             rippleColor="#fff"
                             style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
-                            onPress={() => addToWishlist()}
+                            onPress={() => {IsAuthorized ? addToWishlist() : toast("Harap Login Terlebih Dahulu", "info")}}
                         >
                             <View style={{ padding: 8, margin: 10 }}>
                                 <FontAwesome5 name={"heart"} size={20} color="red" onPress={() => setFav(true)} />
@@ -310,7 +326,7 @@ const DetailCard = (props) => {
                         </Ripple>
                     )}
                     <Ripple
-                        onPress={() => addToKeranjang()}
+                        onPress={() => {IsAuthorized ? addToKeranjang() : toast("Harap Login Terlebih Dahulu", "info")}}
                         rippleColor="#fff"
                         style={{ height: 40, borderRadius: 10, backgroundColor: '#eb8937', overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
                     >
