@@ -39,6 +39,11 @@ class KeranjangCard extends React.Component {
         return convertToIDR(subtotal)
     }
 
+    removeKeranjang = (id) => {
+        this.removeCartItem(id)
+        this.props.responsiveDeleteKeranjang(id)
+    }
+
     render(){
         if (this.state.existCart) {
             return (
@@ -79,7 +84,7 @@ class KeranjangCard extends React.Component {
                                 </View>
                             </View>
                             <View style={{ display: 'flex', justifyContent: "space-between", flexDirection: 'row', marginTop: 10, justifyContent: "space-around", borderTopWidth: 1, borderTopColor: "#ccc", width: "100%", paddingTop: 10 }}>
-                                <FontAwesome5 name={"trash"} size={17} color="red" onPress={() => this.removeCartItem(this.props.data.product.id)}/>
+                                <FontAwesome5 name={"trash"} size={17} color="red" onPress={() => this.removeKeranjang(this.props.data.product.id)}/>
                                 <Text style={{ color: "#e36414", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Subtotal</Text>
                                 <Text style={{ color: "#e36414", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>{this.displaySubTotal()}</Text>
                             </View>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Text, TouchableOpacity, Image, View, ScrollView, ActivityIndicator } from 'react-native';
+import { Text, TouchableOpacity, Image, View, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import Ripple from 'react-native-material-ripple';
 import { Actions } from 'react-native-router-flux'
@@ -14,11 +14,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 const colorHeader = ['#f3a337', '#eb8937']
 
 const DetailCard = (props) => {
-    const { backend_url } = useContext(MainContext)
+    const { backend_url, authorized } = useContext(MainContext)
+    const [IsAuthorized] = authorized
     const [backendURL] = backend_url
     const [data, setData] = useState({})
     const [fav, setFav] = useState(false)
-    const [cartId, setCartId] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
     const [numberCart, setNumberCart] = useState(0)
 
@@ -28,20 +28,7 @@ const DetailCard = (props) => {
                 if (res.status == 200) {
                     setData(res.data);
                 } else {
-                    AsyncStorage.getItem("tokenRefresh").then(data => {
-                        if (data !== null) {
-                            let tokenRefresh = JSON.parse(data)
-                            axios
-                                .post(`${backendURL}/api/v1/token/refresh/`, {
-                                    refresh: tokenRefresh
-                                })
-                                .then(res => {
-                                    tokenAccess = res.data.access
-                                    AsyncStorage.setItem("tokenAccess", JSON.stringify(tokenAccess))
-                                    console.log("access baru [detail card]");
-                                })
-                        }
-                    })
+                    setRefreshToken()
                 }
             })
 
@@ -52,7 +39,8 @@ const DetailCard = (props) => {
 
                 AsyncStorage.getItem("customerID").then(id => {
                     if (id !== null) {
-                        axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${id}`, key)
+                        let customer_id = JSON.parse(id)
+                        axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`, key)
                             .then((res) => {
                                 if (res.status === 200) {
                                     let data_wishlist = res.data.data
@@ -69,20 +57,7 @@ const DetailCard = (props) => {
                                         setFav(false)
                                     }
                                 } else {
-                                    AsyncStorage.getItem("tokenRefresh").then(data => {
-                                        if (data !== null) {
-                                            let tokenRefresh = JSON.parse(data)
-                                            axios
-                                                .post(`${backendURL}/api/v1/token/refresh/`, {
-                                                    refresh: tokenRefresh
-                                                })
-                                                .then(res => {
-                                                    tokenAccess = res.data.access
-                                                    AsyncStorage.setItem("tokenAccess", JSON.stringify(tokenAccess))
-                                                    console.log("access baru [detail card]");
-                                                })
-                                        }
-                                    })
+                                    setRefreshToken()
                                 }
                             })
                             .catch(err => {
@@ -102,7 +77,7 @@ const DetailCard = (props) => {
     const addToWishlist = () => {
         AsyncStorage.getItem("customerID").then(data => {
             if (data !== null) {
-                let id = data
+                let id = JSON.parse(data)
                 axios.post(`${backendURL}/api/v1/wishlist/`, {
                     customer: id,
                     product: props.id
@@ -110,6 +85,62 @@ const DetailCard = (props) => {
                     setFav(true)
                     toast("Wishlist Berhasil Ditambahkan", "success")
                 })
+            }
+        })
+    }
+
+    const responsiveDeleteWishlist = (id) => {
+        let target_delete_id = id
+        AsyncStorage.getItem("tokenAccess").then(data => {
+            if (data !== null) {
+                let tokenAccess = JSON.parse(data)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+
+                AsyncStorage.getItem("customerID").then(id => {
+                    if (id !== null) {
+                        let customer_id = JSON.parse(id)
+                        axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`, key)
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    let data_wishlist = res.data.data
+                                    if (data_wishlist.length > 0) {
+                                        data_wishlist.map(el => {
+                                            if(el.product.id === target_delete_id){
+                                                setFav(false)
+                                            }
+                                        })
+                                    }
+                                } else {
+                                    setRefreshToken()
+                                }
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            })
+                    }
+                })
+            }
+        })
+    }
+
+    const responsiveDeleteKeranjang = (id) => {
+        let target_delete_id = id
+        AsyncStorage.getItem("customerID").then(value => {
+            if (value !== null) {
+                let customer_id = JSON.parse(value)
+                axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`)
+                    .then(res => {
+                        let cart_left = []
+                        let cart_list = res.data.data.cart_data
+                        if(cart_list.length > 0){
+                            cart_list.map(el => {
+                                if(el.id !== target_delete_id){
+                                    cart_left.push(el)
+                                }
+                            })
+                            setNumberCart(cart_left.length);
+                        } 
+                    })
             }
         })
     }
@@ -150,7 +181,6 @@ const DetailCard = (props) => {
                             .then((res) => {
                                 if (res.status === 200) {
                                     let cart_id = res.data.data.id
-                                    setCartId(cart_id)
                                     axios.post(`${backendURL}/api/v1/cart_item/`, {
                                         cart: cart_id,
                                         product: props.id,
@@ -199,14 +229,24 @@ const DetailCard = (props) => {
                     <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Search()}>
                         <FontAwesome5 name={"search"} size={19} color='#fff' />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Wishlist()}>
+                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Wishlist({ responsiveDeleteWishlist: responsiveDeleteWishlist })}>
                         <Icon name={"heart"} size={19} color="#fff" />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang()}>
-                        <View style={{ position: "absolute", paddingHorizontal: 5, paddingVertical: 0, borderRadius: 100, backgroundColor: "red", zIndex: 99, top: -10, right: -10, justifyContent: "center", alignItems: "center" }}>
-                            <Text style={{ fontSize: 10, color: "#fff", fontFamily: "Poppins-SemiBold" }}>{numberCart}</Text>
-                        </View>
-                        <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
+                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang({ responsiveDeleteKeranjang: responsiveDeleteKeranjang })}>
+                        {IsAuthorized ? [
+                            numberCart !== 0 ? (
+                                <View>
+                                    <View style={{ position: "absolute", paddingHorizontal: 6, paddingVertical: 0, borderRadius: 100, backgroundColor: "red", zIndex: 99, top: -10, right: -10, justifyContent: "center", alignItems: "center" }}>
+                                        <Text style={{ fontSize: 10, color: "#fff", fontFamily: "Poppins-SemiBold" }}>{numberCart}</Text>
+                                    </View>
+                                    <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
+                                </View>
+                            ) : (
+                                <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
+                            )
+                        ] : (
+                            <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
+                        )}
                     </TouchableOpacity>
                 </View>
             </LinearGradient>

@@ -14,7 +14,7 @@ import { Actions } from 'react-native-router-flux'
 
 const colorHeader = ['#f3a337', '#eb8937']
 
-const Wishlist = () => {
+const Wishlist = (props) => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [data, setData] = useState([])
@@ -114,7 +114,7 @@ const Wishlist = () => {
                 ) : [
                     data && data.length > 0 && data.map((el, i) => {
                         return (
-                            <WishlistCard cartId={cartId} key={i} exist={true} id={el.product.id} nama={el.product.nama_barang} harga={el.product.harga} qty={el.product.qty} photo={el.product.photo} remove={removeItem} />
+                            <WishlistCard responsiveDeleteWishlist={props.responsiveDeleteWishlist} cartId={cartId} key={i} exist={true} id={el.product.id} nama={el.product.nama_barang} harga={el.product.harga} qty={el.product.qty} photo={el.product.photo} removeItem={removeItem} />
                         )
                     })
                 ]}

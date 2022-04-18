@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import React, { useContext, useState } from 'react'
-import { View, Text, TouchableHighlight, Image } from 'react-native'
+import { View, Text, TouchableHighlight, Image, ActivityIndicator } from 'react-native'
 import Ripple from 'react-native-material-ripple'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { MainContext } from '../context/MainContext'
@@ -51,6 +51,11 @@ const WishlistCard = (props) => {
         })
     }
 
+    const deleleWishlist = (id) => {
+        props.removeItem(id)
+        props.responsiveDeleteWishlist(id)
+    }
+
     return (
         <View style={[styles.cardItemWrap, {
             flexDirection: 'column',
@@ -77,9 +82,9 @@ const WishlistCard = (props) => {
                     </View>
                     <View style={{ display: 'flex', flexDirection: 'row', marginTop: 10, justifyContent: "space-around" }}>
                         <Ripple
-                            rippleColor="red"
+                            rippleColor="#FC573B"
                             style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
-                            onPress={() => props.remove(props.id)}
+                            onPress={() => deleleWishlist(props.id)}
                         >
                             <View style={{ padding: 8, margin: 10 }}>
                                 <FontAwesome5 name={"trash"} size={16} color="red" />
@@ -89,7 +94,11 @@ const WishlistCard = (props) => {
                             rippleColor="#27ae60" style={{ height: 40, borderRadius: 10, borderWidth: 1, borderColor: '#27ae60', overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
                             onPress={() => addToCart()}
                         >
-                            <Text style={{ color: '#27ae60', fontFamily: "Poppins-SemiBold", marginTop: 5, fontSize: 13 }}>Tambah ke Keranjang</Text>
+                            {isLoading ? (
+                                <ActivityIndicator color="#27ae60" />
+                            ):(
+                                <Text style={{ color: '#27ae60', fontFamily: "Poppins-SemiBold", marginTop: 5, fontSize: 13 }}>Tambah ke Keranjang</Text>
+                            )}
                         </Ripple>
                     </View>
                 </>

@@ -17,7 +17,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 
 const colorHeader = ['#f3a337', '#eb8937']
 
-const Keranjang = () => {
+const Keranjang = (props) => {
   const isFocused = useIsFocused();
   const { backend_url } = useContext(MainContext)
   const [backendURL] = backend_url
@@ -65,7 +65,7 @@ const Keranjang = () => {
 
   const calculateTotal = useCallback((id, amount) => {
     let list_cart = data
-    let total = 0
+    let grandTotal = 0
     let jumlah = 0
     let harga = 0
     list_cart.map((el) => {
@@ -75,9 +75,9 @@ const Keranjang = () => {
       } else {
         jumlah = el.qty
       }
-      total += jumlah * harga
+      grandTotal += jumlah * harga
+      setTotal(grandTotal)
     })
-    setTotal(total)
   })
 
   const removeItem = (id) => {
@@ -95,6 +95,7 @@ const Keranjang = () => {
                   .then(res => {
                     toast("Produk Berhasil Dihapus", "danger")
                     getData()
+                    calculateTotal()
                   })
               }
             })
@@ -110,8 +111,8 @@ const Keranjang = () => {
   useEffect(() => {
     if (isFocused) {
       getData();
+      calculateTotal()
     }
-    calculateTotal()
     setTimeout(() => {
       setIsLoading(false)
     }, 500)
@@ -133,7 +134,7 @@ const Keranjang = () => {
           </>
         ) : [
           data && data.length > 0 && data.map((el, i) => (
-            <KeranjangCard key={i} exist={true} data={el} calculate={calculateTotal} remove={removeItem} />
+            <KeranjangCard responsiveDeleteKeranjang={props.responsiveDeleteKeranjang} key={i} exist={true} data={el} calculate={calculateTotal} remove={removeItem} />
           ))
         ]}
         <Space />

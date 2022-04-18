@@ -32,6 +32,7 @@ export const toast = (msg, type) => {
     showMessage({
         message: msg,
         type: type,
+        duration: 500,
         statusBarHeight: 20,
         style: {
             paddingTop: 30,
