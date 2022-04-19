@@ -68,12 +68,10 @@ const Checkout = () => {
     useEffect(() => {
         displayProfil()
         displayTotalBarang()
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 500)
     }, [])
 
     const displayTotalBarang = () => {
+        setIsLoading(true)
         let total = 0
         AsyncStorage.getItem("tokenAccess").then(data => {
             if (data !== null) {
@@ -198,16 +196,16 @@ const Checkout = () => {
                 <View style={{ position: "absolute", left: 0, bottom: 0, height: 180, paddingTop: 10, paddingBottom: 10, width: "100%", paddingHorizontal: 15, backgroundColor: "#fafafa" }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13.5, color: '#60a3bc' }}>Total Harga Barang</Text>
-                        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 13.5, color: '#60a3bc' }}>{convertToIDR(totalBarang)}</Text>
+                        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 13.5, color: '#60a3bc' }}>{totalBarang}</Text>
                     </View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13.5, color: '#60a3bc' }}>Biaya Kirim</Text>
-                        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 13.5, color: '#60a3bc' }}>{convertToIDR(30000)}</Text>
+                        <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 13.5, color: '#60a3bc' }}>{30000}</Text>
                     </View>
                     <View style={{ borderTopWidth: 1, borderTopColor: "#ccc", height: 10, width: "100%", marginVertical: 5 }}></View>
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>Total Bayar</Text>
-                        <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>{convertToIDR(grandTotal)}</Text>
+                        <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>{grandTotal}</Text>
                     </View>
                     <Ripple rippleColor="#fff" style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }} onPress={() => bs.current.show()}>
                         <Text style={{ fontSize: 14, color: '#fff', fontFamily: "Poppins-SemiBold" }}>Lanjutkan Pembayaran</Text>

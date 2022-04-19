@@ -11,21 +11,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import { setStorage, setRefreshToken } from '../Helper'
 import ShimmerKeranjang from '../components/ShimmerKeranjang'
-import { useIsFocused } from "@react-navigation/native";
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import LottieView from 'lottie-react-native';
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
+const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 
 const colorHeader = ['#f3a337', '#eb8937']
-const { height, width } = Dimensions.get("screen")
+const { height } = Dimensions.get("screen")
 
 const Keranjang = (props) => {
-  const isFocused = useIsFocused();
   const { backend_url } = useContext(MainContext)
   const [backendURL] = backend_url
   const [total, setTotal] = useState(0)
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [cartId, setCartId] = useState(0)
+  const [customerId, setCustomerId] = useState(0)
+  const [loadTotal, setLoadTotal] = useState(false)
 
   const getData = () => {
     setIsLoading(true)
@@ -40,12 +45,14 @@ const Keranjang = (props) => {
               .then((res) => {
                 if (res.status === 200) {
                   let customer_id = res.data.data.customer_id
+                  setCustomerId(customer_id)
                   setStorage("customerID", customer_id)
-                  axios.get(`${backendURL}/api/v1/cart_item/?customer_id=${customer_id}`, key)
+                  axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
                     .then((res) => {
                       if (res.status === 200) {
-                        let cart_item_data = res.data.data
+                        let cart_item_data = res.data.data.cart_data
                         setData(cart_item_data);
+                        setCartId(res.data.data.id)
                         setIsLoading(false)
                       } else {
                         setRefreshToken()
@@ -66,21 +73,60 @@ const Keranjang = (props) => {
   }
 
   const calculateTotal = useCallback((id, amount) => {
-    let list_cart = data
-    let grandTotal = 0
-    let jumlah = 0
-    let harga = 0
-    list_cart.map((el) => {
-      harga = el.product.harga
-      if (el.product.id === id) {
-        jumlah = amount
-      } else {
-        jumlah = el.qty
-      }
-      grandTotal += jumlah * harga
-      setTotal(grandTotal)
-    })
+    setLoadTotal(true)
+    let id_produk = id
+    let qty_produk = amount
+    let id_cart = cartId
+    let cart_list = data
+    let cart_item_id = 0
+    if (cart_list.length > 0) {
+      cart_list.map(el => {
+        if (el.product.id === id_produk) {
+          cart_item_id = el.id
+          axios.patch(`${backendURL}/api/v1/cart_item/${cart_item_id}/`, {
+            cart: id_cart,
+            product: id_produk,
+            qty: qty_produk
+          })
+            .then(res => {
+              if (res.status === 200) {
+                axios.get(`${backendURL}/api/v1/cart/?customer_id=${customerId}`)
+                  .then(res => {
+                    if (res.status === 200) {
+                      setTotal(res.data.data.grandtotal);
+                      setLoadTotal(false)
+                    }
+                  })
+              } else {
+                setRefreshToken()
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            })
+        }
+      })
+    }
   })
+
+  const getTotal = () => {
+    setLoadTotal(true)
+    AsyncStorage.getItem("customerID").then(value => {
+      if (value !== null) {
+        let customer_id = JSON.parse(value)
+        axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`)
+          .then(res => {
+            if (res.status === 200) {
+              setTotal(res.data.data.grandtotal);
+              setLoadTotal(false)
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          })
+      }
+    })
+  }
 
   const removeItem = (id) => {
     let id_produk = id
@@ -97,7 +143,7 @@ const Keranjang = (props) => {
                   .then(res => {
                     toast("Produk Berhasil Dihapus", "danger")
                     getData()
-                    calculateTotal()
+                    getTotal()
                   })
               }
             })
@@ -111,11 +157,9 @@ const Keranjang = (props) => {
   }
 
   useEffect(() => {
-    if (isFocused) {
-      getData();
-      calculateTotal()
-    }
-  }, [isFocused])
+    getData();
+    getTotal()
+  }, [])
 
   return (
     <>
@@ -179,7 +223,19 @@ const Keranjang = (props) => {
             paddingHorizontal: 10
           }}>
             <Text style={{ fontSize: 14, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>Total Belanja</Text>
-            <Text style={{ fontSize: 14, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>{convertToIDR(total)}</Text>
+            {loadTotal ? (
+              <ShimmerPlaceHolder
+                shimmerColors={colorShimmer}
+                style={{
+                  width: "30%",
+                  borderRadius: 5,
+                  marginLeft: "5%",
+                  height: 20
+                }}
+              />
+            ) : (
+              <Text style={{ fontSize: 14, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>{convertToIDR(total)}</Text>
+            )}
           </View>
           <Ripple
             rippleColor="#fff"
