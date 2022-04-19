@@ -134,7 +134,7 @@ const DetailCard = (props) => {
                         let cart_list = res.data.data.cart_data
                         if (cart_list.length > 0) {
                             cart_list.map(el => {
-                                if (el.id !== target_delete_id) {
+                                if (el.product.id !== target_delete_id) {
                                     cart_left.push(el)
                                 }
                             })
@@ -249,7 +249,7 @@ const DetailCard = (props) => {
                         <Icon name={"heart"} size={19} color="#fff" />
                     </TouchableOpacity>
                     <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang({ responsiveDeleteKeranjang: responsiveDeleteKeranjang })}>
-                        {IsAuthorized ? [
+                        {IsAuthorized ? (
                             numberCart !== 0 ? (
                                 <View>
                                     <View style={{ position: "absolute", paddingHorizontal: 6, paddingVertical: 0, borderRadius: 100, backgroundColor: "red", zIndex: 99, top: -10, right: -10, justifyContent: "center", alignItems: "center" }}>
@@ -260,7 +260,7 @@ const DetailCard = (props) => {
                             ) : (
                                 <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
                             )
-                        ] : (
+                        ) : (
                             <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
                         )}
                     </TouchableOpacity>

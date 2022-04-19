@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Text, ScrollView, TouchableOpacity } from 'react-native'
+import { Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 import Space from '../components/Space'
 import WishlistCard from '../components/WishlistCard'
@@ -11,9 +11,10 @@ import { setStorage, setRefreshToken, toast } from '../Helper'
 import ShimmerWishlist from '../components/ShimmerWishlist'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { Actions } from 'react-native-router-flux'
+import LottieView from 'lottie-react-native';
 
 const colorHeader = ['#f3a337', '#eb8937']
-
+const { height, width } = Dimensions.get("screen")
 const Wishlist = (props) => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
@@ -22,6 +23,7 @@ const Wishlist = (props) => {
     const [isLoading, setIsLoading] = useState(true)
 
     const getData = () => {
+        setIsLoading(true)
         AsyncStorage.getItem("tokenAccess").then(data => {
             if (data !== null) {
                 let tokenAccess = JSON.parse(data)
@@ -38,6 +40,7 @@ const Wishlist = (props) => {
                                         .then((res) => {
                                             if (res.status === 200) {
                                                 setData(res.data.data)
+                                                setIsLoading(false)
                                             } else {
                                                 setRefreshToken()
                                             }
@@ -90,11 +93,7 @@ const Wishlist = (props) => {
     }
 
     useEffect(() => {
-        setIsLoading(true)
         getData()
-        setTimeout(() => {
-            setIsLoading(false)
-        }, 500)
     }, [])
 
     return (
@@ -111,13 +110,28 @@ const Wishlist = (props) => {
                         <ShimmerWishlist />
                         <ShimmerWishlist />
                     </>
-                ) : [
-                    data && data.length > 0 && data.map((el, i) => {
+                ) : (
+                    data && data.length > 0 ? data.map((el, i) => {
                         return (
                             <WishlistCard responsiveDeleteWishlist={props.responsiveDeleteWishlist} responsiveAddKeranjang={props.responsiveAddKeranjang} cartId={cartId} key={i} exist={true} id={el.product.id} nama={el.product.nama_barang} harga={el.product.harga} qty={el.product.qty} photo={el.product.photo} removeItem={removeItem} />
                         )
-                    })
-                ]}
+                    }) : (
+                        <>
+                            <LottieView
+                                source={require('../animations/empty-wishlist.json')}
+                                autoPlay
+                                loop
+                                style={{
+                                    marginTop: 40,
+                                    height: height / 2.1,
+                                    flex: 1,
+                                }}
+                            />
+                            <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: "-10%" }}>Wishlist Kosong</Text>
+                            <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Ayo tambahkan barang favoritmu!</Text>
+                        </>
+                    )
+                )}
                 <Space />
             </ScrollView>
         </>

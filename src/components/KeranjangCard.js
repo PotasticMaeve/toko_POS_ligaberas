@@ -40,8 +40,8 @@ class KeranjangCard extends React.Component {
     }
 
     removeKeranjang = (id) => {
-        this.removeCartItem(id)
-        this.props.responsiveDeleteKeranjang(id)
+        this.removeCartItem && this.removeCartItem(id)
+        this.props.responsiveDeleteKeranjang && this.props.responsiveDeleteKeranjang(id)
     }
 
     render(){

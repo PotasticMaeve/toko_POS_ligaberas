@@ -53,8 +53,8 @@ const WishlistCard = (props) => {
     }
 
     const deleleWishlist = (id) => {
-        props.removeItem(id)
-        props.responsiveDeleteWishlist(id)
+        props.removeItem && props.removeItem(id)
+        props.responsiveDeleteWishlist && props.responsiveDeleteWishlist(id)
     }
 
     return (

@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import styles from '../stylesheets/Main'
 import LinearGradient from 'react-native-linear-gradient'
@@ -14,8 +14,10 @@ import ShimmerKeranjang from '../components/ShimmerKeranjang'
 import { useIsFocused } from "@react-navigation/native";
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import LottieView from 'lottie-react-native';
 
 const colorHeader = ['#f3a337', '#eb8937']
+const { height, width } = Dimensions.get("screen")
 
 const Keranjang = (props) => {
   const isFocused = useIsFocused();
@@ -113,9 +115,6 @@ const Keranjang = (props) => {
       getData();
       calculateTotal()
     }
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 500)
   }, [isFocused])
 
   return (
@@ -132,56 +131,73 @@ const Keranjang = (props) => {
             <ShimmerKeranjang />
             <ShimmerKeranjang />
           </>
-        ) : [
-          data && data.length > 0 && data.map((el, i) => (
+        ) : (
+          data && data.length > 0 ? data.map((el, i) => (
             <KeranjangCard responsiveDeleteKeranjang={props.responsiveDeleteKeranjang} key={i} exist={true} data={el} calculate={calculateTotal} remove={removeItem} />
-          ))
-        ]}
+          )) : (
+            <>
+              <LottieView
+                source={require('../animations/empty-cart.json')}
+                autoPlay
+                loop
+                style={{
+                  marginTop: 80,
+                  height: height / 2.6,
+                  flex: 1,
+                }}
+              />
+              <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: "-3%" }}>Keranjang Kosong</Text>
+              <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Ayo segera isi keranjang belanjamu!</Text>
+            </>
+          )
+        )}
         <Space />
       </ScrollView>
-      <View style={{
-        position: "absolute",
-        bottom: 0,
-        left: 0,
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-        height: 100,
-        backgroundColor: "#fafafa",
-        paddingHorizontal: 20,
-        shadowColor: '#eaeaea',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 1,
-        elevation: 3,
-      }}>
+      {data && data.length > 0 && (
         <View style={{
-          flexDirection: "row",
+          position: "absolute",
+          bottom: 0,
+          left: 0,
           width: "100%",
+          justifyContent: "center",
           alignItems: "center",
-          marginVertical: 8,
-          justifyContent: 'space-between',
-          paddingHorizontal: 10
+          height: 100,
+          backgroundColor: "#fafafa",
+          paddingHorizontal: 20,
+          shadowColor: '#eaeaea',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.5,
+          shadowRadius: 1,
+          elevation: 3,
         }}>
-          <Text style={{ fontSize: 14, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>Total Belanja</Text>
-          <Text style={{ fontSize: 14, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>{convertToIDR(total)}</Text>
-        </View>
-        <Ripple
-          rippleColor="#fff"
-          style={{
-            height: 40,
-            borderRadius: 10,
-            backgroundColor: '#eb8937',
-            overflow: 'hidden',
+          <View style={{
+            flexDirection: "row",
             width: "100%",
-            justifyContent: "center",
-            alignItems: 'center',
-          }}
-          onPress={() => checkoutCart()}
-        >
-          <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>checkout sekarang</Text>
-        </Ripple>
-      </View>
+            alignItems: "center",
+            marginVertical: 8,
+            justifyContent: 'space-between',
+            paddingHorizontal: 10
+          }}>
+            <Text style={{ fontSize: 14, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>Total Belanja</Text>
+            <Text style={{ fontSize: 14, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>{convertToIDR(total)}</Text>
+          </View>
+          <Ripple
+            rippleColor="#fff"
+            style={{
+              height: 40,
+              borderRadius: 10,
+              backgroundColor: '#eb8937',
+              overflow: 'hidden',
+              width: "100%",
+              justifyContent: "center",
+              alignItems: 'center',
+            }}
+            onPress={() => checkoutCart()}
+          >
+            <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>checkout sekarang</Text>
+          </Ripple>
+        </View>
+      )}
     </>
   )
 }
