@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Image } from 'react-native'
 import { Text } from 'react-native'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
@@ -12,9 +12,9 @@ import { MainContext } from '../context/MainContext'
 import { toast } from '../Helper'
 
 const SideMenu = () => {
-    const { authorized, data_username } = useContext(MainContext)
+    const { authorized } = useContext(MainContext)
     const [isAuthorized, setIsAuthorized] = authorized
-    const [username, setUsername] = data_username
+    const [username, setUsername] = useState("")
     const [modalShow, setModalShow] = useState(false)
 
     const confirmedLogout = () => {
@@ -28,6 +28,15 @@ const SideMenu = () => {
         setIsAuthorized(false)
         setUsername("")
     }
+
+    useEffect(() => {
+        AsyncStorage.getItem("customerUsername").then(res => {
+            let user = JSON.parse(res)
+            if(user !== null){
+                setUsername(user)
+            }
+        })
+    }, [])
 
     return (
         <View style={styles.container}>

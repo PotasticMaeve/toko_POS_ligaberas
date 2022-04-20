@@ -13,10 +13,9 @@ import { toast, setStorage } from '../Helper'
 const { width, height } = Dimensions.get("screen")
 
 const Auth = () => {
-    const { backend_url, authorized, data_username } = useContext(MainContext)
+    const { backend_url, authorized } = useContext(MainContext)
     const [backendURL] = backend_url
     const [isAuthorized, setIsAuthorized] = authorized
-    const [username, setUsername] = data_username
     const [screenAnimation] = useState(new Animated.Value(height))
     const [inputAnimation] = useState(new Animated.Value(0))
     const [loginActive, setLoginActive] = useState(true)
@@ -65,7 +64,6 @@ const Auth = () => {
                         setTimeout(() => {
                             setIsLoading(false)
                             setIsAuthorized(true)
-                            setUsername(usernameLogin)
                             setStorage("tokenAccess", access)
                             setStorage("tokenRefresh", refresh)
                             setStorage("customerUsername", usernameLogin)

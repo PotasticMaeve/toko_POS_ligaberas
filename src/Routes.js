@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import React, { useContext, useEffect } from "react"
 import { Drawer, Router, Scene } from "react-native-router-flux";
 import {
     View,
@@ -28,6 +28,7 @@ import Config from "./pages/Config";
 import Customers from "./pages/Customers";
 import Products from "./pages/Products";
 import { MainContext } from "./context/MainContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -47,9 +48,20 @@ const tabIcon = ({ name, focused, title }) => {
     }
 };
 
+
+
 const Routes = () => {
     const { authorized } = useContext(MainContext)
-    const [ isAuthorized ] = authorized
+    const [isAuthorized, setIsAuthorized] = authorized
+
+    useEffect(() => {
+        AsyncStorage.getItem("customerUsername").then(res => {
+            let data = JSON.parse(res)
+            if (data !== null) {
+                setIsAuthorized(true)
+            }
+        })
+    }, [])
 
     return (
         <Router backAndroidHandler={() => false}>
