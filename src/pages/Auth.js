@@ -60,15 +60,12 @@ const Auth = () => {
                     const access = res.data.access
                     const refresh = res.data.refresh
                     if (access) {
-                        toast(`Login Berhasil`, "success")
-                        setTimeout(() => {
-                            setIsLoading(false)
-                            setIsAuthorized(true)
-                            setStorage("tokenAccess", access)
-                            setStorage("tokenRefresh", refresh)
-                            setStorage("customerUsername", usernameLogin)
-                            toast(`Selamat Datang, ${usernameLogin}`, "success")
-                        }, 1000)
+                        toast(`Selamat Datang, ${usernameLogin}`, "success")
+                        setIsAuthorized(true)
+                        setStorage("tokenAccess", access)
+                        setStorage("tokenRefresh", refresh)
+                        setStorage("customerUsername", usernameLogin)
+                        setIsLoading(false)
                     }
                 }
             }).catch((err) => {
@@ -111,7 +108,7 @@ const Auth = () => {
             </View>
             {loginActive ? (
                 <View style={[styles.centerAlign, { backgroundColor: "rgba(210, 210, 210, .9)", height: height }]}>
-                    <Animated.View style={[styles.inputContainer, animatedInput, { height: height / 1.9 }]}>
+                    <Animated.View style={[styles.inputContainer, animatedInput, { height: height / 2.2 }]}>
                         <Text style={[{ fontFamily: "Poppins-SemiBold" }, styles.title]}>login</Text>
                         <View style={{ marginVertical: 20 }}>
                             <View style={styles.input}>
@@ -203,29 +200,6 @@ const Auth = () => {
                                     borderColor: "#eb8937",
                                 }}>
                                     <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>register</Text>
-                                </View>
-                            </Ripple>
-                        </View>
-                        <View style={{
-                            width: width / 1.25,
-                            marginTop: 15,
-                            borderRadius: 10,
-                        }}
-                        >
-                            <Ripple
-                                rippleColor="#eaeaea"
-                                onPress={() => Actions.Config()}
-                            >
-                                <View style={{
-                                    paddingHorizontal: 10,
-                                    paddingVertical: 7,
-                                    borderRadius: 10,
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    borderWidth: 1.5,
-                                    borderColor: "#eb8937",
-                                }}>
-                                    <Text style={{ textTransform: "uppercase", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>config</Text>
                                 </View>
                             </Ripple>
                         </View>

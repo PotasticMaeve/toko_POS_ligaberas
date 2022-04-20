@@ -24,7 +24,6 @@ import Teh from "./pages/Teh";
 import Bumbu from "./pages/Bumbu";
 import Checkout from "./pages/Checkout";
 import Profil from "./pages/Profil";
-import Config from "./pages/Config";
 import Customers from "./pages/Customers";
 import Products from "./pages/Products";
 import { MainContext } from "./context/MainContext";
@@ -79,7 +78,6 @@ const Routes = () => {
                         </Scene>
                     </Scene>
                 </Drawer>
-                <Scene key="Config" component={Config} title="Config" />
                 <Scene key="Auth" component={Auth} title="Auth" />
                 <Scene key="Transaksi" component={isAuthorized ? Transaksi : Auth} title="Transaksi" />
                 <Scene key="DetailCard" component={DetailCard} title="DetailCard" />
