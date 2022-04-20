@@ -19,7 +19,7 @@ const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 
 const colorHeader = ['#f3a337', '#eb8937']
 
-const DetailPengiriman = () => {
+const Profil = () => {
     const [profil, setProfil] = useState({})
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
@@ -372,4 +372,4 @@ const DetailPengiriman = () => {
     )
 }
 
-export default DetailPengiriman
+export default Profil

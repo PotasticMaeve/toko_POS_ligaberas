@@ -7,7 +7,7 @@ import styles from '../stylesheets/Main'
 import { MainContext } from "../context/MainContext"
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { setStorage, setRefreshToken, toast } from '../Helper'
+import { setRefreshToken, toast } from '../Helper'
 import ShimmerWishlist from '../components/ShimmerWishlist'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { Actions } from 'react-native-router-flux'
@@ -28,43 +28,34 @@ const Wishlist = (props) => {
             if (data !== null) {
                 let tokenAccess = JSON.parse(data)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-                AsyncStorage.getItem("customerUsername").then(result => {
-                    let username = JSON.parse(result)
-                    if (username !== null) {
-                        axios.get(`${backendURL}/api/v1/customer/?username=${username}`, key)
+                AsyncStorage.getItem("customerID").then(result => {
+                    let customer_id = JSON.parse(result)
+                    if (customer_id !== null) {
+                        axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`, key)
                             .then((res) => {
                                 if (res.status === 200) {
-                                    let customer_id = res.data.data.customer_id
-                                    setStorage("customerID", customer_id)
-                                    axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`, key)
-                                        .then((res) => {
-                                            if (res.status === 200) {
-                                                setData(res.data.data)
-                                                setIsLoading(false)
-                                            } else {
-                                                setRefreshToken()
-                                            }
-                                        })
-
-                                    axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
-                                        .then((res) => {
-                                            if (res.status === 200) {
-                                                let cart_id = res.data.data.id
-                                                setCartId(cart_id)
-                                            } else {
-                                                setRefreshToken()
-                                            }
-                                        })
+                                    setData(res.data.data)
+                                    setIsLoading(false)
                                 } else {
-                                    console.log("no customer ID [wishlist]");
+                                    setRefreshToken()
+                                }
+                            })
+
+                        axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    let cart_id = res.data.data.id
+                                    setCartId(cart_id)
+                                } else {
+                                    setRefreshToken()
                                 }
                             })
                     } else {
-                        console.log("no customer username [wishlist]");
+                        setRefreshToken()
                     }
                 })
             } else {
-                console.log("no access [wishlist]");
+                setRefreshToken()
             }
         })
     }

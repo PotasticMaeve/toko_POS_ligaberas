@@ -9,6 +9,8 @@ import Card from "../components/Card"
 import axios from "axios"
 import { MainContext } from "../context/MainContext"
 import { toast } from "../Helper"
+import AsyncStorage from "@react-native-async-storage/async-storage"
+import { setStorage } from "../Helper"
 
 const Home = () => {
   const { backend_url } = useContext(MainContext)
@@ -25,6 +27,25 @@ const Home = () => {
       .catch((err) => {
         toast("Gagal Memuat Data Produk", "danger")
       })
+
+    AsyncStorage.getItem("tokenAccess").then(token => {
+      if (token !== null) {
+        let tokenAccess = JSON.parse(token)
+        let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+        AsyncStorage.getItem("customerUsername").then(result => {
+          let username = JSON.parse(result)
+          if (username !== null) {
+            axios.get(`${backendURL}/api/v1/customer/?username=${username}`, key)
+              .then((res) => {
+                if (res.status === 200) {
+                  let customer_id = res.data.data.customer_id
+                  setStorage("customerID", customer_id)
+                }
+              })
+          }
+        })
+      }
+    })
   }
 
   useEffect(() => {

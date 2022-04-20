@@ -9,7 +9,7 @@ import Ripple from 'react-native-material-ripple'
 import Space from '../components/Space'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import { setStorage, setRefreshToken } from '../Helper'
+import { setRefreshToken } from '../Helper'
 import ShimmerKeranjang from '../components/ShimmerKeranjang'
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -38,36 +38,27 @@ const Keranjang = (props) => {
       if (data !== null) {
         let tokenAccess = JSON.parse(data)
         let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-        AsyncStorage.getItem("customerUsername").then(result => {
-          let username = JSON.parse(result)
-          if (username !== null) {
-            axios.get(`${backendURL}/api/v1/customer/?username=${username}`, key)
+        AsyncStorage.getItem("customerID").then(result => {
+          let customer_id = JSON.parse(result)
+          if (customer_id !== null) {
+            setCustomerId(customer_id)
+            axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
               .then((res) => {
                 if (res.status === 200) {
-                  let customer_id = res.data.data.customer_id
-                  setCustomerId(customer_id)
-                  setStorage("customerID", customer_id)
-                  axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
-                    .then((res) => {
-                      if (res.status === 200) {
-                        let cart_item_data = res.data.data.cart_data
-                        setData(cart_item_data);
-                        setCartId(res.data.data.id)
-                        setIsLoading(false)
-                      } else {
-                        setRefreshToken()
-                      }
-                    })
+                  let cart_item_data = res.data.data.cart_data
+                  setData(cart_item_data);
+                  setCartId(res.data.data.id)
+                  setIsLoading(false)
                 } else {
-                  console.log("no customer ID [cart]");
+                  setRefreshToken()
                 }
               })
           } else {
-            console.log("no customer username [cart]");
+            setRefreshToken()
           }
         })
       } else {
-        console.log("no access [cart]");
+        setRefreshToken()
       }
     })
   }
@@ -120,9 +111,6 @@ const Keranjang = (props) => {
               setTotal(res.data.data.grandtotal);
               setLoadTotal(false)
             }
-          })
-          .catch(err => {
-            console.log(err);
           })
       }
     })

@@ -28,7 +28,6 @@ const Card = (props) => {
                 nama_barang={item.nama_barang}
                 harga={item.harga}
                 qty={item.qty}
-                fav="true"
             />
         )
     }

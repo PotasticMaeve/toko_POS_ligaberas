@@ -61,13 +61,16 @@ const Auth = () => {
                     const access = res.data.access
                     const refresh = res.data.refresh
                     if (access) {
-                        toast(`Selamat Datang, ${usernameLogin}`, "success")
-                        setIsLoading(false)
-                        setIsAuthorized(true)
-                        setUsername(usernameLogin)
-                        setStorage("tokenAccess", access)
-                        setStorage("tokenRefresh", refresh)
-                        setStorage("customerUsername", usernameLogin)
+                        toast(`Login Berhasil`, "success")
+                        setTimeout(() => {
+                            setIsLoading(false)
+                            setIsAuthorized(true)
+                            setUsername(usernameLogin)
+                            setStorage("tokenAccess", access)
+                            setStorage("tokenRefresh", refresh)
+                            setStorage("customerUsername", usernameLogin)
+                            toast(`Selamat Datang, ${usernameLogin}`, "success")
+                        }, 1000)
                     }
                 }
             }).catch((err) => {

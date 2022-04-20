@@ -308,7 +308,7 @@ const DetailCard = (props) => {
                         <Ripple
                             rippleColor="#fff"
                             style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
-                            onPress={() => removeFromWishlist()}
+                            onPress={() => {IsAuthorized ? removeFromWishlist() : toast("Harap Login Terlebih Dahulu", "danger")}}
                         >
                             <View style={{ padding: 8, margin: 10 }}>
                                 <Icon name={"heart"} size={20} color="red" onPress={() => setFav(false)} />
@@ -318,7 +318,7 @@ const DetailCard = (props) => {
                         <Ripple
                             rippleColor="#fff"
                             style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
-                            onPress={() => {IsAuthorized ? addToWishlist() : toast("Harap Login Terlebih Dahulu", "info")}}
+                            onPress={() => {IsAuthorized ? addToWishlist() : toast("Harap Login Terlebih Dahulu", "danger")}}
                         >
                             <View style={{ padding: 8, margin: 10 }}>
                                 <FontAwesome5 name={"heart"} size={20} color="red" onPress={() => setFav(true)} />
@@ -326,7 +326,7 @@ const DetailCard = (props) => {
                         </Ripple>
                     )}
                     <Ripple
-                        onPress={() => {IsAuthorized ? addToKeranjang() : toast("Harap Login Terlebih Dahulu", "info")}}
+                        onPress={() => {IsAuthorized ? addToKeranjang() : toast("Harap Login Terlebih Dahulu", "danger")}}
                         rippleColor="#fff"
                         style={{ height: 40, borderRadius: 10, backgroundColor: '#eb8937', overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
                     >

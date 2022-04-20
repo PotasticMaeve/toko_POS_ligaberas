@@ -91,7 +91,7 @@ const SideMenu = () => {
                             bottom: 0
                         }}>
                             <TouchableOpacity
-                                style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#eb8937", justifyContent: "center", alignItems: "center" }}
+                                style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#ddd", justifyContent: "center", alignItems: "center" }}
                                 onPress={() => setModalShow(false)}
                             >
                                 <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -99,7 +99,7 @@ const SideMenu = () => {
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#ddd", justifyContent: "center", alignItems: "center" }}
+                                style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#eb8937", justifyContent: "center", alignItems: "center" }}
                                 onPress={() => confirmedLogout()}
                             >
                                 <View style={{ justifyContent: "center", alignItems: "center" }}>

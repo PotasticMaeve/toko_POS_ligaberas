@@ -23,7 +23,7 @@ import Telur from "./pages/Telur";
 import Teh from "./pages/Teh";
 import Bumbu from "./pages/Bumbu";
 import Checkout from "./pages/Checkout";
-import DetailPengiriman from "./pages/DetailPengiriman";
+import Profil from "./pages/Profil";
 import Config from "./pages/Config";
 import Customers from "./pages/Customers";
 import Products from "./pages/Products";
@@ -62,8 +62,8 @@ const Routes = () => {
                         <Scene key="Transaksi" name="receipt" title="Transaksi" icon={tabIcon} hideNavBar>
                             <Scene key="Transaksi" name="Transaksi" component={isAuthorized ? Transaksi : Auth} title="Transaksi" />
                         </Scene>
-                        <Scene key="DetailPengiriman" name="user-alt" title="Profil" icon={tabIcon} hideNavBar>
-                            <Scene key="DetailPengiriman" name="DetailPengiriman" component={isAuthorized ? DetailPengiriman : Auth} title="DetailPengiriman" />
+                        <Scene key="Profil" name="user-alt" title="Profil" icon={tabIcon} hideNavBar>
+                            <Scene key="Profil" name="Profil" component={isAuthorized ? Profil : Auth} title="Profil" />
                         </Scene>
                     </Scene>
                 </Drawer>
@@ -83,7 +83,7 @@ const Routes = () => {
                 <Scene key="Teh" component={Teh} title="Teh" />
                 <Scene key="Bumbu" component={Bumbu} title="Bumbu" />
                 <Scene key="Checkout" component={Checkout} title="Checkout" />
-                <Scene key="DetailPengiriman" component={isAuthorized ? DetailPengiriman : Auth} title="DetailPengiriman" />
+                <Scene key="Profil" component={isAuthorized ? Profil : Auth} title="Profil" />
                 <Scene key="Customers" component={isAuthorized ? Customers : Auth} title="Customers" />
                 <Scene key="Products" component={isAuthorized ? Products : Auth} title="Products" />
             </Scene>
