@@ -135,6 +135,42 @@ const Checkout = () => {
             toast("Data Pembayaran Harus Diisi", "danger")
         }
     }
+
+    const ResponsiveCalculateKeranjang = () => {
+        setIsLoading(true)
+        AsyncStorage.getItem("tokenAccess").then(data => {
+            if (data !== null) {
+                let tokenAccess = JSON.parse(data)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(result => {
+                    let customer_id = JSON.parse(result)
+                    if (customer_id !== null) {
+                        axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    setData(res.data.data.cart_data);
+                                    setTotalBarang(res.data.data.grandtotal);
+                                    setShippingCost(res.data.data.shipping_cost)
+                                    setGrandTotal(res.data.data.grandtotal_after_shipping)
+                                    setIsLoading(false)
+                                } else {
+                                    setRefreshToken()
+                                }
+                            })
+                    } else {
+                        setRefreshToken()
+                    }
+                })
+            } else {
+                setRefreshToken()
+            }
+        })
+    }
+
+    const ResponsiveRemoveKeranjang = () => {
+        displayTotalBarang()
+    }
+
     return (
         <>
             <LinearGradient colors={colorGradient} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
@@ -207,7 +243,7 @@ const Checkout = () => {
                 </View>
                 <View style={{ paddingTop: 20, paddingBottom: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Konfirmasi Pesanan</Text>
-                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Keranjang()}>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.ConfirmKeranjang({ ResponsiveCalculateKeranjang: ResponsiveCalculateKeranjang, ResponsiveRemoveKeranjang: ResponsiveRemoveKeranjang })}>
                         <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>

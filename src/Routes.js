@@ -28,6 +28,7 @@ import Customers from "./pages/Customers";
 import Products from "./pages/Products";
 import { MainContext } from "./context/MainContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ConfirmKeranjang from "./pages/ConfirmKeranjang";
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -46,8 +47,6 @@ const tabIcon = ({ name, focused, title }) => {
         );
     }
 };
-
-
 
 const Routes = () => {
     const { authorized } = useContext(MainContext)
@@ -96,6 +95,7 @@ const Routes = () => {
                 <Scene key="Profil" component={isAuthorized ? Profil : Auth} title="Profil" />
                 <Scene key="Customers" component={isAuthorized ? Customers : Auth} title="Customers" />
                 <Scene key="Products" component={isAuthorized ? Products : Auth} title="Products" />
+                <Scene key="ConfirmKeranjang" component={isAuthorized ? ConfirmKeranjang : Auth} title="ConfirmKeranjang" />
             </Scene>
         </Router>
     )
