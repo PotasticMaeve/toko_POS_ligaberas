@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { StyleSheet, TextInput, TouchableOpacity, View, FlatList, Text, Dimensions, SafeAreaView, TouchableWithoutFeedback, Pressable, Keyboard } from 'react-native';
+import React, { useContext, useState } from 'react'
+import { StyleSheet, TextInput, TouchableOpacity, View, FlatList, Text, Dimensions, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -9,7 +9,6 @@ import { MainContext } from "../context/MainContext"
 import Card from "./Card"
 
 const colorHeader = ['#f3a337', '#eb8937']
-const { height } = Dimensions.get("screen")
 
 const Search = () => {
     const { backend_url } = useContext(MainContext)

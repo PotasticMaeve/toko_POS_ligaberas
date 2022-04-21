@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, TouchableOpacity } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, TouchableWithoutFeedback, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -23,10 +23,34 @@ const Products = () => {
                 <TouchableOpacity onPress={() => Actions.pop()}>
                     <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
                 </TouchableOpacity>
-                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Daftar Produk</Text>
+                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Produk</Text>
             </LinearGradient>
+            <View style={{ paddingVertical: 10, flex: 1, backgroundColor: "#fafafa" }}>
+                <TouchableWithoutFeedback style={{ flexDirection: "column", width: "100%" }}>
+                    <>
+                        <SafeAreaView style={s.input}>
+                            <TextInput
+                                placeholder="cari produk"
+                                style={{ marginLeft: 3, marginTop: 2, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", paddingHorizontal: 10, paddingVertical: 3 }}
+                                spellCheck={false}
+                                autoCorrect={false}
+                            />
+                        </SafeAreaView>
+                    </>
+                </TouchableWithoutFeedback>
+            </View>
         </>
     )
 }
 
+const s = StyleSheet.create({
+    input: {
+        height: 40,
+        justifyContent: "center", 
+        marginHorizontal: 15,
+        backgroundColor: "#eaeaea",
+        width: "90%",
+        borderRadius: 10
+    }
+})
 export default Products

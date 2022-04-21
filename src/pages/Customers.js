@@ -46,7 +46,7 @@ const Customers = () => {
                 <TouchableOpacity onPress={() => Actions.pop()}>
                     <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
                 </TouchableOpacity>
-                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Daftar Pelanggan</Text>
+                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Pelanggan</Text>
             </LinearGradient>
             <FlatList
                 data={data}

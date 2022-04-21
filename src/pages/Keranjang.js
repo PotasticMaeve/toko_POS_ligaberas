@@ -141,7 +141,12 @@ const Keranjang = (props) => {
   }
 
   const checkoutCart = () => {
-    Actions.Checkout()
+    Actions.Checkout({responsiveProductCheckout: responsiveProductCheckout})
+  }
+
+  const responsiveProductCheckout = () => {
+    getData()
+    getTotal()
   }
 
   useEffect(() => {

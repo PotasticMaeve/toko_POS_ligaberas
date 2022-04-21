@@ -29,7 +29,7 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 const colorGradient = ['#f3a337', '#eb8937']
 
-const Checkout = () => {
+const Checkout = (props) => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [data, setData] = useState([])
@@ -41,6 +41,8 @@ const Checkout = () => {
     const bs = useRef(null)
     const [isLoading, setIsLoading] = useState(false)
     const [validatePembayaran, setValidatePembayaran] = useState(false)
+    const [noKartu, setNoKartu] = useState([])
+    const [selectedMethod, setSelectedMethod] = useState(0)
 
     const displayProfil = () => {
         setIsLoading(true)
@@ -73,6 +75,7 @@ const Checkout = () => {
     useEffect(() => {
         displayProfil()
         displayTotalBarang()
+        displayPayment()
     }, [])
 
     const displayTotalBarang = () => {
@@ -88,6 +91,7 @@ const Checkout = () => {
                             .then((res) => {
                                 if (res.status === 200) {
                                     setData(res.data.data.cart_data);
+                                    props.responsiveProductCheckout && props.responsiveProductCheckout()
                                     setTotalBarang(res.data.data.grandtotal);
                                     setShippingCost(res.data.data.shipping_cost)
                                     setGrandTotal(res.data.data.grandtotal_after_shipping)
@@ -148,6 +152,45 @@ const Checkout = () => {
         displayProfil()
     }
 
+    const displayPayment = () => {
+        setIsLoading(true)
+        AsyncStorage.getItem("tokenAccess").then(data => {
+            if (data !== null) {
+                let tokenAccess = JSON.parse(data)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(res => {
+                    let customer_id = JSON.parse(res)
+                    if (customer_id !== null) {
+                        axios.get(`${backendURL}/api/v1/paymentinfo/`, key)
+                            .then((res) => {
+                                if (res.status === 200) {
+                                    let payment_list = res.data
+                                    let temp = []
+                                    if (payment_list.length > 0) {
+                                        payment_list.map(el => {
+                                            if (el.profile === customer_id) {
+                                                let number = el.no_kartu.split("")
+                                                temp.push(number[8])
+                                                temp.push(number[9])
+                                                temp.push(number[10])
+                                                temp.push(number[11])
+                                            }
+                                        })
+                                    }
+                                    setNoKartu(temp)
+                                    setIsLoading(false)
+                                } else {
+                                    console.log("no customer ID [checkout]");
+                                }
+                            })
+                    }
+                })
+            } else {
+                console.log("no access [checkout]");
+            }
+        })
+    }
+
     return (
         <>
             <LinearGradient colors={colorGradient} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
@@ -161,7 +204,7 @@ const Checkout = () => {
             <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: "#fff", paddingHorizontal: 15 }}>
                 <View style={{ paddingVertical: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Alamat Pengiriman</Text>
-                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Profil({ResponsiveUpdateProfil: ResponsiveUpdateProfil})}>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Profil({ ResponsiveUpdateProfil: ResponsiveUpdateProfil })}>
                         <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>
@@ -331,10 +374,37 @@ const Checkout = () => {
                         }
                         )
                     )}
-
                 </View>
                 <View style={{ paddingTop: 20, paddingBottom: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Metode Pembayaran</Text>
+                </View>
+                <View style={{ width: "100%", marginTop: 1 }}>
+                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: `${ selectedMethod === 1 ? "red" : "#ddd" }`, borderWidth: .5, borderRadius: 10 }} onPress={() => setSelectedMethod(1)}>
+                        <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }}>
+                            <Image 
+                            source={require("../../assets/images/mastercard-logo.png")}
+                            style={{ height: 50, width: 50 }}
+                            resizeMode="contain"
+                            />
+                            <View style={{ marginLeft: 15, flexDirection: "column" }}>
+                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12, textTransform: "capitalize" }}>Kartu Kredit</Text>
+                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12 }}>&#x2022; &#x2022; &#x2022; &#x2022;  &#x2022; &#x2022; &#x2022; &#x2022;  {noKartu[0]} {noKartu[1]} {noKartu[2]} {noKartu[3]}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#bbb", borderWidth: .5, borderRadius: 10, marginTop: 10 }} onPress={() => setSelectedMethod(2)}>
+                        <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }}>
+                            <Image 
+                            source={require("../../assets/images/rupiah.png")}
+                            style={{ height: 50, width: 50 }}
+                            resizeMode="contain"
+                            />
+                            <View style={{ marginLeft: 15, flexDirection: "column" }}>
+                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", fontSize: 12, textTransform: "capitalize" }}>Tunai</Text>
+                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", fontSize: 12 }}>Bayar ketika barang sampai</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 <Space />
                 <View style={{ height: 100 }}></View>
