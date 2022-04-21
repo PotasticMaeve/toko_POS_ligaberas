@@ -19,7 +19,7 @@ const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 
 const colorHeader = ['#f3a337', '#eb8937']
 
-const Profil = () => {
+const Profil = (props) => {
     const [profil, setProfil] = useState({})
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
@@ -69,6 +69,7 @@ const Profil = () => {
                 toast("Berhasil Menyimpan Profil", "success")
                 setSaveData(false)
                 setProfil({ ...profil, nama: nama, gender: gender, phone: phone, alamat: alamat });
+                props.ResponsiveUpdateProfil && props.ResponsiveUpdateProfil()
             })
             .catch((err) => {
                 alert("Gagal Menyimpan Data Profil")

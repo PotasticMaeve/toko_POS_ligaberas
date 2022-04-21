@@ -137,38 +137,15 @@ const Checkout = () => {
     }
 
     const ResponsiveCalculateKeranjang = () => {
-        setIsLoading(true)
-        AsyncStorage.getItem("tokenAccess").then(data => {
-            if (data !== null) {
-                let tokenAccess = JSON.parse(data)
-                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-                AsyncStorage.getItem("customerID").then(result => {
-                    let customer_id = JSON.parse(result)
-                    if (customer_id !== null) {
-                        axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
-                            .then((res) => {
-                                if (res.status === 200) {
-                                    setData(res.data.data.cart_data);
-                                    setTotalBarang(res.data.data.grandtotal);
-                                    setShippingCost(res.data.data.shipping_cost)
-                                    setGrandTotal(res.data.data.grandtotal_after_shipping)
-                                    setIsLoading(false)
-                                } else {
-                                    setRefreshToken()
-                                }
-                            })
-                    } else {
-                        setRefreshToken()
-                    }
-                })
-            } else {
-                setRefreshToken()
-            }
-        })
+        displayTotalBarang()
     }
 
     const ResponsiveRemoveKeranjang = () => {
         displayTotalBarang()
+    }
+
+    const ResponsiveUpdateProfil = () => {
+        displayProfil()
     }
 
     return (
@@ -184,7 +161,7 @@ const Checkout = () => {
             <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: "#fff", paddingHorizontal: 15 }}>
                 <View style={{ paddingVertical: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Alamat Pengiriman</Text>
-                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Profil()}>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Profil({ResponsiveUpdateProfil: ResponsiveUpdateProfil})}>
                         <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>
