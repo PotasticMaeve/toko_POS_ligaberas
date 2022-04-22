@@ -151,6 +151,10 @@ const DetailCard = (props) => {
         })
     }
 
+    const responsiveDeleteKeranjangFromCheckout = () => {
+        displayNumberCart()
+    }
+
     const responsiveAddKeranjang = () => {
         AsyncStorage.getItem("customerID").then(value => {
             if (value !== null) {
@@ -254,7 +258,7 @@ const DetailCard = (props) => {
                     <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Wishlist({ responsiveDeleteWishlist: responsiveDeleteWishlist, responsiveAddKeranjang: responsiveAddKeranjang })}>
                         <Icon name={"heart"} size={19} color="#fff" />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang({ responsiveDeleteKeranjang: responsiveDeleteKeranjang })}>
+                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang({ responsiveDeleteKeranjang: responsiveDeleteKeranjang, responsiveDeleteKeranjangFromCheckout: responsiveDeleteKeranjangFromCheckout })}>
                         {IsAuthorized ? (
                             numberCart !== 0 ? (
                                 <View>

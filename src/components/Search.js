@@ -55,7 +55,7 @@ const Search = () => {
                     <>
                         <SafeAreaView style={s.input}>
                             <TextInput
-                                placeholder="cari produk"
+                                placeholder="Cari produk"
                                 style={{ marginLeft: 3, marginTop: 2, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", paddingHorizontal: 10, paddingVertical: 3 }}
                                 spellCheck={false}
                                 autoCorrect={false}

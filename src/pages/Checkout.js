@@ -146,6 +146,7 @@ const Checkout = (props) => {
 
     const ResponsiveRemoveKeranjang = () => {
         displayTotalBarang()
+        props.responsiveDeleteKeranjangFromCheckout && props.responsiveDeleteKeranjangFromCheckout()
     }
 
     const ResponsiveUpdateProfil = () => {

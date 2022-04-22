@@ -141,7 +141,7 @@ const Keranjang = (props) => {
   }
 
   const checkoutCart = () => {
-    Actions.Checkout({responsiveProductCheckout: responsiveProductCheckout})
+    Actions.Checkout({responsiveProductCheckout: responsiveProductCheckout, responsiveDeleteKeranjangFromCheckout: props.responsiveDeleteKeranjangFromCheckout})
   }
 
   const responsiveProductCheckout = () => {
