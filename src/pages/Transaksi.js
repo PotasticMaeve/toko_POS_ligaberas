@@ -11,29 +11,29 @@ import PesananDiproses from '../components/PesananDiproses';
 
 const colorHeader = ['#f3a337', '#eb8937']
 
-const pesanan_diproses = () => <PesananDiproses />
-const pesanan_dikirim = () => <PesananDikirim />
-const pesanan_tiba = () => <PesananTiba />
-
-const renderScene = SceneMap({
-    first: pesanan_diproses,
-    second: pesanan_dikirim,
-    third: pesanan_tiba,
-});
-
-const renderTabBar = props =>
-    <TabBar {...props}
-        indicatorStyle={styles.indicatorTab}
-        style={styles.tabbar}
-        tabStyle={styles.tab}
-        renderLabel={({ route }) => (
-            <Text style={styles.labelTab}>
-                {route.title}
-            </Text>
-        )}
-    />;
-
 const Transaksi = () => {
+    const pesanan_diproses = () => <PesananDiproses updateFetchData={updateFetchData} />
+    const pesanan_dikirim = () => <PesananDikirim updateFetchData={updateFetchData} />
+    const pesanan_tiba = () => <PesananTiba updateFetchData={updateFetchData} />
+    
+    const renderScene = SceneMap({
+        first: pesanan_diproses,
+        second: pesanan_dikirim,
+        third: pesanan_tiba,
+    });
+    
+    const renderTabBar = props =>
+        <TabBar {...props}
+            onPress={() => updateFetchData()}
+            indicatorStyle={styles.indicatorTab}
+            style={styles.tabbar}
+            tabStyle={styles.tab}
+            renderLabel={({ route }) => (
+                <Text style={styles.labelTab}>
+                    {route.title}
+                </Text>
+            )}
+        />;
     const layout = useWindowDimensions();
 
     const [index, setIndex] = React.useState(0);
@@ -42,11 +42,14 @@ const Transaksi = () => {
         { key: 'second', title: 'dikirim' },
         { key: 'third', title: 'selesai' },
     ]);
+
+    const updateFetchData = () => {}
+
     return (
         <>
             <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Transaksi</Text>
-      </LinearGradient>
+                <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Transaksi</Text>
+            </LinearGradient>
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}

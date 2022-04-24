@@ -7,6 +7,7 @@ import styles from '../stylesheets/Main'
 import axios from 'axios';
 import { MainContext } from "../context/MainContext"
 import Card from "./Card"
+import ShimmerCard from './ShimmerCard';
 
 const colorHeader = ['#f3a337', '#eb8937']
 
@@ -14,30 +15,14 @@ const Search = () => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [input, setInput] = useState("")
-    const [data, setData] = useState([])
     const [dataDisplay, setDataDisplay] = useState([])
 
     const onChangeText = (search) => {
         setInput(search)
-        if (input.length > 2) {
-            axios.get(`${backendURL}/api/v1/product/?search=${search}`)
-                .then(res => {
-                    if (res.status === 200) {
-                        let result = res.data.data
-                        if (result.length > 0) {
-                            setData(result);
-                        }
-                    }
-                })
-        } else {
-            setData([])
-            setDataDisplay([])
-        }
     }
 
-    const getRealProduct = (nama) => {
-        setInput(nama)
-        axios.get(`${backendURL}/api/v1/product/?search=${nama}`)
+    const getRealProduct = () => {
+        axios.get(`http://192.168.18.52:8000/api/v1/product/?search=${input}`)
             .then(res => {
                 if (res.status === 200) {
                     setDataDisplay(res.data.data);
@@ -47,32 +32,32 @@ const Search = () => {
 
     return (
         <>
-            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 90, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "flex-end", paddingBottom: 10 }}>
+            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 90, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
                 <TouchableOpacity onPress={() => Actions.pop()} style={{ marginBottom: 5 }}>
                     <FontAwesome5 name={"angle-left"} size={28} color='#fff' />
                 </TouchableOpacity>
                 <TouchableWithoutFeedback style={{ flexDirection: "column", width: "100%" }}>
-                    <>
-                        <SafeAreaView style={s.input}>
+                    <View style={s.areaInput}>
+                        <SafeAreaView style={s.inputWrap}>
                             <TextInput
                                 placeholder="Cari produk"
-                                style={{ marginLeft: 3, marginTop: 2, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", paddingHorizontal: 10, paddingVertical: 3 }}
+                                style={s.inputComp}
                                 spellCheck={false}
                                 autoCorrect={false}
-                                value={input}
                                 onChangeText={onChangeText}
-                                autoFocus={true}
+                                onSubmitEditing={() => getRealProduct()}
                             />
+                            <FontAwesome5 name={"search"} size={18} color='#eb8937' style={{ marginRight: 15 }} onPress={() => getRealProduct()} />
                         </SafeAreaView>
-                    </>
+                    </View>
                 </TouchableWithoutFeedback>
             </LinearGradient>
-            <View style={{ flex: 1, width: "100%" }}>
+            {/* <View style={{ flex: 1, width: "100%" }}>
                 {(dataDisplay.length < 1) ? (
                     <FlatList
                         data={data}
                         renderItem={({ item, index }) => {
-                            let nama_barang = "beras"
+                            let nama_barang = item.nama_barang
                             return (
                                 <TouchableOpacity
                                     key={index}
@@ -91,21 +76,40 @@ const Search = () => {
                             )
                         }}
                     />
-                ):(
-                    <Card data={dataDisplay} />
-                )}
-            </View>
+                ) : (
+                    )}
+                </View> */}
+            <Card data={dataDisplay} />
         </>
     )
 }
 
 const s = StyleSheet.create({
-    input: {
-        marginHorizontal: 15,
+    inputWrap: {
+        justifyContent: "space-between",
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 3,
         backgroundColor: "#fafafa",
-        width: "90%",
+        width: "100%",
         borderRadius: 10
-    }
+    },
+    inputComp: {
+        marginLeft: 3,
+        marginTop: 2,
+        fontSize: 14,
+        color: "#595959",
+        paddingVertical: 6,
+        fontFamily: "Poppins-Medium",
+        paddingHorizontal: 10,
+        width: "90%"
+    },
+    areaInput: {
+        width: "100%",
+        flexDirection: "column",
+        paddingHorizontal: 15,
+        justifyContent: "space-between",
+    },
 })
 
 export default Search

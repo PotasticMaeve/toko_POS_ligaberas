@@ -8,6 +8,9 @@ import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import axios from 'axios';
 import { MainContext } from '../context/MainContext';
 import CardItem from '../components/CardItem';
+import Ripple from 'react-native-material-ripple';
+import AddProduct from './AddProduct';
+import Card from "../components/Card"
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
@@ -19,16 +22,19 @@ const Products = () => {
     const [backendURL] = backend_url
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState([])
+    const [categoryData, setCategoryData] = useState([])
+    const [input, setInput] = useState("")
+    const [dataDisplay, setDataDisplay] = useState([])
 
     const [category, setCategory] = useState([
-        { key: "1", qty: 15, imgName: "beras", text: "Beras", color: "#F2E1AD" },
-        { key: "2", qty: 24, imgName: "tepung", text: "Tepung", color: "#E8CFC8" },
-        { key: "3", qty: 17, imgName: "daging", text: "Daging", color: "#EDDCC8" },
-        { key: "4", qty: 19, imgName: "minyak", text: "Minyak", color: "#BDE2E4" },
-        { key: "5", qty: 12, imgName: "susu", text: "Susu", color: "#F6D8B6" },
-        { key: "6", qty: 20, imgName: "telur", text: "Telur", color: "#E0E7D7" },
-        { key: "7", qty: 15, imgName: "teh", text: "Teh & Kopi", color: "#E5EFC9" },
-        { key: "8", qty: 14, imgName: "bumbu", text: "Bumbu Dapur", color: "#DEE3FC" },
+        { key: "1", imgName: "beras", text: "Beras", color: "#fcbf49", bg: "#feebc8" },
+        { key: "2", imgName: "tepung", text: "Tepung", color: "#f28482", bg: "#fbdad9" },
+        { key: "3", imgName: "daging", text: "Daging", color: "#8dc7ff", bg: "#dceeff" },
+        { key: "4", imgName: "minyak", text: "Minyak", color: "#83c9b6", bg: "#d9eee9" },
+        { key: "5", imgName: "susu", text: "Susu", color: "#f99cab", bg: "#fde1e5" },
+        { key: "6", imgName: "telur", text: "Telur", color: "#ea9f67", bg: "#f8e2d1" },
+        { key: "7", imgName: "teh", text: "Teh & Kopi", color: "#9cc5a1", bg: "#e1ede2" },
+        { key: "8", imgName: "bumbu", text: "Bumbu Dapur", color: "#abc4ff", bg: "#e5edff" },
     ])
 
     const formatFlatList = (data, numColumns) => {
@@ -44,29 +50,43 @@ const Products = () => {
 
     const getImage = (imgName) => {
         if (imgName === "beras") {
-            return require("../../assets/images/wheat_bg.jpg")
+            return require("../../assets/images/flour.png")
         }
         if (imgName === "tepung") {
-            return require("../../assets/images/flour_bg.jpg")
+            return require("../../assets/images/wheat.png")
         }
         if (imgName === "daging") {
-            return require("../../assets/images/beef_bg.jpg")
+            return require("../../assets/images/beef.png")
         }
         if (imgName === "minyak") {
-            return require("../../assets/images/oil_bg.jpg")
+            return require("../../assets/images/cooking-oil.png")
         }
         if (imgName === "susu") {
-            return require("../../assets/images/milk_bg.jpg")
+            return require("../../assets/images/milk.png")
         }
         if (imgName === "telur") {
-            return require("../../assets/images/egg_bg.jpg")
+            return require("../../assets/images/eggs.png")
         }
         if (imgName === "teh") {
-            return require("../../assets/images/tea_bg.jpg")
+            return require("../../assets/images/coffee.png")
         }
         if (imgName === "bumbu") {
-            return require("../../assets/images/seasoning_bg.jpg")
+            return require("../../assets/images/seasoning.png")
         }
+    }
+
+    const getCategoryData = () => {
+        setIsLoading(true)
+        axios.get(`${backendURL}/api/v1/product/`)
+            .then((res) => {
+                if (res.data.status === 200) {
+                    setCategoryData(res.data.data);
+                    setIsLoading(false)
+                }
+            })
+            .catch((err) => {
+                toast("Gagal Memuat Data Produk", "danger")
+            })
     }
 
     const getData = () => {
@@ -96,11 +116,28 @@ const Products = () => {
                 nama_barang={item.nama_barang}
                 harga={item.harga}
                 qty={item.qty}
+                detailAdmin="true"
             />
         )
     }
 
+    const onChangeText = (search) => {
+        setInput(search)
+    }
+
+    const getRealProduct = () => {
+        setIsLoading(true)
+        axios.get(`http://192.168.18.52:8000/api/v1/product/?search=${input}`)
+            .then(res => {
+                if (res.status === 200) {
+                    setDataDisplay(res.data.data);
+                    setIsLoading(true)
+                }
+            })
+    }
+
     useEffect(() => {
+        getCategoryData()
         getData()
     }, [])
 
@@ -114,85 +151,63 @@ const Products = () => {
             </LinearGradient>
             <ScrollView style={{ paddingVertical: 10, flex: 1, backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
                 <ScrollView style={styles.cardWrap} horizontal>
-                    {category.length > 0 && category.map(item => (
-                        <View style={{
-                            flex: 1,
-                            display: "flex",
-                            width: 150,
-                            backgroundColor: "#fff",
-                            height: width / 4,
-                            marginHorizontal: 5,
-                            marginVertical: 8,
-                            borderRadius: 10,
-                            shadowColor: '#eaeaea',
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.5,
-                            shadowRadius: 1,
-                            elevation: 3,
-                            justifyContent: "space-between",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            paddingLeft: 10,
-                            paddingRight: 30,
-                            overflow: "hidden"
-                        }}>
-                            <View style={{ height: 65, width: "140%", position: "absolute", top: 0, left: 0 }}>
+                    {category.length > 0 && category.map((item, i) => (
+                        <View key={i} style={[s.bannerCategory, { backgroundColor: `${item.bg}` }]}>
+                            <View style={[s.imgBannerWrap, { backgroundColor: `${item.color}` }]}>
                                 <Image
                                     source={getImage(item.imgName)}
-                                    style={{
-                                        position: "absolute",
-                                        top: 0,
-                                        left: 0,
-                                        height: "100%",
-                                        width: "100%",
-                                    }}
+                                    style={s.imgBanner}
                                     resizeMode="cover"
                                 />
                             </View>
-                            <View style={{ height: 25, width: "130%",  position: "absolute", bottom: 0, left: 0, justifyContent: "center", alignItems: "center" }}>
-                                {isLoading ? (
-                                    <ShimmerPlaceHolder
-                                        shimmerColors={colorShimmer}
-                                        style={{
-                                            height: 20,
-                                            width: "30%",
-                                            borderRadius: 5,
-                                        }}
-                                    />
-                                ) : (
-                                    <Text style={{ color: "#27ae60", fontFamily: "Poppins-SemiBold", textAlign: "center" }}>{item.qty}</Text>
-                                )}
+                            <View style={s.areaQtyText}>
+                                <Text style={s.qtyText}>{item.text}</Text>
+                                <Text style={s.qtyText}>0</Text>
                             </View>
                         </View>
                     ))}
                     <View style={{ marginHorizontal: 10 }}></View>
                 </ScrollView>
-                <View style={{ width: "100%", flexDirection: "column", paddingHorizontal: 15, justifyContent: "space-between", paddingVertical: 5 }}>
-                    <SafeAreaView style={s.input}>
+                <View style={s.areaInput}>
+                    <SafeAreaView style={s.inputWrap}>
                         <TextInput
                             placeholder="Cari produk"
-                            style={{ marginLeft: 3, marginTop: 2, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", paddingHorizontal: 10, paddingVertical: 7, width: "90%" }}
+                            style={s.inputComp}
                             spellCheck={false}
                             autoCorrect={false}
+                            onChangeText={onChangeText}
+                            onSubmitEditing={() => getRealProduct()}
                         />
-                        <FontAwesome5 name={"search"} size={18} color='#eb8937' style={{ marginRight: 15 }} />
+                        <FontAwesome5 name={"search"} size={18} color='#eb8937' style={{ marginRight: 15 }} onPress={() => getRealProduct()} />
                     </SafeAreaView>
                 </View>
-                <View style={{ width: "100%", flexDirection: "column", paddingHorizontal: 15, justifyContent: "space-between", paddingVertical: 10 }}>
-                    <FlatList
-                        data={formatFlatList(data, 2)}
-                        renderItem={renderProductCard}
-                        keyExtractor={(item, i) => i.toString()}
-                        numColumns={2}
-                    />
+                <View style={s.productsWrap}>
+                    {dataDisplay.length > 0 ? (
+                        <FlatList
+                            data={formatFlatList(dataDisplay, 2)}
+                            renderItem={renderProductCard}
+                            keyExtractor={(item, i) => i.toString()}
+                            numColumns={2}
+                        />
+                    ) : (
+                        <FlatList
+                            data={formatFlatList(data, 2)}
+                            renderItem={renderProductCard}
+                            keyExtractor={(item, i) => i.toString()}
+                            numColumns={2}
+                        />
+                    )}
                 </View>
             </ScrollView>
+            <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => Actions.AddProduct()}>
+                <FontAwesome5 name={"plus"} size={14} color="#fff" />
+            </Ripple>
         </>
     )
 }
 
 const s = StyleSheet.create({
-    input: {
+    inputWrap: {
         justifyContent: "space-between",
         flexDirection: "row",
         alignItems: "center",
@@ -200,6 +215,91 @@ const s = StyleSheet.create({
         backgroundColor: "#eaeaea",
         width: "100%",
         borderRadius: 10
+    },
+    inputComp: {
+        marginLeft: 3,
+        marginTop: 2,
+        fontSize: 14,
+        color: "#595959",
+        fontFamily: "Poppins-Medium",
+        paddingHorizontal: 10,
+        paddingVertical: 7,
+        width: "90%"
+    },
+    productsWrap: {
+        width: "100%",
+        flexDirection: "column",
+        paddingHorizontal: 15,
+        justifyContent: "space-between",
+        paddingVertical: 10
+    },
+    areaInput: {
+        width: "100%",
+        flexDirection: "column",
+        paddingHorizontal: 15,
+        justifyContent: "space-between",
+        paddingVertical: 5
+    },
+    qtyText: {
+        color: "#545454",
+        fontFamily: "Poppins-SemiBold",
+        textAlign: "center",
+        fontSize: 11
+    },
+    areaQtyText: {
+        height: "100%",
+        width: "50%",
+        marginLeft: 10,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    bannerCategory: {
+        flex: 1,
+        display: "flex",
+        width: 150,
+        height: width / 4,
+        marginHorizontal: 5,
+        marginVertical: 8,
+        borderRadius: 10,
+        shadowColor: '#eaeaea',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+        elevation: 3,
+        justifyContent: "space-between",
+        flexDirection: "row",
+        alignItems: "center",
+        paddingLeft: 10,
+        paddingRight: 30,
+        overflow: "hidden"
+    },
+    imgBanner: {
+        height: "60%",
+        width: "60%",
+    },
+    imgBannerWrap: {
+        height: 65,
+        width: 65,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 10
+    },
+    buttonAmount: {
+        position: "absolute",
+        bottom: 20,
+        right: 20,
+        height: 55,
+        width: 55,
+        backgroundColor: "#fb8b24",
+        borderRadius: 50,
+        display: 'flex',
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: '#eee',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+        elevation: 2,
     }
 })
 export default Products

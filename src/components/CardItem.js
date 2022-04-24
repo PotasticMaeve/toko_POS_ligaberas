@@ -15,6 +15,14 @@ const CardItem = (props) => {
         }, 500)
     }, [])
 
+    const onPressAction = (id) => {
+        if(props.detailAdmin){
+            Actions.DetailCardAdmin({id: id})
+        }else{
+            Actions.DetailCard({id: id})
+        }
+    }
+
     if (isLoading) {
         return (
             <ShimmerCard />
@@ -24,7 +32,7 @@ const CardItem = (props) => {
             <Ripple
                 style={styles.cardItemWrap}
                 rippleColor="#fff"
-                onPress={() => Actions.DetailCard({id: props.id})}
+                onPress={() => {onPressAction(props.id)}}
             >
                 <View style={styles.imgCardWrap}>
                     <Image

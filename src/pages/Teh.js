@@ -18,9 +18,11 @@ const Teh = () => {
   const [ backendURL ] = backend_url
 
   const getData = () => {
-    axios.get(`${backendURL}/api/v1/product/`)
+    axios.get(`http://192.168.18.52:8000/api/v1/product_category/?search=teh`)
     .then((res) => {
-      setData(res.data.data);
+      if(res.status === 200){
+        setData(res.data.data.product);
+      }
     })
   }
 

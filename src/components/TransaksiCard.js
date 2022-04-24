@@ -3,13 +3,13 @@ import { View, Text, TouchableHighlight } from 'react-native'
 import styles from '../stylesheets/Main'
 import moment from "moment"
 import 'moment/locale/id'
+import { convertToIDR } from "../Helper"
 
 const TransaksiCard = (props) => {
     const [ existTransaksi ] = useState(props.exist)
 
-    const displayDate = () => {
-        const date = new Date()
-        return moment(date).format('LL')
+    const displayDate = (tgl) => {
+        return moment(tgl).format('LL')
     }
 
     if (existTransaksi) {
@@ -25,24 +25,24 @@ const TransaksiCard = (props) => {
                 <TouchableHighlight style={{ padding: 10, borderRadius: 5 }}>
                     <View style={{ height: '100%', width: '100%', position: 'relative' }}>
                         <View style={{ padding: 10, borderBottomWidth: 1, borderBottomColor: "#ccc" }}>
-                            <Text style={{ fontSize: 14, color: "#27ae60", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>INV-asdjdakw27482433</Text>
+                            <Text style={{ fontSize: 14, color: "#27ae60", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>INV-SO00{props.id_so}</Text>
                         </View>
                         <View style={{ width: '100%', marginTop: 10 }}>
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
                                 <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>tanggal : </Text>
-                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>{displayDate()}</Text>
+                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>{displayDate(props.tgl)}</Text>
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
-                                <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>jenis item : </Text>
-                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>2 varian</Text>
+                                <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>Status Pembayaran : </Text>
+                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{props.lunas ? "lunas" : "belum dibayar"}</Text>
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
                                 <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>jumlah item : </Text>
-                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>3 item</Text>
+                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>{`${props.data.length}`} item</Text>
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
                                 <Text style={{ fontSize: 13, color: "#27ae60", textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>total transaksi : </Text>
-                                <Text style={{ fontSize: 13, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>Rp 150.000</Text>
+                                <Text style={{ fontSize: 13, color: "#27ae60", fontFamily: "Poppins-SemiBold" }}>{convertToIDR(props.grandtotal)}</Text>
                             </View>
                         </View>
                     </View>

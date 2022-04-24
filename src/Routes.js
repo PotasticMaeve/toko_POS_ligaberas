@@ -29,6 +29,8 @@ import Products from "./pages/Products";
 import { MainContext } from "./context/MainContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ConfirmKeranjang from "./pages/ConfirmKeranjang";
+import DetailCardAdmin from "./pages/DetailCardAdmin";
+import AddProduct from "./pages/AddProduct";
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -96,6 +98,8 @@ const Routes = () => {
                 <Scene key="Customers" component={isAuthorized ? Customers : Auth} title="Customers" />
                 <Scene key="Products" component={isAuthorized ? Products : Auth} title="Products" />
                 <Scene key="ConfirmKeranjang" component={isAuthorized ? ConfirmKeranjang : Auth} title="ConfirmKeranjang" />
+                <Scene key="DetailCardAdmin" component={isAuthorized ? DetailCardAdmin : Auth} title="DetailCardAdmin" />
+                <Scene key="AddProduct" component={isAuthorized ? AddProduct : Auth} title="AddProduct" />
             </Scene>
         </Router>
     )

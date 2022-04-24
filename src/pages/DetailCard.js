@@ -355,6 +355,10 @@ const DetailCard = (props) => {
                                 <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: '#27ae60' }]}>Deskripsi Produk</Text>
                                 <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 13.5, textTransform: "capitalize", color: "#6b705c" }]}>{data.deskripsi}</Text>
                             </View>
+                            <View style={{ marginTop: 10 }}>
+                                <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: '#eb8937' }]}>Stok</Text>
+                                <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 13.5, textTransform: "capitalize", color: "#6b705c" }]}>{data.qty} buah</Text>
+                            </View>
                         </>
                     )}
                 </View>

@@ -85,7 +85,7 @@ const Profil = (props) => {
             <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
                 <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Profil</Text>
             </LinearGradient>
-            <View style={{ paddingTop: 15, backgroundColor: "#fff", height: "100%" }}>
+            <View style={{ paddingTop: 15, backgroundColor: "#fafafa", height: "100%" }}>
                 <View style={{
                     width: "100%",
                     justifyContent: "center",
@@ -148,7 +148,6 @@ const Profil = (props) => {
                                 onChangeText={new_text => setProfil({ ...profil, nama: new_text })}
                                 autoCorrect={false}
                             />
-
                         )}
                     </View>
                     <View style={{ flexDirection: "row" }}>
