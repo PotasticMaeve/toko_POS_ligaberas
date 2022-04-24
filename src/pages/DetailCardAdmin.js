@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, View, FlatList, Dimensions, ScrollView, Image } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, View, Dimensions, ScrollView } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -8,7 +8,6 @@ import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import axios from 'axios';
 import { MainContext } from '../context/MainContext';
 import { setRefreshToken } from "../Helper"
-import Ripple from 'react-native-material-ripple';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
@@ -21,7 +20,7 @@ const DetailCardAdmin = (props) => {
     const [data, setData] = useState({})
 
     const getData = () => {
-        axios.get(`http://192.168.18.52:8000/api/v1/product/${props.id}/`)
+        axios.get(`${backendURL}/api/v1/product/${props.id}/`)
             .then((res) => {
                 if (res.status == 200) {
                     setData(res.data.data[0]);

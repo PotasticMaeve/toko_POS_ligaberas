@@ -37,6 +37,10 @@ const TransaksiCard = (props) => {
                                 <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{props.lunas ? "lunas" : "belum dibayar"}</Text>
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
+                                <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>Status Pengiriman : </Text>
+                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{props.kirim ? "selesai" : "belum dikirim"}</Text>
+                            </View>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
                                 <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>jumlah item : </Text>
                                 <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>{`${props.data.length}`} item</Text>
                             </View>

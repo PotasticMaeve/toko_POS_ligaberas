@@ -32,7 +32,7 @@ const DetailCard = (props) => {
         axios.get(`${backendURL}/api/v1/product/${props.id}/`)
             .then((res) => {
                 if (res.status == 200) {
-                    setData(res.data);
+                    setData(res.data.data[0]);
                     setShimmerLoad(false)
                 } else {
                     setRefreshToken()
@@ -291,8 +291,8 @@ const DetailCard = (props) => {
                 <View style={{
                     width: "100%",
                     minHeight: 300,
-                    borderTopLeftRadius: 10,
-                    borderTopRightRadius: 10,
+                    borderTopLeftRadius: 12,
+                    borderTopRightRadius: 12,
                     top: -10,
                     paddingHorizontal: 15,
                     paddingTop: 10,
@@ -349,7 +349,7 @@ const DetailCard = (props) => {
                         </>
                     ) : (
                         <>
-                            <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 15, textTransform: "capitalize" }]}>{data.nama}</Text>
+                            <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 15, textTransform: "capitalize" }]}>{data.nama_barang}</Text>
                             <Text style={[{ marginVertical: 10, fontFamily: "Poppins-SemiBold", fontSize: 15, textTransform: "capitalize", color: '#60a3bc' }]}>{data.harga && convertToIDR(data.harga)}</Text>
                             <View style={{ marginTop: 10 }}>
                                 <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: '#27ae60' }]}>Deskripsi Produk</Text>

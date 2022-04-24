@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { StyleSheet, TextInput, TouchableOpacity, View, FlatList, Text, Dimensions, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, View, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -7,7 +7,6 @@ import styles from '../stylesheets/Main'
 import axios from 'axios';
 import { MainContext } from "../context/MainContext"
 import Card from "./Card"
-import ShimmerCard from './ShimmerCard';
 
 const colorHeader = ['#f3a337', '#eb8937']
 
@@ -22,7 +21,7 @@ const Search = () => {
     }
 
     const getRealProduct = () => {
-        axios.get(`http://192.168.18.52:8000/api/v1/product/?search=${input}`)
+        axios.get(`${backendURL}/api/v1/product/?search=${input}`)
             .then(res => {
                 if (res.status === 200) {
                     setDataDisplay(res.data.data);

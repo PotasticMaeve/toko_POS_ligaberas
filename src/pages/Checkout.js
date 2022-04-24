@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
     ScrollView,
-    SafeAreaView,
     ActivityIndicator
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
@@ -18,8 +17,6 @@ import { MainContext } from "../context/MainContext"
 import { Image } from 'react-native';
 import { convertToIDR, toast } from '../Helper';
 import Space from '../components/Space';
-import { CreditCardInput } from "react-native-credit-card-input";
-import BottomSheet from "react-native-gesture-bottom-sheet";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { setRefreshToken } from '../Helper'
@@ -36,13 +33,13 @@ const Checkout = (props) => {
     const [totalBarang, setTotalBarang] = useState(0)
     const [shippingCost, setShippingCost] = useState(0)
     const [grandTotal, setGrandTotal] = useState(0)
-    const [creditData, setCreditData] = useState({})
     const [profil, setProfil] = useState({})
-    const bs = useRef(null)
     const [isLoading, setIsLoading] = useState(false)
-    const [validatePembayaran, setValidatePembayaran] = useState(false)
     const [noKartu, setNoKartu] = useState([])
     const [selectedMethod, setSelectedMethod] = useState(0)
+    const [validatePembayaran, setValidatePembayaran] = useState(false)
+    const [paymentId, setPaymentId] = useState(0)
+    const [customerId, setCustomerId] = useState(0)
 
     const displayProfil = () => {
         setIsLoading(true)
@@ -110,34 +107,23 @@ const Checkout = (props) => {
         })
     }
 
-    const _onChange = form => setCreditData(form);
-
     const submitPembayaran = () => {
         setValidatePembayaran(true)
-        if (creditData.values) {
-            let cvc = creditData.values.cvc.split("").length
-            let number = creditData.values.number.split("").length
-            if (cvc > 2 && number > 12) {
-                setTimeout(() => {
+        setTimeout(() => {
+            axios.post(`${backendURL}/api/v1/sales_order/`, {
+                "customer_id": customerId,
+                "payment_id": paymentId
+            })
+            .then(res => {
+                if(res.status === 200){
                     setValidatePembayaran(false)
-                    bs.current.close()
                     Actions.Transaksi()
-                    setCreditData({})
-                }, 1000)
-            } else {
-                setTimeout(() => {
-                    setValidatePembayaran(false)
-                    bs.current.close()
-                    setCreditData({})
-                    toast("Data Pembayaran Tidak Valid", "danger")
-                }, 1000)
-            }
-        } else {
-            setValidatePembayaran(false)
-            bs.current.close()
-            setCreditData({})
-            toast("Data Pembayaran Harus Diisi", "danger")
-        }
+                }else{
+                    toast("Gagal Memproses Pesanan", "danger")
+                }
+            })
+        }, 1500);
+        Actions.DelayTransaksi()
     }
 
     const ResponsiveCalculateKeranjang = () => {
@@ -162,14 +148,16 @@ const Checkout = (props) => {
                 AsyncStorage.getItem("customerID").then(res => {
                     let customer_id = JSON.parse(res)
                     if (customer_id !== null) {
+                        setCustomerId(customer_id)
                         axios.get(`${backendURL}/api/v1/paymentinfo/`, key)
                             .then((res) => {
                                 if (res.status === 200) {
-                                    let payment_list = res.data
+                                    let payment_list = res.data.data
                                     let temp = []
                                     if (payment_list.length > 0) {
                                         payment_list.map(el => {
-                                            if (el.profile === customer_id) {
+                                            if (el.customer_id === customer_id) {
+                                                setPaymentId(el.payment_id)
                                                 let number = el.no_kartu.split("")
                                                 temp.push(number[8])
                                                 temp.push(number[9])
@@ -181,13 +169,13 @@ const Checkout = (props) => {
                                     setNoKartu(temp)
                                     setIsLoading(false)
                                 } else {
-                                    console.log("no customer ID [checkout]");
+                                    setRefreshToken()
                                 }
                             })
                     }
                 })
             } else {
-                console.log("no access [checkout]");
+                setRefreshToken()
             }
         })
     }
@@ -380,12 +368,12 @@ const Checkout = (props) => {
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Metode Pembayaran</Text>
                 </View>
                 <View style={{ width: "100%", marginTop: 1 }}>
-                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: `${ selectedMethod === 1 ? "red" : "#ddd" }`, borderWidth: .5, borderRadius: 10 }} onPress={() => setSelectedMethod(1)}>
+                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: `${selectedMethod === 1 ? "red" : "#ddd"}`, borderWidth: .5, borderRadius: 10 }} onPress={() => setSelectedMethod(1)}>
                         <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }}>
-                            <Image 
-                            source={require("../../assets/images/mastercard-logo.png")}
-                            style={{ height: 50, width: 50 }}
-                            resizeMode="contain"
+                            <Image
+                                source={require("../../assets/images/mastercard-logo.png")}
+                                style={{ height: 50, width: 50 }}
+                                resizeMode="contain"
                             />
                             <View style={{ marginLeft: 15, flexDirection: "column" }}>
                                 <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12, textTransform: "capitalize" }}>Kartu Kredit</Text>
@@ -395,10 +383,10 @@ const Checkout = (props) => {
                     </View>
                     <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#bbb", borderWidth: .5, borderRadius: 10, marginTop: 10 }} onPress={() => setSelectedMethod(2)}>
                         <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }}>
-                            <Image 
-                            source={require("../../assets/images/rupiah.png")}
-                            style={{ height: 50, width: 50 }}
-                            resizeMode="contain"
+                            <Image
+                                source={require("../../assets/images/rupiah.png")}
+                                style={{ height: 50, width: 50 }}
+                                resizeMode="contain"
                             />
                             <View style={{ marginLeft: 15, flexDirection: "column" }}>
                                 <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", fontSize: 12, textTransform: "capitalize" }}>Tunai</Text>
@@ -457,52 +445,14 @@ const Checkout = (props) => {
                         <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>{convertToIDR(grandTotal)}</Text>
                     )}
                 </View>
-                <Ripple rippleColor="#fff" style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }} onPress={() => bs.current.show()}>
-                    <Text style={{ fontSize: 14, color: '#fff', fontFamily: "Poppins-SemiBold" }}>Lanjutkan Pembayaran</Text>
+                <Ripple rippleColor="#fff" style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }} onPress={() => submitPembayaran()}>
+                    {validatePembayaran ? (
+                        <ActivityIndicator color="#fff" />
+                    ) : (
+                        <Text style={{ fontSize: 14, color: '#fff', fontFamily: "Poppins-SemiBold" }}>Lanjutkan Pembayaran</Text>
+                    )}
                 </Ripple>
             </View>
-            <SafeAreaView style={s.container}>
-                <BottomSheet hasDraggableIcon ref={bs} height={450}>
-                    <View style={{
-                        padding: 20,
-                        paddingTop: 20,
-                    }}>
-                        <Text style={{ fontSize: 16, color: "#000", textAlign: "center", fontFamily: "Poppins-SemiBold", marginBottom: 10 }}>Detail Pembayaran</Text>
-                        <CreditCardInput
-                            autoFocus
-                            requiresName
-                            requiresCVC
-                            placeholderColor="#bbb"
-                            onChange={_onChange}
-                            validColor="#27ae60"
-                            placeholderColor="#ccc"
-                            placeholders={{ number: "2222 2222 2222 2222", expiry: "MM/YY", cvc: "CVV", name: "Nama Lengkap" }}
-                            labels={{ number: "Nomor Kartu", expiry: "EXPIRY", cvc: "kode CVV", name: "Nama CardHolders" }}
-                            labelStyle={{ fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}
-                        />
-                        <Ripple
-                            rippleColor="#fff"
-                            style={{
-                                marginTop: 20,
-                                height: 40,
-                                borderRadius: 10,
-                                backgroundColor: '#eb8937',
-                                overflow: 'hidden',
-                                width: "100%",
-                                justifyContent: "center",
-                                alignItems: 'center',
-                            }}
-                            onPress={() => submitPembayaran()}
-                        >
-                            {validatePembayaran ? (
-                                <ActivityIndicator color="#fff" />
-                            ) : (
-                                <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>Bayar Sekarang</Text>
-                            )}
-                        </Ripple>
-                    </View>
-                </BottomSheet>
-            </SafeAreaView>
         </>
     )
 }

@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableHighlight } from 'react-native'
+import { View, TouchableHighlight } from 'react-native'
 import styles from '../stylesheets/Main'
-import moment from "moment"
-import 'moment/locale/id'
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -11,11 +9,6 @@ const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 
 const ShimmerTransaksi = (props) => {
     const [existTransaksi] = useState(props.exist)
-
-    const displayDate = () => {
-        const date = new Date()
-        return moment(date).format('LL')
-    }
 
     if (existTransaksi) {
         return (
@@ -52,6 +45,25 @@ const ShimmerTransaksi = (props) => {
                                 <ShimmerPlaceHolder
                                     shimmerColors={colorShimmer}
                                     style={{
+                                        height: 15,
+                                        width: "30%",
+                                        borderRadius: 5
+                                    }}
+                                />
+                            </View>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
+                                <ShimmerPlaceHolder
+                                    shimmerColors={colorShimmer}
+                                    style={{
+                                        height: 15,
+                                        width: "50%",
+                                        borderRadius: 5
+                                    }}
+                                />
+                                <ShimmerPlaceHolder
+                                    shimmerColors={colorShimmer}
+                                    style={{
+                                        marginTop: 7,
                                         height: 15,
                                         width: "30%",
                                         borderRadius: 5

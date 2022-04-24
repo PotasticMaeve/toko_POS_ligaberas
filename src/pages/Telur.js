@@ -18,7 +18,7 @@ const Telur = () => {
   const [ backendURL ] = backend_url
 
   const getData = () => {
-    axios.get(`http://192.168.18.52:8000/api/v1/product_category/?search=telur`)
+    axios.get(`${backendURL}/api/v1/product_category/?search=telur`)
     .then((res) => {
       if(res.status === 200){
         setData(res.data.data.product);

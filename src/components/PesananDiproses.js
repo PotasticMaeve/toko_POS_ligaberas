@@ -1,13 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import React, { useState, useEffect } from 'react'
-import { ScrollView } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
+import { Dimensions, ScrollView, Text } from 'react-native'
 import ShimmerTransaksi from './ShimmerTransaksi'
 import Space from './Space'
 import TransaksiCard from "./TransaksiCard"
 import { setRefreshToken } from "../Helper"
+import { MainContext } from '../context/MainContext'
+import LottieView from 'lottie-react-native';
+
+const { height } = Dimensions.get("screen")
 
 const PesananTiba = (props) => {
+    const { backend_url } = useContext(MainContext)
+    const [backendURL] = backend_url
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState([])
 
@@ -15,15 +21,15 @@ const PesananTiba = (props) => {
         setIsLoading(true)
         AsyncStorage.getItem("customerID").then(value => {
             let customer_id = JSON.parse(value)
-            if(customer_id !== null){
-                axios.get(`http://192.168.18.52:8000/api/v1/sales_order/?customer_id=${customer_id}&status=proses`)
-                .then(res => {
-                    setData(res.data.data);
-                    setTimeout(() => {
-                        setIsLoading(false)
-                    }, 500);
-                })
-            }else{
+            if (customer_id !== null) {
+                axios.get(`${backendURL}/api/v1/sales_order/?customer_id=${customer_id}&status=proses`)
+                    .then(res => {
+                        setData(res.data.data);
+                        setTimeout(() => {
+                            setIsLoading(false)
+                        }, 500);
+                    })
+            } else {
                 setRefreshToken()
             }
         })
@@ -38,9 +44,23 @@ const PesananTiba = (props) => {
             {isLoading ? (
                 <ShimmerTransaksi exist={true} />
             ) : (
-                data.length > 0 && data.map((el, i) => (
-                    <TransaksiCard key={i} data={el.cart_item} id_so={el.id_so} grandtotal={el.grandtotal} lunas={el.lunas} tgl={el.cart_item[0].modified_date} exist={true} />
-                ))
+                data.length > 0 ? data.map((el, i) => (
+                    <TransaksiCard key={i} data={el.cart_item} id_so={el.id_so} grandtotal={el.grandtotal} lunas={el.lunas} tgl={el.cart_item[0].modified_date} kirim={el.barang_dikirim} exist={true} />
+                )) : (
+                    <>
+                        <LottieView
+                            source={require('../animations/empty-transaction.json')}
+                            autoPlay
+                            loop
+                            style={{
+                                marginTop: 40,
+                                height: height / 2.5,
+                            }}
+                        />
+                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center" }}>Transaksi Kosong</Text>
+                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Segala transaksimu akan direkap disini ya!</Text>
+                    </>
+                )
             )}
             <Space />
         </ScrollView>

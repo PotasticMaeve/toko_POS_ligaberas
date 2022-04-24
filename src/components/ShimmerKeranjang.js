@@ -1,7 +1,5 @@
 import React from 'react'
-import { View, Text, TouchableHighlight, Image, StyleSheet } from 'react-native'
-import Ripple from 'react-native-material-ripple'
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import { View, TouchableHighlight, StyleSheet } from 'react-native'
 import styles from '../stylesheets/Main'
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import LinearGradient from 'react-native-linear-gradient';

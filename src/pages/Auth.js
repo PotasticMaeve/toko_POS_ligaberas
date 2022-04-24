@@ -6,7 +6,6 @@ import { TextInput, TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import Ripple from 'react-native-material-ripple'
 import Icon from "react-native-vector-icons/Entypo"
-import { Actions } from 'react-native-router-flux'
 import { MainContext } from '../context/MainContext'
 import { toast, setStorage } from '../Helper'
 

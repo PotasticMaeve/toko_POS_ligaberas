@@ -17,6 +17,7 @@ const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 
 const colorHeader = ['#f3a337', '#eb8937']
 const { width } = Dimensions.get("screen")
+
 const Products = () => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
@@ -127,7 +128,7 @@ const Products = () => {
 
     const getRealProduct = () => {
         setIsLoading(true)
-        axios.get(`http://192.168.18.52:8000/api/v1/product/?search=${input}`)
+        axios.get(`${backendURL}/api/v1/product/?search=${input}`)
             .then(res => {
                 if (res.status === 200) {
                     setDataDisplay(res.data.data);
@@ -149,7 +150,7 @@ const Products = () => {
                 </TouchableOpacity>
                 <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Produk</Text>
             </LinearGradient>
-            <ScrollView style={{ paddingVertical: 10, flex: 1, backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{ paddingVertical: 10, flex: 1, backgroundColor: "#fafafa" }} showsHorizontalScrollIndicator={false}>
                 <ScrollView style={styles.cardWrap} horizontal>
                     {category.length > 0 && category.map((item, i) => (
                         <View key={i} style={[s.bannerCategory, { backgroundColor: `${item.bg}` }]}>

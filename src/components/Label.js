@@ -8,7 +8,7 @@ const Label = () => {
     return (
         <View style={styles.labelRow}>
             <LinearGradient colors={['#f4ab18', '#e2880d']} style={styles.labelWrap}>
-                <Text style={{ color: "#fff", fontSize: 15, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Produk Terlaris {bulan[new Date().getMonth()]} {new Date().getUTCFullYear()}</Text>
+                <Text style={{ color: "#fff", fontSize: 15, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Daftar Produk {bulan[new Date().getMonth()]} {new Date().getUTCFullYear()}</Text>
             </LinearGradient>
         </View>
     )
