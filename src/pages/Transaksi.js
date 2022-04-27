@@ -1,27 +1,31 @@
-import React from 'react'
-import { useWindowDimensions, Text, TouchableOpacity } from 'react-native';
+import React, { useContext, useEffect } from 'react'
+import { useWindowDimensions, Text, BackHandler, View } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import LinearGradient from 'react-native-linear-gradient'
-import { Actions } from 'react-native-router-flux'
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
 import PesananDikirim from '../components/PesananDikirim';
 import PesananTiba from '../components/PesananTiba';
 import PesananDiproses from '../components/PesananDiproses';
+import { MainContext } from '../context/MainContext';
+import Ripple from 'react-native-material-ripple';
+import { Actions } from 'react-native-router-flux';
 
 const colorHeader = ['#f3a337', '#eb8937']
 
-const Transaksi = () => {
-    const pesanan_diproses = () => <PesananDiproses updateFetchData={updateFetchData} />
-    const pesanan_dikirim = () => <PesananDikirim updateFetchData={updateFetchData} />
-    const pesanan_tiba = () => <PesananTiba updateFetchData={updateFetchData} />
-    
+const Transaksi = (props) => {
+    const { back_to_shop } = useContext(MainContext)
+    const [backtoShop, setBacktoShop] = back_to_shop
+
+    const pesanan_diproses = () => <PesananDiproses />
+    const pesanan_dikirim = () => <PesananDikirim />
+    const pesanan_tiba = () => <PesananTiba />
+
     const renderScene = SceneMap({
         first: pesanan_diproses,
         second: pesanan_dikirim,
         third: pesanan_tiba,
     });
-    
+
     const renderTabBar = props =>
         <TabBar {...props}
             onPress={() => updateFetchData()}
@@ -43,7 +47,18 @@ const Transaksi = () => {
         { key: 'third', title: 'selesai' },
     ]);
 
-    const updateFetchData = () => {}
+    const backHome = () => {
+        const backHandler = BackHandler.addEventListener(
+            "hardwareBackPress", () => true
+        );
+        return () => backHandler.remove();
+    }
+
+    useEffect(() => {
+        props.backToShopping && Actions.currentScene === "Transaksi" && backHome()
+    }, [])
+
+    const backHomeReload = () => setBacktoShop(true)
 
     return (
         <>
@@ -57,6 +72,25 @@ const Transaksi = () => {
                 onIndexChange={setIndex}
                 initialLayout={{ width: layout.width }}
             />
+            {props.backToShopping && (
+                <View style={{ position: "absolute", left: 0, bottom: 0, height: 80, paddingTop: 10, paddingBottom: 10, width: "100%", paddingHorizontal: 15, backgroundColor: "#fafafa", justifyContent: "center", alignItems: "center" }}>
+                    <Ripple
+                        rippleColor="#fff"
+                        style={{
+                            height: 40,
+                            borderRadius: 10,
+                            backgroundColor: '#eb8937',
+                            overflow: 'hidden',
+                            width: "100%",
+                            justifyContent: "center",
+                            alignItems: 'center',
+                        }}
+                        onPress={() => backHomeReload()}
+                    >
+                        <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>Kembali Berbelanja</Text>
+                    </Ripple>
+                </View>
+            )}
         </>
     )
 }

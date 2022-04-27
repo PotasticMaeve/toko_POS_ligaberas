@@ -3,6 +3,7 @@ import { View, Text, Dimensions } from 'react-native'
 import LottieView from 'lottie-react-native';
 
 const { height, width } = Dimensions.get("screen")
+
 const DelayTransaksi = () => {
     return (
         <View style={{ height: height, width: width, justifyContent: "center", alignItems: "center", backgroundColor: "#fafafa" }}>

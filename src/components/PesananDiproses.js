@@ -1,13 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import React, { useState, useEffect, useContext } from 'react'
-import { Dimensions, ScrollView, Text } from 'react-native'
+import { Dimensions, ScrollView, Text, View } from 'react-native'
 import ShimmerTransaksi from './ShimmerTransaksi'
 import Space from './Space'
 import TransaksiCard from "./TransaksiCard"
 import { setRefreshToken } from "../Helper"
 import { MainContext } from '../context/MainContext'
 import LottieView from 'lottie-react-native';
+import Ripple from 'react-native-material-ripple'
 
 const { height } = Dimensions.get("screen")
 

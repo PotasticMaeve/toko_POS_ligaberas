@@ -13,13 +13,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { setStorage } from "../Helper"
 
 const Home = () => {
-  const { backend_url, close_checkout } = useContext(MainContext)
+  const { backend_url, close_checkout, back_to_shop } = useContext(MainContext)
   const [backendURL] = backend_url
   const [closeCheckout, setCloseCheckout] = close_checkout
+  const [backtoShop, setBacktoShop] = back_to_shop
   const [data, setData] = useState([])
 
   const getData = () => {
     setCloseCheckout(false)
+    setBacktoShop(false)
     axios.get(`${backendURL}/api/v1/product/`)
       .then((res) => {
         if (res.data.status === 200) {

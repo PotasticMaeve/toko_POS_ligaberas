@@ -245,6 +245,18 @@ const DetailCard = (props) => {
         })
     }
 
+    const beforeAddToKeranjang = () => {
+        if (IsAuthorized) {
+            if (data.qty > 0) {
+                addToKeranjang()
+            } else {
+                return false;
+            }
+        } else {
+            toast("Harap Login Terlebih Dahulu", "danger")
+        }
+    }
+
     return (
         <>
             <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
@@ -336,12 +348,14 @@ const DetailCard = (props) => {
                                         borderRadius: 5
                                     }}
                                 />
+                            </View>
+                            <View style={{ marginTop: 10 }}>
+                                <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: '#eb8937' }]}>Stok</Text>
                                 <ShimmerPlaceHolder
                                     shimmerColors={colorShimmer}
                                     style={{
-                                        marginTop: 10,
                                         height: 20,
-                                        width: "60%",
+                                        width: "20%",
                                         borderRadius: 5
                                     }}
                                 />
@@ -356,8 +370,14 @@ const DetailCard = (props) => {
                                 <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 13.5, textTransform: "capitalize", color: "#6b705c" }]}>{data.deskripsi}</Text>
                             </View>
                             <View style={{ marginTop: 10 }}>
-                                <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: '#eb8937' }]}>Stok</Text>
-                                <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 13.5, textTransform: "capitalize", color: "#6b705c" }]}>{data.qty} buah</Text>
+                                {data.qty > 0 ? (
+                                    <>
+                                        <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: '#eb8937' }]}>Stok</Text>
+                                        <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 13.5, textTransform: "capitalize", color: "#6b705c" }]}>{data.qty} buah</Text>
+                                    </>
+                                ) : (
+                                    <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: 'red' }]}>Stok Habis</Text>
+                                )}
                             </View>
                         </>
                     )}
@@ -403,9 +423,9 @@ const DetailCard = (props) => {
                         </Ripple>
                     )}
                     <Ripple
-                        onPress={() => { IsAuthorized ? addToKeranjang() : toast("Harap Login Terlebih Dahulu", "danger") }}
-                        rippleColor="#fff"
-                        style={{ height: 40, borderRadius: 10, backgroundColor: '#eb8937', overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
+                        onPress={() => beforeAddToKeranjang()}
+                        rippleColor={`${data.qty > 0 && "#fff"}`}
+                        style={{ height: 40, borderRadius: 10, backgroundColor: `${data.qty > 0 ? "#eb8937" : "#ccc"}`, overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
                     >
                         {isLoading ? (
                             <ActivityIndicator color="#fff" />

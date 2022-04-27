@@ -57,6 +57,14 @@ const WishlistCard = (props) => {
         props.responsiveDeleteWishlist && props.responsiveDeleteWishlist(id)
     }
 
+    const beforeAddToCart = () => {
+        if(props.qty > 0){
+            addToCart()
+        }else{
+            return false;
+        }
+    }
+
     return (
         <View style={[styles.cardItemWrap, {
             flexDirection: 'column',
@@ -78,7 +86,11 @@ const WishlistCard = (props) => {
                         <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 20, justifyContent: 'space-around' }}>
                             <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{props.nama}</Text>
                             <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{props.harga && convertToIDR(props.harga)}</Text>
-                            <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#f5576c' }}>Stok {props.qty}</Text>
+                            {props.qty > 0 ? (
+                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#f5576c' }}>Stok {props.qty}</Text>
+                            ) : (
+                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Stok Habis</Text>
+                            )}
                         </View>
                     </View>
                     <View style={{ display: 'flex', flexDirection: 'row', marginTop: 10, justifyContent: "space-around" }}>
@@ -92,13 +104,13 @@ const WishlistCard = (props) => {
                             </View>
                         </Ripple>
                         <Ripple
-                            rippleColor="#27ae60" style={{ height: 40, borderRadius: 10, borderWidth: 1, borderColor: '#27ae60', overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
-                            onPress={() => addToCart()}
+                            rippleColor={`${ props.qty > 0 && "#27ae60"}`} style={{ height: 40, borderRadius: 10, borderWidth: 1, borderColor: `${props.qty > 0 ? "#27ae60" : "#aaa"}`, overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
+                            onPress={() => beforeAddToCart()}
                         >
                             {isLoading ? (
                                 <ActivityIndicator color="#27ae60" />
-                            ):(
-                                <Text style={{ color: '#27ae60', fontFamily: "Poppins-SemiBold", marginTop: 5, fontSize: 13 }}>Tambah ke Keranjang</Text>
+                            ) : (
+                                <Text style={{ color: `${props.qty > 0 ? "#27ae60" : "#aaa"}`, fontFamily: "Poppins-SemiBold", marginTop: 5, fontSize: 13 }}>Tambah ke Keranjang</Text>
                             )}
                         </Ripple>
                     </View>

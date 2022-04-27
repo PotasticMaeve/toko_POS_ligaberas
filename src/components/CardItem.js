@@ -8,7 +8,7 @@ import ShimmerCard from './ShimmerCard';
 
 const CardItem = (props) => {
     const [isLoading, setIsLoading] = useState(true)
-    
+
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false)
@@ -16,10 +16,10 @@ const CardItem = (props) => {
     }, [])
 
     const onPressAction = (id) => {
-        if(props.detailAdmin){
-            Actions.DetailCardAdmin({id: id})
-        }else{
-            Actions.DetailCard({id: id})
+        if (props.detailAdmin) {
+            Actions.DetailCardAdmin({ id: id })
+        } else {
+            Actions.DetailCard({ id: id })
         }
     }
 
@@ -32,7 +32,7 @@ const CardItem = (props) => {
             <Ripple
                 style={styles.cardItemWrap}
                 rippleColor="#fff"
-                onPress={() => {onPressAction(props.id)}}
+                onPress={() => { onPressAction(props.id) }}
             >
                 <View style={styles.imgCardWrap}>
                     <Image
@@ -45,10 +45,14 @@ const CardItem = (props) => {
                     paddingHorizontal: 7
                 }}>
                     <Text numberOfLines={2} style={[styles.titleCard, { fontFamily: "Poppins-Regular" }]}>{props.nama_barang}</Text>
-                    <Text style={[styles.priceCard, {fontFamily: "Poppins-SemiBold", color: "#60a3bc"}]}>{convertToIDR(props.harga)}</Text>
+                    <Text style={[styles.priceCard, { fontFamily: "Poppins-SemiBold", color: "#60a3bc" }]}>{convertToIDR(props.harga)}</Text>
                 </View>
                 <View style={styles.ratingWrap}>
-                    <Text style={{ fontSize: 11.5, color: '#27ae60', fontFamily: "Poppins-SemiBold" }}>Stok {props.qty}</Text>
+                    {props.qty > 0 ? (
+                        <Text style={{ fontSize: 11.5, color: '#27ae60', fontFamily: "Poppins-SemiBold" }}>Stok {props.qty}</Text>
+                    ) : (
+                        <Text style={{ fontSize: 11.5, color: 'red', fontFamily: "Poppins-SemiBold" }}>Stok Habis</Text>
+                    )}
                 </View>
             </Ripple>
         )

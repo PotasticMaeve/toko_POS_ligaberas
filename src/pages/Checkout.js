@@ -117,12 +117,12 @@ const Checkout = (props) => {
             .then(res => {
                 if(res.status === 200){
                     setValidatePembayaran(false)
-                    Actions.Transaksi()
+                    Actions.Transaksi({ backToShopping: true })
                 }else{
                     toast("Gagal Memproses Pesanan", "danger")
                 }
             })
-        }, 1500);
+        }, 2000);
         Actions.DelayTransaksi()
     }
 
@@ -293,7 +293,7 @@ const Checkout = (props) => {
                                         }}
                                     />
                                 </View>
-                                <View style={{ height: 60, width: 60, justifyContent: "center", alignItems: "center" }} >
+                                <View style={{ height: 60, width: 40, justifyContent: "center", alignItems: "center", position: "absolute", top: 0, right: 0 }} >
                                     <ShimmerPlaceHolder
                                         shimmerColors={colorShimmer}
                                         style={{
@@ -329,7 +329,7 @@ const Checkout = (props) => {
                                         }}
                                     />
                                 </View>
-                                <View style={{ height: 60, width: 60, justifyContent: "center", alignItems: "center" }} >
+                                <View style={{ height: 60, width: 40, justifyContent: "center", alignItems: "center", position: "absolute", top: 0, right: 0 }} >
                                     <ShimmerPlaceHolder
                                         shimmerColors={colorShimmer}
                                         style={{
@@ -355,7 +355,7 @@ const Checkout = (props) => {
                                         <Text numberOfLines={1} style={{ marginTop: 2, width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12, color: '#60a3bc' }}>Satuan : {convertToIDR(el.product.harga)}</Text>
                                         <Text numberOfLines={1} style={{ marginTop: 2, width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12, color: '#c1121f' }}>Subtotal : {convertToIDR(el.subtotal)}</Text>
                                     </View>
-                                    <View style={{ height: 60, width: 60, justifyContent: "center", alignItems: "center" }} >
+                                    <View style={{ height: 60, width: 40, justifyContent: "center", alignItems: "center", position: "absolute", top: 0, right: 0 }} >
                                         <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13, color: "#27ae60" }}>x {el.qty}</Text>
                                     </View>
                                 </View>
@@ -384,13 +384,13 @@ const Checkout = (props) => {
                     <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#bbb", borderWidth: .5, borderRadius: 10, marginTop: 10 }} onPress={() => setSelectedMethod(2)}>
                         <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }}>
                             <Image
-                                source={require("../../assets/images/rupiah.png")}
+                                source={require("../../assets/images/ovo-logo.png")}
                                 style={{ height: 50, width: 50 }}
                                 resizeMode="contain"
                             />
                             <View style={{ marginLeft: 15, flexDirection: "column" }}>
-                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", fontSize: 12, textTransform: "capitalize" }}>Tunai</Text>
-                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", fontSize: 12 }}>Bayar ketika barang sampai</Text>
+                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", fontSize: 12 }}>OVO</Text>
+                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", fontSize: 12 }}>{profil ? profil.phone : "no HP tujuan belum diperbarui"}</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
