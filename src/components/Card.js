@@ -1,7 +1,10 @@
 import React from 'react'
-import { FlatList, SafeAreaView, View } from 'react-native'
+import { FlatList, SafeAreaView, View, Text, Dimensions } from 'react-native'
 import styles from '../stylesheets/Main'
 import CardItem from './CardItem'
+import LottieView from "lottie-react-native"
+
+const { height } = Dimensions.get("screen")
 
 const Card = (props) => {
     const formatFlatList = (data, numColumns) => {
@@ -34,13 +37,31 @@ const Card = (props) => {
 
     return (
         <SafeAreaView style={styles.cardWrap}>
-            <FlatList
-                data={formatFlatList(props.data, 2)}
-                renderItem={renderCard}
-                keyExtractor={(item, i) => i.toString()}
-                numColumns={2}
-            />
-        </SafeAreaView>
+            {props.empty ? (
+                <>
+                    <LottieView
+                        source={require('../animations/empty-product.json')}
+                        autoPlay
+                        loop
+                        style={{
+                            marginTop: 70,
+                            height: height / 2.4,
+                            flex: 1,
+                            alignSelf: "center"
+                        }}
+                    />
+                    <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: "-10%" }}>Produk Kosong</Text>
+                    <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Maaf ya! saat ini produk belum tersedia</Text>
+                </>
+            ) : (
+                <FlatList
+                    data={formatFlatList(props.data, 2)}
+                    renderItem={renderCard}
+                    keyExtractor={(item, i) => i.toString()}
+                    numColumns={2}
+                />
+            )}
+        </SafeAreaView >
     )
 }
 

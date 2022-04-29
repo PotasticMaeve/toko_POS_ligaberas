@@ -13,10 +13,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { setStorage } from "../Helper"
 
 const Home = () => {
-  const { backend_url, close_checkout, back_to_shop } = useContext(MainContext)
+  const { backend_url, close_checkout, back_to_shop, is_admin } = useContext(MainContext)
   const [backendURL] = backend_url
   const [closeCheckout, setCloseCheckout] = close_checkout
   const [backtoShop, setBacktoShop] = back_to_shop
+  const [isAdmin, setIsAdmin] = is_admin
   const [data, setData] = useState([])
 
   const getData = () => {
@@ -43,7 +44,12 @@ const Home = () => {
               .then((res) => {
                 if (res.status === 200) {
                   let customer_id = res.data.data.customer_id
-                  setStorage("customerID", customer_id)
+                  let role_status = res.data.data.is_admin
+                  if(!role_status){
+                    setStorage("customerID", customer_id)
+                  }else{
+                    setIsAdmin(true)
+                  }
                 }
               })
           }

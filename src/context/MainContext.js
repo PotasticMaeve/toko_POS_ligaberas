@@ -8,6 +8,7 @@ export const MainProvider = (props) => {
     const [IsAuthorized, setIsAuthorized] = useState(false)
     const [closeCheckout, setCloseCheckout] = useState(false)
     const [backtoShop, setBacktoShop] = useState(false)
+    const [isAdmin, setIsAdmin] = useState(false)
 
     return (
         <MainContext.Provider value={{
@@ -15,7 +16,8 @@ export const MainProvider = (props) => {
             backend_url: [backendURL, setBackendURL],
             authorized: [IsAuthorized, setIsAuthorized],
             close_checkout: [closeCheckout, setCloseCheckout],
-            back_to_shop: [backtoShop, setBacktoShop]
+            back_to_shop: [backtoShop, setBacktoShop],
+            is_admin: [isAdmin, setIsAdmin],
         }}>
             {props.children}
         </MainContext.Provider>

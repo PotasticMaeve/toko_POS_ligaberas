@@ -13,33 +13,38 @@ import { MainContext } from '../context/MainContext'
 const colorHeader = ['#f3a337', '#eb8937']
 
 const Teh = () => {
-  const [ data, setData ] = useState([])
+  const [data, setData] = useState([])
   const { backend_url } = useContext(MainContext)
-  const [ backendURL ] = backend_url
+  const [backendURL] = backend_url
+  const [isEmpty, setIsEmpty] = useState(false)
 
   const getData = () => {
     axios.get(`${backendURL}/api/v1/product_category/?search=teh`)
-    .then((res) => {
-      if(res.status === 200){
-        setData(res.data.data.product);
-      }
-    })
+      .then((res) => {
+        if (res.status === 200) {
+          if (res.data.data.product.length > 0) {
+            setData(res.data.data.product);
+          } else {
+            setIsEmpty(true)
+          }
+        }
+      })
   }
 
   useEffect(() => {
     getData()
   }, [])
-  
+
   return (
     <>
       <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
         <TouchableOpacity onPress={() => Actions.pop()}>
           <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
         </TouchableOpacity>
-        <Text style={{ fontSize: 16, marginTop: 5, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold"}}>Kategori Teh & Kopi</Text>
+        <Text style={{ fontSize: 16, marginTop: 5, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold" }}>Kategori Teh & Kopi</Text>
       </LinearGradient>
       <ScrollView style={{ paddingTop: 10 }} showsVerticalScrollIndicator={false}>
-        <Card data={data} />
+        <Card data={data} empty={isEmpty} />
         <Space />
       </ScrollView>
     </>

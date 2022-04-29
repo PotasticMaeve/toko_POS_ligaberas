@@ -367,7 +367,7 @@ const DetailCard = (props) => {
                             <Text style={[{ marginVertical: 10, fontFamily: "Poppins-SemiBold", fontSize: 15, textTransform: "capitalize", color: '#60a3bc' }]}>{data.harga && convertToIDR(data.harga)}</Text>
                             <View style={{ marginTop: 10 }}>
                                 <Text style={[{ fontFamily: "Poppins-SemiBold", fontSize: 14.5, textTransform: "capitalize", color: '#27ae60' }]}>Deskripsi Produk</Text>
-                                <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 13.5, textTransform: "capitalize", color: "#6b705c" }]}>{data.deskripsi}</Text>
+                                <Text style={[{ fontFamily: "Poppins-Medium", fontSize: 13, textTransform: "capitalize", color: "#6b705c" }]}>{data.deskripsi}</Text>
                             </View>
                             <View style={{ marginTop: 10 }}>
                                 {data.qty > 0 ? (

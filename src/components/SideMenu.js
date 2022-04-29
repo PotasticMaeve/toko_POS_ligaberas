@@ -12,10 +12,11 @@ import { MainContext } from '../context/MainContext'
 import { toast } from '../Helper'
 
 const SideMenu = () => {
-    const { authorized } = useContext(MainContext)
+    const { authorized, is_admin } = useContext(MainContext)
     const [isAuthorized, setIsAuthorized] = authorized
     const [username, setUsername] = useState("")
     const [modalShow, setModalShow] = useState(false)
+    const [isAdmin, setIsAdmin] = is_admin
 
     const confirmedLogout = () => {
         setModalShow(false)
@@ -27,12 +28,13 @@ const SideMenu = () => {
         AsyncStorage.removeItem("customerUsername")
         setIsAuthorized(false)
         setUsername("")
+        setIsAdmin(false)
     }
 
     useEffect(() => {
         AsyncStorage.getItem("customerUsername").then(res => {
             let user = JSON.parse(res)
-            if(user !== null){
+            if (user !== null) {
                 setUsername(user)
             }
         })
@@ -54,28 +56,41 @@ const SideMenu = () => {
                 </View>
             </View>
             <View style={styles.menu}>
-                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Wishlist()}>
-                    <Icons name={"heart"} size={19} color="#e36414" style={{ marginLeft: 1 }} />
-                    <Text style={styles.menu_text}>Wishlist</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Keranjang()}>
-                    <FontAwesome5 name={"shopping-cart"} size={18} color="#e36414" />
-                    <Text style={styles.menu_text}>Keranjang</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Customers()}>
-                    <FontAwesome5 name={"users"} size={18} color="#e36414" />
-                    <Text style={styles.menu_text}>Pelanggan</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Products()}>
-                    <FontAwesome5 name={"box-open"} size={18} color="#e36414" />
-                    <Text style={styles.menu_text}>Produk</Text>
-                </TouchableOpacity>
-                {isAuthorized ? (
-                    <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>
-                        <FontAwesome5 name={"sign-out-alt"} size={18} color="#e36414" />
-                        <Text style={styles.menu_text}>Logout</Text>
-                    </TouchableOpacity>
-                ) : []}
+                {isAdmin ? (
+                    <>
+                        <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Customers()}>
+                            <FontAwesome5 name={"users"} size={18} color="#e36414" />
+                            <Text style={styles.menu_text}>Pelanggan</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Products()}>
+                            <FontAwesome5 name={"box-open"} size={18} color="#e36414" />
+                            <Text style={styles.menu_text}>Produk</Text>
+                        </TouchableOpacity>
+                        {isAuthorized ? (
+                            <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>
+                                <FontAwesome5 name={"sign-out-alt"} size={18} color="#e36414" />
+                                <Text style={styles.menu_text}>Logout</Text>
+                            </TouchableOpacity>
+                        ) : []}
+                    </>
+                ) : (
+                    <>
+                        <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Wishlist()}>
+                            <Icons name={"heart"} size={19} color="#e36414" style={{ marginLeft: 1 }} />
+                            <Text style={styles.menu_text}>Wishlist</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Keranjang()}>
+                            <FontAwesome5 name={"shopping-cart"} size={18} color="#e36414" />
+                            <Text style={styles.menu_text}>Keranjang</Text>
+                        </TouchableOpacity>
+                        {isAuthorized ? (
+                            <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>
+                                <FontAwesome5 name={"sign-out-alt"} size={18} color="#e36414" />
+                                <Text style={styles.menu_text}>Logout</Text>
+                            </TouchableOpacity>
+                        ) : []}
+                    </>
+                )}
             </View>
             {modalShow && (
                 <Modal
