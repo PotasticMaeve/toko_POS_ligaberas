@@ -31,6 +31,7 @@ const Keranjang = (props) => {
   const [cartId, setCartId] = useState(0)
   const [customerId, setCustomerId] = useState(0)
   const [loadTotal, setLoadTotal] = useState(false)
+  const [isEmpty, setIsEmpty] = useState(false)
 
   const getData = () => {
     setIsLoading(true)
@@ -46,7 +47,11 @@ const Keranjang = (props) => {
               .then((res) => {
                 if (res.status === 200) {
                   let cart_item_data = res.data.data.cart_data
-                  setData(cart_item_data);
+                  if (cart_item_data.length > 0) {
+                    setData(cart_item_data);
+                  } else {
+                    setIsEmpty(true)
+                  }
                   setCartId(res.data.data.id)
                   setIsLoading(false)
                 } else {
@@ -141,7 +146,7 @@ const Keranjang = (props) => {
   }
 
   const checkoutCart = () => {
-    Actions.Checkout({responsiveProductCheckout: responsiveProductCheckout, responsiveDeleteKeranjangFromCheckout: props.responsiveDeleteKeranjangFromCheckout})
+    Actions.Checkout({ responsiveProductCheckout: responsiveProductCheckout, responsiveDeleteKeranjangFromCheckout: props.responsiveDeleteKeranjangFromCheckout })
   }
 
   const responsiveProductCheckout = () => {
@@ -169,9 +174,7 @@ const Keranjang = (props) => {
             <ShimmerKeranjang />
           </>
         ) : (
-          data && data.length > 0 ? data.map((el, i) => (
-            <KeranjangCard responsiveDeleteKeranjang={props.responsiveDeleteKeranjang} key={i} exist={true} data={el} calculate={calculateTotal} remove={removeItem} />
-          )) : (
+          isEmpty ? (
             <>
               <LottieView
                 source={require('../animations/empty-cart.json')}
@@ -186,11 +189,15 @@ const Keranjang = (props) => {
               <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: "-3%" }}>Keranjang Kosong</Text>
               <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Ayo segera isi keranjang belanjamu!</Text>
             </>
+          ) : (
+            data.map((el, i) => (
+              <KeranjangCard responsiveDeleteKeranjang={props.responsiveDeleteKeranjang} key={i} exist={true} data={el} calculate={calculateTotal} remove={removeItem} />
+            ))
           )
         )}
         <Space />
       </ScrollView>
-      {data && data.length > 0 && (
+      {!isEmpty && (
         <View style={{
           position: "absolute",
           bottom: 0,

@@ -36,10 +36,12 @@ const Checkout = (props) => {
     const [profil, setProfil] = useState({})
     const [isLoading, setIsLoading] = useState(false)
     const [noKartu, setNoKartu] = useState([])
-    const [selectedMethod, setSelectedMethod] = useState(0)
     const [validatePembayaran, setValidatePembayaran] = useState(false)
     const [paymentId, setPaymentId] = useState(0)
     const [customerId, setCustomerId] = useState(0)
+    const [activePayment, setActivePayment] = useState(false)
+    const [activeButtonPayment, setActiveButtonPayment] = useState(false)
+    const [loadBarang, setLoadBarang] = useState(false)
 
     const displayProfil = () => {
         setIsLoading(true)
@@ -76,7 +78,7 @@ const Checkout = (props) => {
     }, [])
 
     const displayTotalBarang = () => {
-        setIsLoading(true)
+        setLoadBarang(true)
         AsyncStorage.getItem("tokenAccess").then(data => {
             if (data !== null) {
                 let tokenAccess = JSON.parse(data)
@@ -92,7 +94,7 @@ const Checkout = (props) => {
                                     setTotalBarang(res.data.data.grandtotal);
                                     setShippingCost(res.data.data.shipping_cost)
                                     setGrandTotal(res.data.data.grandtotal_after_shipping)
-                                    setIsLoading(false)
+                                    setLoadBarang(false)
                                 } else {
                                     setRefreshToken()
                                 }
@@ -108,22 +110,26 @@ const Checkout = (props) => {
     }
 
     const submitPembayaran = () => {
-        setValidatePembayaran(true)
-        setTimeout(() => {
-            axios.post(`${backendURL}/api/v1/sales_order/`, {
-                "customer_id": customerId,
-                "payment_id": paymentId
-            })
-            .then(res => {
-                if(res.status === 200){
-                    setValidatePembayaran(false)
-                    Actions.Transaksi({ backToShopping: true })
-                }else{
-                    toast("Gagal Memproses Pesanan", "danger")
-                }
-            })
-        }, 2000);
-        Actions.DelayTransaksi()
+        if(activeButtonPayment){
+            setValidatePembayaran(true)
+            setTimeout(() => {
+                axios.post(`${backendURL}/api/v1/sales_order/`, {
+                    "customer_id": customerId,
+                    "payment_id": paymentId
+                })
+                    .then(res => {
+                        if (res.status === 200) {
+                            setValidatePembayaran(false)
+                            Actions.Transaksi({ backToShopping: true })
+                        } else {
+                            toast("Gagal Memproses Pesanan", "danger")
+                        }
+                    })
+            }, 2000);
+            Actions.DelayTransaksi()
+        }else{
+            return false;
+        }
     }
 
     const ResponsiveCalculateKeranjang = () => {
@@ -137,6 +143,56 @@ const Checkout = (props) => {
 
     const ResponsiveUpdateProfil = () => {
         displayProfil()
+    }
+    
+    const selectMethod = () => {
+        if(activePayment){
+            return (
+                <View style={{ width: "100%", marginTop: 1 }}>
+                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#eb8937", borderWidth: 1.3, borderRadius: 10 }} onPress={() => setSelectedMethod(1)}>
+                        <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }} onPress={() => unselectPayment()}>
+                            <Image
+                                source={require("../../assets/images/mastercard-logo.png")}
+                                style={{ height: 50, width: 50 }}
+                                resizeMode="contain"
+                            />
+                            <View style={{ marginLeft: 15, flexDirection: "column" }}>
+                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12, textTransform: "capitalize" }}>Kartu Kredit</Text>
+                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12 }}>&#x2022; &#x2022; &#x2022; &#x2022;  &#x2022; &#x2022; &#x2022; &#x2022;  {noKartu[0]} {noKartu[1]} {noKartu[2]} {noKartu[3]}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        }else{
+            return (
+                <View style={{ width: "100%", marginTop: 1 }} >
+                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#ddd", borderWidth: .5, borderRadius: 10 }} onPress={() => setSelectedMethod(1)}>
+                        <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }} onPress={() => selectPayment()}>
+                            <Image
+                                source={require("../../assets/images/mastercard-logo.png")}
+                                style={{ height: 50, width: 50 }}
+                                resizeMode="contain"
+                            />
+                            <View style={{ marginLeft: 15, flexDirection: "column" }}>
+                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12, textTransform: "capitalize" }}>Kartu Kredit</Text>
+                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12 }}>&#x2022; &#x2022; &#x2022; &#x2022;  &#x2022; &#x2022; &#x2022; &#x2022;  {noKartu[0]} {noKartu[1]} {noKartu[2]} {noKartu[3]}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        }
+    }
+
+    const selectPayment = () => {
+        setActivePayment(true)
+        setActiveButtonPayment(true)
+    }
+    
+    const unselectPayment = () => {
+        setActivePayment(false)
+        setActiveButtonPayment(false)
     }
 
     const displayPayment = () => {
@@ -257,7 +313,7 @@ const Checkout = (props) => {
                     </Ripple>
                 </View>
                 <View style={{ width: "100%" }}>
-                    {isLoading ? (
+                    {loadBarang ? (
                         <>
                             <View style={{ flexDirection: "row", justifyContent: "flex-start", marginVertical: 5, padding: 5 }}>
                                 <ShimmerPlaceHolder
@@ -360,41 +416,16 @@ const Checkout = (props) => {
                                     </View>
                                 </View>
                             )
-                        }
-                        )
+                        })
                     )}
                 </View>
                 <View style={{ paddingTop: 20, paddingBottom: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Metode Pembayaran</Text>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Profil({ ResponsiveUpdateProfil: ResponsiveUpdateProfil })}>
+                        <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
+                    </Ripple>
                 </View>
-                <View style={{ width: "100%", marginTop: 1 }}>
-                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: `${selectedMethod === 1 ? "red" : "#ddd"}`, borderWidth: .5, borderRadius: 10 }} onPress={() => setSelectedMethod(1)}>
-                        <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }}>
-                            <Image
-                                source={require("../../assets/images/mastercard-logo.png")}
-                                style={{ height: 50, width: 50 }}
-                                resizeMode="contain"
-                            />
-                            <View style={{ marginLeft: 15, flexDirection: "column" }}>
-                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12, textTransform: "capitalize" }}>Kartu Kredit</Text>
-                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", textTransform: "capitalize", fontSize: 12 }}>&#x2022; &#x2022; &#x2022; &#x2022;  &#x2022; &#x2022; &#x2022; &#x2022;  {noKartu[0]} {noKartu[1]} {noKartu[2]} {noKartu[3]}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#bbb", borderWidth: .5, borderRadius: 10, marginTop: 10 }} onPress={() => setSelectedMethod(2)}>
-                        <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }}>
-                            <Image
-                                source={require("../../assets/images/ovo-logo.png")}
-                                style={{ height: 50, width: 50 }}
-                                resizeMode="contain"
-                            />
-                            <View style={{ marginLeft: 15, flexDirection: "column" }}>
-                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", fontSize: 12 }}>OVO</Text>
-                                <Text numberOfLines={1} style={{ width: 200, fontFamily: "Poppins-Medium", fontSize: 12 }}>{profil ? profil.phone : "no HP tujuan belum diperbarui"}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                {selectMethod()}
                 <Space />
                 <View style={{ height: 100 }}></View>
             </ScrollView >
@@ -445,7 +476,7 @@ const Checkout = (props) => {
                         <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>{convertToIDR(grandTotal)}</Text>
                     )}
                 </View>
-                <Ripple rippleColor="#fff" style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }} onPress={() => submitPembayaran()}>
+                <Ripple rippleColor={activeButtonPayment && "#fff"} style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: `${ activeButtonPayment ? "#eb8937" : "#ccc"}`, justifyContent: "center", alignItems: "center" }} onPress={() => submitPembayaran()}>
                     {validatePembayaran ? (
                         <ActivityIndicator color="#fff" />
                     ) : (

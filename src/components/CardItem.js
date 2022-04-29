@@ -12,7 +12,7 @@ const CardItem = (props) => {
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false)
-        }, 500)
+        }, 300)
     }, [])
 
     const onPressAction = (id) => {
