@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View } from 'react-native';
-import { Text, Image, TextInput, ActivityIndicator, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
+import { Text, Dimensions, StyleSheet, TouchableHighlight, ScrollView, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import Icon from 'react-native-vector-icons/Feather'
@@ -13,12 +13,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MainContext } from "../context/MainContext"
 import { toast } from "../Helper"
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
-import Maintenance from '../components/Maintenance';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 
 const colorHeader = ['#f3a337', '#eb8937']
+const { height } = Dimensions.get("screen")
+
 
 const Profil = (props) => {
     const [profil, setProfil] = useState({})
@@ -86,7 +87,7 @@ const Profil = (props) => {
             <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
                 <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Profil</Text>
             </LinearGradient>
-            {/* <ScrollView style={{ paddingTop: 15, backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{ paddingTop: 15, backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
                 <View style={{
                     width: "100%",
                     justifyContent: "center",
@@ -101,130 +102,64 @@ const Profil = (props) => {
                         <Image source={require("../../assets/images/profile.png")} resizeMode="cover" style={{ height: "100%", width: "100%" }} />
                     </View>
                 </View>
-                <View style={{ paddingTop: 20, paddingHorizontal: 10 }}>
-                    <View style={{ flexDirection: "row" }}>
-                        <View style={s.areaInput}>
-                            <SafeAreaView style={s.inputWrap}>
-                                <View style={{ justifyContent: "center", alignItems: "center", marginLeft: 10 }}>
-                                    <FontAwesome5 name={"user"} size={20} color='#eb8937' />
-                                </View>
-                                <TextInput
-                                    placeholder="Nama Lengkap"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
-                                    spellCheck={false}
-                                    value={profil && profil.nama}
-                                    onChangeText={new_text => setProfil({ ...profil, nama: new_text })}
-                                    autoCorrect={false}
-                                />
-                            </SafeAreaView>
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <View style={s.areaInput}>
-                            <SafeAreaView style={s.inputWrap}>
-                                <View style={{ justifyContent: "center", alignItems: "center", marginLeft: 10 }}>
-                                    <Icon name={"smile"} size={20} color='#eb8937' />
-                                </View>
-                                <TextInput
-                                    placeholder="Username"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
-                                    spellCheck={false}
-                                    editable={false}
-                                    selectTextOnFocus={false}
-                                    value={profil && profil.username}
-                                    autoCorrect={false}
-                                />
-                            </SafeAreaView>
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <View style={s.areaInput}>
-                            <SafeAreaView style={s.inputWrap}>
-                                <View style={{ justifyContent: "center", alignItems: "center", marginLeft: 10 }}>
-                                    <FontAwesome5 name={"envelope"} size={20} color='#eb8937' />
-                                </View>
-                                <TextInput
-                                    placeholder="Email"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
-                                    spellCheck={false}
-                                    editable={false}
-                                    selectTextOnFocus={false}
-                                    value={profil && profil.email}
-                                    autoCorrect={false}
-                                />
-                            </SafeAreaView>
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <View style={s.areaInput}>
-                            <SafeAreaView style={s.inputWrap}>
-                                <View style={{ justifyContent: "center", alignItems: "center", marginLeft: 10 }}>
-                                    <Icon name={"phone"} size={20} color='#eb8937' />
-                                </View>
-                                <TextInput
-                                    placeholder="No Telp"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
-                                    spellCheck={false}
-                                    value={profil && profil.phone}
-                                    onChangeText={new_text => setProfil({ ...profil, phone: new_text })}
-                                    autoCorrect={false}
-                                />
-                            </SafeAreaView>
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <View style={s.areaInput}>
-                            <SafeAreaView style={s.inputWrap}>
-                                <View style={{ justifyContent: "center", alignItems: "center", marginLeft: 10 }}>
-                                    <Icons name={"venus-mars"} size={20} color='#eb8937' />
-                                </View>
-                                <TextInput
-                                    placeholder="Jenis Kelamin"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
-                                    spellCheck={false}
-                                    value={profil && profil.gender}
-                                    onChangeText={new_text => setProfil({ ...profil, gender: new_text })}
-                                    autoCorrect={false}
-                                />
-                            </SafeAreaView>
-                        </View>
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <View style={s.areaInput}>
-                            <SafeAreaView style={s.inputWrap}>
-                                <View style={{ justifyContent: "center", alignItems: "center", marginLeft: 10 }}>
-                                    <Icon name={"home"} size={20} color='#eb8937' />
-                                </View>
-                                <TextInput
-                                    placeholder="Alamat"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
-                                    spellCheck={false}
-                                    value={profil && profil.alamat}
-                                    onChangeText={new_text => setProfil({ ...profil, alamat: new_text })}
-                                    autoCorrect={false}
-                                />
-                            </SafeAreaView>
-                        </View>
-                    </View>
-                    {isLoading ? (
-                        <></>
-                    ) : (
-                        <Ripple
-                            rippleColor="#fff"
-                            style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center", marginTop: 30 }}
-                            onPress={() => saveProfil()}
-                        >
-                            {saveData ? (
-                                <ActivityIndicator color="#fff" />
-                            ) : (
-                                <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>simpan</Text>
-                            )}
-                        </Ripple>
-                    )}
+                <View style={{ paddingVertical: 10, marginBottom: 20 }}>
+                    <Text style={{ color: "#6b705c", fontFamily: "Poppins-SemiBold", textAlign: "center" }}>Liliana Chisa Mikusachi</Text>
+                    <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 12 }}>Pelanggan</Text>
                 </View>
-                <View style={{ height: 50 }} />
-            </ScrollView> */}
-            <Maintenance />
+                <Ripple
+                    rippleColor="#fff"
+                    style={{
+                        width: "90%",
+                        height: height / 10,
+                        backgroundColor: "#FEF2E8",
+                        borderRadius: 10,
+                        marginTop: 10,
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        shadowColor: '#eaeaea',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.5,
+                        shadowRadius: 1,
+                        elevation: 2,
+                        paddingVertical: 10,
+                        marginHorizontal: 15,
+                        flexDirection: "row"
+                    }}>
+                    <View style={{ height: "100%", width: 60, borderRadius: 10, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
+                        <FontAwesome5 name={"truck"} size={22} color='#fff' />
+                    </View>
+                    <View style={{ height: "100%", justifyContent: "center", alignItems: "center", marginLeft: 15 }}>
+                        <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 13 }}>Atur Alamat Pengiriman</Text>
+                    </View>
+                </Ripple>
+                <Ripple
+                    rippleColor="#fff"
+                    style={{
+                        width: "90%",
+                        height: height / 10,
+                        backgroundColor: "#FEF2E8",
+                        borderRadius: 10,
+                        marginTop: 10,
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        shadowColor: '#eaeaea',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.5,
+                        shadowRadius: 1,
+                        elevation: 2,
+                        paddingVertical: 10,
+                        marginHorizontal: 15,
+                        flexDirection: "row"
+                    }}>
+                    <View style={{ height: "100%", width: 60, borderRadius: 10, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
+                        <FontAwesome5 name={"credit-card"} size={22} color='#fff' />
+                    </View>
+                    <View style={{ height: "100%", justifyContent: "center", alignItems: "center", marginLeft: 15 }}>
+                        <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 13 }}>Atur Rekening Pembayaran</Text>
+                    </View>
+                </Ripple>
+                <Space />
+            </ScrollView>
         </>
     )
 }
