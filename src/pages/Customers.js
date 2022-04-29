@@ -6,6 +6,7 @@ import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
 import { MainContext } from '../context/MainContext';
+import Maintenance from "../components/Maintenance"
 
 const colorHeader = ['#f3a337', '#eb8937']
 const Customers = () => {
@@ -48,12 +49,13 @@ const Customers = () => {
                 </TouchableOpacity>
                 <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Pelanggan</Text>
             </LinearGradient>
-            <FlatList
+            <Maintenance />
+            {/* <FlatList
                 data={data}
                 renderItem={renderList}
                 keyExtractor={(item, i) => i.toString()}
                 numColumns={1}
-            />
+            /> */}
         </>
     )
 }

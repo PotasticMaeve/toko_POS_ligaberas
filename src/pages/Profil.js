@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MainContext } from "../context/MainContext"
 import { toast } from "../Helper"
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+import Maintenance from '../components/Maintenance';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
@@ -85,7 +86,7 @@ const Profil = (props) => {
             <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
                 <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Profil</Text>
             </LinearGradient>
-            <ScrollView style={{ paddingTop: 15, backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
+            {/* <ScrollView style={{ paddingTop: 15, backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
                 <View style={{
                     width: "100%",
                     justifyContent: "center",
@@ -222,7 +223,8 @@ const Profil = (props) => {
                     )}
                 </View>
                 <View style={{ height: 50 }} />
-            </ScrollView>
+            </ScrollView> */}
+            <Maintenance />
         </>
     )
 }

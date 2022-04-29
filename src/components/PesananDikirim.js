@@ -13,23 +13,28 @@ const { height } = Dimensions.get("screen")
 
 const PesananDikirim = () => {
     const { backend_url } = useContext(MainContext)
-    const [ backendURL ] = backend_url
+    const [backendURL] = backend_url
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState([])
+    const [isEmpty, setIsEmpty] = useState(false)
 
     const getData = () => {
         setIsLoading(true)
         AsyncStorage.getItem("customerID").then(value => {
             let customer_id = JSON.parse(value)
-            if(customer_id !== null){
+            if (customer_id !== null) {
                 axios.get(`${backendURL}/api/v1/sales_order/?customer_id=${customer_id}&status=kirim`)
-                .then(res => {
-                    setData(res.data.data);
-                    setTimeout(() => {
-                        setIsLoading(false)
-                    }, 500);
-                })
-            }else{
+                    .then(res => {
+                        if (res.data.data.length > 0) {
+                            setData(res.data.data);
+                        } else {
+                            setIsEmpty(true)
+                        }
+                        setTimeout(() => {
+                            setIsLoading(false)
+                        }, 500);
+                    })
+            } else {
                 setRefreshToken()
             }
         })
@@ -44,9 +49,7 @@ const PesananDikirim = () => {
             {isLoading ? (
                 <ShimmerTransaksi exist={true} />
             ) : (
-                data.length > 0 ? data.map((el, i) => (
-                    <TransaksiCard key={i} data={el.cart_item} id_so={el.id_so} grandtotal={el.grandtotal} lunas={el.lunas} tgl={el.cart_item[0].modified_date} kirim={el.barang_dikirim} exist={true} />
-                )) : (
+                isEmpty ? (
                     <>
                         <LottieView
                             source={require('../animations/empty-transaction.json')}
@@ -60,6 +63,10 @@ const PesananDikirim = () => {
                         <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center" }}>Transaksi Kosong</Text>
                         <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Segala transaksimu akan direkap disini ya!</Text>
                     </>
+                ) : (
+                    data.map((el, i) => (
+                        <TransaksiCard key={i} data={el.cart_item} id_so={el.id_so} grandtotal={el.grandtotal} lunas={el.lunas} tgl={el.cart_item[0].modified_date} kirim={el.barang_dikirim} exist={true} />
+                    ))
                 )
             )}
             <Space />

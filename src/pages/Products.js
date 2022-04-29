@@ -11,6 +11,7 @@ import CardItem from '../components/CardItem';
 import Ripple from 'react-native-material-ripple';
 import AddProduct from './AddProduct';
 import Card from "../components/Card"
+import Maintenance from "../components/Maintenance"
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
@@ -150,7 +151,8 @@ const Products = () => {
                 </TouchableOpacity>
                 <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Produk</Text>
             </LinearGradient>
-            <ScrollView style={{ paddingVertical: 10, flex: 1, backgroundColor: "#fafafa" }} showsHorizontalScrollIndicator={false}>
+            <Maintenance />
+            {/* <ScrollView style={{ paddingVertical: 10, flex: 1, backgroundColor: "#fafafa" }} showsHorizontalScrollIndicator={false}>
                 <ScrollView style={styles.cardWrap} horizontal>
                     {category.length > 0 && category.map((item, i) => (
                         <View key={i} style={[s.bannerCategory, { backgroundColor: `${item.bg}` }]}>
@@ -202,7 +204,7 @@ const Products = () => {
             </ScrollView>
             <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => Actions.AddProduct()}>
                 <FontAwesome5 name={"plus"} size={14} color="#fff" />
-            </Ripple>
+            </Ripple> */}
         </>
     )
 }
