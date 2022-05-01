@@ -34,8 +34,6 @@ const DetailCard = (props) => {
                 if (res.status == 200) {
                     setData(res.data.data[0]);
                     setShimmerLoad(false)
-                } else {
-                    setRefreshToken()
                 }
             })
 
@@ -62,12 +60,7 @@ const DetailCard = (props) => {
                                     } else {
                                         setFav(false)
                                     }
-                                } else {
-                                    setRefreshToken()
                                 }
-                            })
-                            .catch(err => {
-                                console.log(err);
                             })
                     }
                 })
@@ -116,12 +109,7 @@ const DetailCard = (props) => {
                                             }
                                         })
                                     }
-                                } else {
-                                    setRefreshToken()
                                 }
-                            })
-                            .catch(err => {
-                                console.log(err);
                             })
                     }
                 })
@@ -221,14 +209,10 @@ const DetailCard = (props) => {
                                             setIsLoading(false)
                                             toast("Keranjang Gagal Ditambahkan", "danger")
                                         })
-                                } else {
-                                    setRefreshToken()
                                 }
                             })
                     }
                 })
-            } else {
-                console.log("no access [detailcard]");
             }
         })
     }

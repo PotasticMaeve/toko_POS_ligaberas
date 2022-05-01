@@ -19,7 +19,6 @@ import { convertToIDR, toast } from '../Helper';
 import Space from '../components/Space';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { setRefreshToken } from '../Helper'
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
@@ -57,16 +56,10 @@ const Checkout = (props) => {
                                 if (res.status === 200) {
                                     setProfil(res.data.data);
                                     setIsLoading(false)
-                                } else {
-                                    console.log("no customer ID [checkout]");
                                 }
                             })
-                    } else {
-                        console.log("no customer username [checkout]");
                     }
                 })
-            } else {
-                console.log("no access [checkout]");
             }
         })
     }
@@ -95,16 +88,10 @@ const Checkout = (props) => {
                                     setShippingCost(res.data.data.shipping_cost)
                                     setGrandTotal(res.data.data.grandtotal_after_shipping)
                                     setLoadBarang(false)
-                                } else {
-                                    setRefreshToken()
                                 }
                             })
-                    } else {
-                        setRefreshToken()
                     }
                 })
-            } else {
-                setRefreshToken()
             }
         })
     }
@@ -224,14 +211,10 @@ const Checkout = (props) => {
                                     }
                                     setNoKartu(temp)
                                     setIsLoading(false)
-                                } else {
-                                    setRefreshToken()
                                 }
                             })
                     }
                 })
-            } else {
-                setRefreshToken()
             }
         })
     }

@@ -9,7 +9,6 @@ import Ripple from 'react-native-material-ripple'
 import Space from '../components/Space'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import { setRefreshToken } from '../Helper'
 import ShimmerKeranjang from '../components/ShimmerKeranjang'
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -54,16 +53,10 @@ const Keranjang = (props) => {
                   }
                   setCartId(res.data.data.id)
                   setIsLoading(false)
-                } else {
-                  setRefreshToken()
                 }
               })
-          } else {
-            setRefreshToken()
           }
         })
-      } else {
-        setRefreshToken()
       }
     })
   }
@@ -93,12 +86,7 @@ const Keranjang = (props) => {
                       setLoadTotal(false)
                     }
                   })
-              } else {
-                setRefreshToken()
               }
-            })
-            .catch(err => {
-              console.log(err);
             })
         }
       })

@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View } from 'react-native';
-import { Text, Dimensions, StyleSheet, TouchableHighlight, ScrollView, Image } from 'react-native';
+import { Text, ScrollView, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
-import Icon from 'react-native-vector-icons/Feather'
-import Icons from 'react-native-vector-icons/Fontisto'
 import styles from '../stylesheets/Main'
 import Space from "../components/Space"
 import Ripple from 'react-native-material-ripple';
@@ -12,14 +10,9 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MainContext } from "../context/MainContext"
 import { toast } from "../Helper"
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
-
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
-const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
+import { Actions } from 'react-native-router-flux';
 
 const colorHeader = ['#f3a337', '#eb8937']
-const { height } = Dimensions.get("screen")
-
 
 const Profil = (props) => {
     const [profil, setProfil] = useState({})
@@ -74,7 +67,7 @@ const Profil = (props) => {
                 props.ResponsiveUpdateProfil && props.ResponsiveUpdateProfil()
             })
             .catch((err) => {
-                alert("Gagal Menyimpan Data Profil")
+                toast("Gagal Menyimpan Data Profil", "danger")
             });
     }
 
@@ -110,8 +103,8 @@ const Profil = (props) => {
                     rippleColor="#fff"
                     style={{
                         width: "90%",
-                        height: height / 10,
-                        backgroundColor: "#FEF2E8",
+                        height: 60,
+                        backgroundColor: "#fafafa",
                         borderRadius: 10,
                         marginTop: 10,
                         alignItems: "center",
@@ -124,20 +117,23 @@ const Profil = (props) => {
                         paddingVertical: 10,
                         marginHorizontal: 15,
                         flexDirection: "row"
-                    }}>
-                    <View style={{ height: "100%", width: 60, borderRadius: 10, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
-                        <FontAwesome5 name={"truck"} size={22} color='#fff' />
+                    }}
+                    onPress={() => Actions.AlamatPengiriman()}
+                >
+                    <View style={{ height: "100%", width: 40, borderRadius: 5, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
+                        <FontAwesome5 name={"user-lock"} size={18} color='#fff' />
                     </View>
-                    <View style={{ height: "100%", justifyContent: "center", alignItems: "center", marginLeft: 15 }}>
-                        <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 13 }}>Atur Alamat Pengiriman</Text>
+                    <View style={{ height: "100%", justifyContent: "space-between", alignItems: "center", marginLeft: 15, flexDirection: 'row', width: 240 }}>
+                        <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 13 }}>Atur Personal Info</Text>
+                        <FontAwesome5 name={"angle-right"} size={22} color='#f3a337' />
                     </View>
                 </Ripple>
                 <Ripple
                     rippleColor="#fff"
                     style={{
                         width: "90%",
-                        height: height / 10,
-                        backgroundColor: "#FEF2E8",
+                        height: 60,
+                        backgroundColor: "#fafafa",
                         borderRadius: 10,
                         marginTop: 10,
                         alignItems: "center",
@@ -150,12 +146,44 @@ const Profil = (props) => {
                         paddingVertical: 10,
                         marginHorizontal: 15,
                         flexDirection: "row"
-                    }}>
-                    <View style={{ height: "100%", width: 60, borderRadius: 10, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
-                        <FontAwesome5 name={"credit-card"} size={22} color='#fff' />
+                    }}
+                    onPress={() => Actions.AlamatPengiriman()}
+                >
+                    <View style={{ height: "100%", width: 40, borderRadius: 5, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
+                        <FontAwesome5 name={"truck"} size={18} color='#fff' />
                     </View>
-                    <View style={{ height: "100%", justifyContent: "center", alignItems: "center", marginLeft: 15 }}>
+                    <View style={{ height: "100%", justifyContent: "space-between", alignItems: "center", marginLeft: 15, flexDirection: 'row', width: 240 }}>
+                        <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 13 }}>Atur Alamat Pengiriman</Text>
+                        <FontAwesome5 name={"angle-right"} size={22} color='#f3a337' />
+                    </View>
+                </Ripple>
+                <Ripple
+                    rippleColor="#fff"
+                    style={{
+                        width: "90%",
+                        height: 60,
+                        backgroundColor: "#fafafa",
+                        borderRadius: 10,
+                        marginTop: 10,
+                        alignItems: "center",
+                        paddingHorizontal: 10,
+                        shadowColor: '#eaeaea',
+                        shadowOffset: { width: 0, height: 2 },
+                        shadowOpacity: 0.5,
+                        shadowRadius: 1,
+                        elevation: 2,
+                        paddingVertical: 10,
+                        marginHorizontal: 15,
+                        flexDirection: "row"
+                    }}
+                    onPress={() => Actions.Pembayaran()}
+                >
+                    <View style={{ height: "100%", width: 40, borderRadius: 5, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
+                        <FontAwesome5 name={"credit-card"} size={18} color='#fff' />
+                    </View>
+                    <View style={{ height: "100%", justifyContent: "space-between", alignItems: "center", marginLeft: 15, flexDirection: 'row', width: 240 }}>
                         <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 13 }}>Atur Rekening Pembayaran</Text>
+                        <FontAwesome5 name={"angle-right"} size={22} color='#f3a337' />
                     </View>
                 </Ripple>
                 <Space />
@@ -163,34 +191,5 @@ const Profil = (props) => {
         </>
     )
 }
-
-const s = StyleSheet.create({
-    inputWrap: {
-        justifyContent: "flex-start",
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 3,
-        backgroundColor: "#eaeaea",
-        width: "100%",
-        borderRadius: 10
-    },
-    inputComp: {
-        marginLeft: 3,
-        marginTop: 2,
-        fontSize: 14,
-        color: "#595959",
-        fontFamily: "Poppins-Medium",
-        paddingHorizontal: 10,
-        paddingVertical: 7,
-        width: "90%"
-    },
-    areaInput: {
-        width: "100%",
-        flexDirection: "column",
-        // paddingHorizontal: 15,
-        justifyContent: "space-between",
-        paddingVertical: 7
-    },
-})
 
 export default Profil

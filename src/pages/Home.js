@@ -10,7 +10,7 @@ import axios from "axios"
 import { MainContext } from "../context/MainContext"
 import { toast } from "../Helper"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { setStorage } from "../Helper"
+import { setStorage, setRefreshToken } from "../Helper"
 
 const Home = () => {
   const { backend_url, close_checkout, back_to_shop, is_admin } = useContext(MainContext)
@@ -45,11 +45,16 @@ const Home = () => {
                 if (res.status === 200) {
                   let customer_id = res.data.data.customer_id
                   let role_status = res.data.data.is_admin
-                  if(!role_status){
+                  if (!role_status) {
                     setStorage("customerID", customer_id)
-                  }else{
+                  } else {
                     setIsAdmin(true)
                   }
+                }
+              })
+              .catch((err) => {
+                if (err.response.status === 401) {
+                  setRefreshToken()
                 }
               })
           }

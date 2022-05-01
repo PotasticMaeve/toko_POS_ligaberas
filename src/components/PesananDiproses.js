@@ -30,12 +30,8 @@ const PesananTiba = (props) => {
                         }else{
                             setIsEmpty(true)
                         }
-                        setTimeout(() => {
-                            setIsLoading(false)
-                        }, 500);
+                        setIsLoading(false)
                     })
-            } else {
-                setRefreshToken()
             }
         })
     }

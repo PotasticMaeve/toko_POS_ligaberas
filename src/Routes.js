@@ -32,6 +32,9 @@ import ConfirmKeranjang from "./pages/ConfirmKeranjang";
 import DetailCardAdmin from "./pages/DetailCardAdmin";
 import AddProduct from "./pages/AddProduct";
 import DelayTransaksi from "./components/DelayTransaksi";
+import AlamatPengiriman from "./pages/AlamatPengiriman";
+import Pembayaran from "./pages/Pembayaran";
+import { setRefreshToken } from "./Helper"
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -50,6 +53,7 @@ const tabIcon = ({ name, focused, title }) => {
         );
     }
 };
+
 
 const Routes = () => {
     const { authorized } = useContext(MainContext)
@@ -102,6 +106,8 @@ const Routes = () => {
                 <Scene key="DetailCardAdmin" component={isAuthorized ? DetailCardAdmin : Auth} title="DetailCardAdmin" />
                 <Scene key="AddProduct" component={isAuthorized ? AddProduct : Auth} title="AddProduct" />
                 <Scene key="DelayTransaksi" component={isAuthorized ? DelayTransaksi : Auth} title="DelayTransaksi" />
+                <Scene key="AlamatPengiriman" component={isAuthorized ? AlamatPengiriman : Auth} title="AlamatPengiriman" />
+                <Scene key="Pembayaran" component={isAuthorized ? Pembayaran : Auth} title="Pembayaran" />
             </Scene>
         </Router>
     )

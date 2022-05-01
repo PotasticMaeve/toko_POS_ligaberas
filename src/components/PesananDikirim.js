@@ -5,7 +5,6 @@ import { ScrollView, Text, Dimensions } from 'react-native'
 import ShimmerTransaksi from './ShimmerTransaksi'
 import Space from './Space'
 import TransaksiCard from "./TransaksiCard"
-import { setRefreshToken } from "../Helper"
 import { MainContext } from "../context/MainContext"
 import LottieView from 'lottie-react-native';
 
@@ -30,12 +29,8 @@ const PesananDikirim = () => {
                         } else {
                             setIsEmpty(true)
                         }
-                        setTimeout(() => {
-                            setIsLoading(false)
-                        }, 500);
+                        setIsLoading(false)
                     })
-            } else {
-                setRefreshToken()
             }
         })
     }

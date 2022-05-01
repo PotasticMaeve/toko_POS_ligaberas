@@ -7,7 +7,6 @@ import styles from '../stylesheets/Main'
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import axios from 'axios';
 import { MainContext } from '../context/MainContext';
-import { setRefreshToken } from "../Helper"
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
@@ -24,8 +23,6 @@ const DetailCardAdmin = (props) => {
             .then((res) => {
                 if (res.status == 200) {
                     setData(res.data.data[0]);
-                } else {
-                    setRefreshToken()
                 }
             })
     }

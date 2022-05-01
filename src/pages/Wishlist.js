@@ -7,7 +7,7 @@ import styles from '../stylesheets/Main'
 import { MainContext } from "../context/MainContext"
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { setRefreshToken, toast } from '../Helper'
+import { toast } from '../Helper'
 import ShimmerWishlist from '../components/ShimmerWishlist'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { Actions } from 'react-native-router-flux'
@@ -36,8 +36,6 @@ const Wishlist = (props) => {
                                 if (res.status === 200) {
                                     setData(res.data.data)
                                     setIsLoading(false)
-                                } else {
-                                    setRefreshToken()
                                 }
                             })
 
@@ -46,16 +44,10 @@ const Wishlist = (props) => {
                                 if (res.status === 200) {
                                     let cart_id = res.data.data.id
                                     setCartId(cart_id)
-                                } else {
-                                    setRefreshToken()
                                 }
                             })
-                    } else {
-                        setRefreshToken()
                     }
                 })
-            } else {
-                setRefreshToken()
             }
         })
     }

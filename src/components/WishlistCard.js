@@ -40,14 +40,10 @@ const WishlistCard = (props) => {
                                             setIsLoading(false)
                                             toast("Keranjang Gagal Ditambahkan", "danger")
                                         })
-                                } else {
-                                    setRefreshToken()
                                 }
                             })
                     }
                 })
-            } else {
-                console.log("no access [detailcard]");
             }
         })
     }
@@ -58,9 +54,9 @@ const WishlistCard = (props) => {
     }
 
     const beforeAddToCart = () => {
-        if(props.qty > 0){
+        if (props.qty > 0) {
             addToCart()
-        }else{
+        } else {
             return false;
         }
     }
@@ -104,7 +100,7 @@ const WishlistCard = (props) => {
                             </View>
                         </Ripple>
                         <Ripple
-                            rippleColor={`${ props.qty > 0 && "#27ae60"}`} style={{ height: 40, borderRadius: 10, borderWidth: 1, borderColor: `${props.qty > 0 ? "#27ae60" : "#aaa"}`, overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
+                            rippleColor={`${props.qty > 0 && "#27ae60"}`} style={{ height: 40, borderRadius: 10, borderWidth: 1, borderColor: `${props.qty > 0 ? "#27ae60" : "#aaa"}`, overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
                             onPress={() => beforeAddToCart()}
                         >
                             {isLoading ? (

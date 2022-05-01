@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { showMessage, hideStatusBar, statusBarHeight } from "react-native-flash-message";
+import { showMessage } from "react-native-flash-message";
+import axios from "axios";
 
 const convertToIDR = (numb) => {
     const format = numb.toString().split('').reverse().join('');
@@ -13,6 +14,7 @@ const setStorage = (key, value) => {
 }
 
 const setRefreshToken = () => {
+    const backendURL = "http://192.168.18.23:7000"
     AsyncStorage.getItem("tokenRefresh").then(data => {
         if (data !== null) {
             let tokenRefresh = JSON.parse(data)

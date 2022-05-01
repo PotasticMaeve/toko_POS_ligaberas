@@ -9,7 +9,6 @@ import Ripple from 'react-native-material-ripple'
 import Space from '../components/Space'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import { setRefreshToken } from '../Helper'
 import ShimmerKeranjang from '../components/ShimmerKeranjang'
 import { Actions } from 'react-native-router-flux'
 import Modal from "react-native-modal";
@@ -51,16 +50,10 @@ const ConfirmKeranjang = (props) => {
                                     setData(cart_item_data);
                                     setCartId(res.data.data.id)
                                     setIsLoading(false)
-                                } else {
-                                    setRefreshToken()
                                 }
                             })
-                    } else {
-                        setRefreshToken()
                     }
                 })
-            } else {
-                setRefreshToken()
             }
         })
     }
@@ -91,12 +84,7 @@ const ConfirmKeranjang = (props) => {
                                             props.ResponsiveCalculateKeranjang && props.ResponsiveCalculateKeranjang()
                                         }
                                     })
-                            } else {
-                                setRefreshToken()
                             }
-                        })
-                        .catch(err => {
-                            console.log(err);
                         })
                 }
             })
