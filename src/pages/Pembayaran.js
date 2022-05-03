@@ -31,7 +31,7 @@ const Pembayaran = (props) => {
                         setIsLoading(false)
                     })
                     .catch((err) => {
-                        alert("Gagal Memuat Data Profil")
+                        toast("Gagal Memuat Data Profil", "danger")
                     })
             }
         })

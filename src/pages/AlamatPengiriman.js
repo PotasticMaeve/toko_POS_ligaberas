@@ -31,7 +31,7 @@ const AlamatPengiriman = (props) => {
                         setIsLoading(false)
                     })
                     .catch((err) => {
-                        alert("Gagal Memuat Data Profil")
+                        toast("Gagal Memuat Data Profil", "danger")
                     })
             }
         })
@@ -80,7 +80,7 @@ const AlamatPengiriman = (props) => {
                 <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Alamat Pengiriman</Text>
             </LinearGradient>
             <ScrollView style={{ paddingTop: 15, backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
-                <View style={[styles.cardItemWrap, {
+                {/* <View style={[styles.cardItemWrap, {
                     flexDirection: 'column',
                     height: "auto",
                     borderRadius: 5,
@@ -106,7 +106,7 @@ const AlamatPengiriman = (props) => {
                             </View>
                         </>
                     </TouchableHighlight>
-                </View>
+                </View> */}
             </ScrollView>
         </>
     )
