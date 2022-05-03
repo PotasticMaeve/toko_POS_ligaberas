@@ -20,7 +20,7 @@ const Pembayaran = (props) => {
     const [isLoading, setIsLoading] = useState(false)
     const [saveData, setSaveData] = useState(false)
 
-    const detailProfil = () => {
+    const detailPembayaran = () => {
         setIsLoading(true)
         AsyncStorage.getItem("customerUsername").then(value => {
             if (value !== null) {
@@ -38,40 +38,40 @@ const Pembayaran = (props) => {
     }
 
     const saveProfil = () => {
-        setSaveData(true)
-        let data = profil
-        let payloadUpdate = {
-            ...data,
-            nama: profil.nama,
-            gender: profil.gender,
-            phone: profil.phone,
-            alamat: profil.alamat
-        }
+        // setSaveData(true)
+        // let data = profil
+        // let payloadUpdate = {
+        //     ...data,
+        //     nama: profil.nama,
+        //     gender: profil.gender,
+        //     phone: profil.phone,
+        //     alamat: profil.alamat
+        // }
 
-        let body = JSON.stringify(payloadUpdate)
-        axios
-            .put(`${backendURL}/api/v1/customer/${profil.customer_id}/`, body, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then((res) => {
-                let nama = res.data.nama
-                let gender = res.data.gender
-                let phone = res.data.phone
-                let alamat = res.data.alamat
-                toast("Berhasil Menyimpan Profil", "success")
-                setSaveData(false)
-                setProfil({ ...profil, nama: nama, gender: gender, phone: phone, alamat: alamat });
-                props.ResponsiveUpdateProfil && props.ResponsiveUpdateProfil()
-            })
-            .catch((err) => {
-                alert("Gagal Menyimpan Data Profil")
-            });
+        // let body = JSON.stringify(payloadUpdate)
+        // axios
+        //     .put(`${backendURL}/api/v1/customer/${profil.customer_id}/`, body, {
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     })
+        //     .then((res) => {
+        //         let nama = res.data.nama
+        //         let gender = res.data.gender
+        //         let phone = res.data.phone
+        //         let alamat = res.data.alamat
+        //         toast("Berhasil Menyimpan Profil", "success")
+        //         setSaveData(false)
+        //         setProfil({ ...profil, nama: nama, gender: gender, phone: phone, alamat: alamat });
+        //         props.ResponsiveUpdateProfil && props.ResponsiveUpdateProfil()
+        //     })
+        //     .catch((err) => {
+        //         alert("Gagal Menyimpan Data Profil")
+        //     });
     }
 
     useEffect(() => {
-        detailProfil()
+        detailPembayaran()
     }, [])
 
     return (

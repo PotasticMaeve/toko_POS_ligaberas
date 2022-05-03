@@ -54,31 +54,34 @@ const PersonalInfo = (props) => {
             phone: profil.phone,
             alamat: profil.alamat
         }
-
-        let body = JSON.stringify(payloadUpdate)
-        axios
-            .put(`${backendURL}/api/v1/customer/${profil.customer_id}/`, body, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then((res) => {
-                let nama = res.data.nama
-                let gender = res.data.gender
-                let phone = res.data.phone
-                let alamat = res.data.alamat
-                toast("Berhasil Menyimpan Profil", "success")
-                setIsLoading(false)
-                setEdit(false)
-                setProfil({ ...profil, nama: nama, gender: gender, phone: phone, alamat: alamat });
-                props.ResponsiveUpdateProfil && props.ResponsiveUpdateProfil()
-            })
-            .catch((err) => {
-                toast("Gagal Menyimpan Data Profil", "danger")
-            });
+        if (profil.nama === "" || profil.gender === "" || profil.phone === "" || profil.alamat === "") {
+            toast("Data Profil Harus Diisi", "danger")
+            detailProfil()
+            setEdit(false)
+        } else {
+            let body = JSON.stringify(payloadUpdate)
+            axios
+                .put(`${backendURL}/api/v1/customer/${profil.customer_id}/`, body, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then((res) => {
+                    let nama = res.data.nama
+                    let gender = res.data.gender
+                    let phone = res.data.phone
+                    let alamat = res.data.alamat
+                    toast("Berhasil Menyimpan Profil", "success")
+                    setIsLoading(false)
+                    setEdit(false)
+                    setProfil({ ...profil, nama: nama, gender: gender, phone: phone, alamat: alamat });
+                    props.ResponsiveUpdateProfil && props.ResponsiveUpdateProfil()
+                })
+                .catch((err) => {
+                    toast("Gagal Menyimpan Data Profil", "danger")
+                });
+        }
     }
-
-    console.log(profil.gender);
 
     useEffect(() => {
         detailProfil()

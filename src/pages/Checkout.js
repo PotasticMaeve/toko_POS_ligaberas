@@ -97,7 +97,8 @@ const Checkout = (props) => {
     }
 
     const submitPembayaran = () => {
-        if(activeButtonPayment){
+        if(activeButtonPayment && profil.nama !== "" && profil.phone !== "" && profil.alamat !== ""){
+            setActiveButtonPayment(true)
             setValidatePembayaran(true)
             setTimeout(() => {
                 axios.post(`${backendURL}/api/v1/sales_order/`, {
@@ -136,7 +137,7 @@ const Checkout = (props) => {
         if(activePayment){
             return (
                 <View style={{ width: "100%", marginTop: 1 }}>
-                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#eb8937", borderWidth: 1.3, borderRadius: 10 }} onPress={() => setSelectedMethod(1)}>
+                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#eb8937", borderWidth: 1.3, borderRadius: 10 }}>
                         <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }} onPress={() => unselectPayment()}>
                             <Image
                                 source={require("../../assets/images/mastercard-logo.png")}
@@ -154,7 +155,7 @@ const Checkout = (props) => {
         }else{
             return (
                 <View style={{ width: "100%", marginTop: 1 }} >
-                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#ddd", borderWidth: .5, borderRadius: 10 }} onPress={() => setSelectedMethod(1)}>
+                    <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#ddd", borderWidth: .5, borderRadius: 10 }}>
                         <TouchableOpacity style={{ flexDirection: "row", alignItems: "center", paddingVertical: 7 }} onPress={() => selectPayment()}>
                             <Image
                                 source={require("../../assets/images/mastercard-logo.png")}
@@ -174,7 +175,6 @@ const Checkout = (props) => {
 
     const selectPayment = () => {
         setActivePayment(true)
-        setActiveButtonPayment(true)
     }
     
     const unselectPayment = () => {
@@ -232,7 +232,7 @@ const Checkout = (props) => {
             <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: "#fff", paddingHorizontal: 15 }}>
                 <View style={{ paddingVertical: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Alamat Pengiriman</Text>
-                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Profil({ ResponsiveUpdateProfil: ResponsiveUpdateProfil })}>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.PersonalInfo({ ResponsiveUpdateProfil: ResponsiveUpdateProfil })}>
                         <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>
@@ -279,11 +279,11 @@ const Checkout = (props) => {
                             </>
                         ) : (
                             <>
-                                <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>{profil ? profil.nama : "nama pelanggan belum diperbarui"}</Text>
-                                <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium" }}>{profil ? profil.phone : "no HP tujuan belum diperbarui"}</Text>
+                                <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: `${profil.nama ? "#6b705c" : "red"}`, fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>{profil.nama ? profil.nama : "nama pelanggan belum diperbarui"}</Text>
+                                <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: `${profil.phone ? "#6b705c" : "red"}`, fontFamily: "Poppins-Medium" }}>{profil.phone ? profil.phone : "no HP tujuan belum diperbarui"}</Text>
                                 <View style={{ marginTop: 10 }}>
-                                    <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>{profil ? profil.email : "email belum diperbarui"} </Text>
-                                    <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>{profil ? profil.alamat : "alamat belum diperbarui"}</Text>
+                                    <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium" }}>{profil.email ? profil.email : "email belum diperbarui"} </Text>
+                                    <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: `${profil.alamat ? "#6b705c" : "red"}`, fontFamily: "Poppins-Medium" }}>{profil.alamat ? profil.alamat : "alamat belum diperbarui"}</Text>
                                 </View>
                             </>
                         )}
@@ -404,7 +404,7 @@ const Checkout = (props) => {
                 </View>
                 <View style={{ paddingTop: 20, paddingBottom: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Metode Pembayaran</Text>
-                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Profil({ ResponsiveUpdateProfil: ResponsiveUpdateProfil })}>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Pembayaran()}>
                         <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>
