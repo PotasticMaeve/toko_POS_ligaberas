@@ -91,6 +91,10 @@ const Auth = () => {
             }).then(() => {
                 toast("Register Berhasil", "success")
                 setIsLoading(false)
+                setUsernameRegister("")
+                setEmail("")
+                setNama("")
+                setPasswordRegister("")
             }).catch((err) => {
                 if(err.response.status === 401){
                     toast("Register Gagal", "danger")

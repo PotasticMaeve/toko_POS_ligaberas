@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View } from 'react-native';
-import { Text, ScrollView, Image } from 'react-native';
+import { Text, ScrollView, TouchableHighlight } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
@@ -80,7 +80,33 @@ const AlamatPengiriman = (props) => {
                 <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Alamat Pengiriman</Text>
             </LinearGradient>
             <ScrollView style={{ paddingTop: 15, backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
-                
+                <View style={[styles.cardItemWrap, {
+                    flexDirection: 'column',
+                    height: "auto",
+                    borderRadius: 5,
+                    backgroundColor: '#fff',
+                    marginHorizontal: 10,
+                    marginVertical: 5,
+                }]}>
+                    <TouchableHighlight style={{ padding: 10, borderRadius: 5 }}>
+                        <>
+                            <View style={{ display: 'flex', flexDirection: 'row' }}>
+                                <View style={{ height: "100%", width: 100, backgroundColor: "#eee" }} >
+
+                                </View>
+                                <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around' }}>
+
+                                </View>
+                            </View>
+                            <View style={{ alignItems: "flex-end" }}>
+
+                            </View>
+                            <View style={{ display: 'flex', justifyContent: "space-between", flexDirection: 'row', marginTop: 10, justifyContent: "space-around", borderTopWidth: 1, borderTopColor: "#ccc", width: "100%", paddingTop: 10 }}>
+
+                            </View>
+                        </>
+                    </TouchableHighlight>
+                </View>
             </ScrollView>
         </>
     )

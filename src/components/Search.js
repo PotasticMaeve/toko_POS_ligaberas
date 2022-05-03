@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { StyleSheet, TextInput, TouchableOpacity, View, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, View, Dimensions, Text, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -7,26 +7,37 @@ import styles from '../stylesheets/Main'
 import axios from 'axios';
 import { MainContext } from "../context/MainContext"
 import Card from "./Card"
+import LottieView from 'lottie-react-native';
+import { ScrollView } from 'react-native';
 
 const colorHeader = ['#f3a337', '#eb8937']
-
+const { height } = Dimensions.get("screen")
 const Search = () => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [input, setInput] = useState("")
     const [dataDisplay, setDataDisplay] = useState([])
+    const [showIdle, setShowIdle] = useState(true)
+    const [showEmpty, setShowEmpty] = useState(false)
 
     const onChangeText = (search) => {
         setInput(search)
     }
 
     const getRealProduct = () => {
-        axios.get(`${backendURL}/api/v1/product/?search=${input}`)
-            .then(res => {
-                if (res.status === 200) {
-                    setDataDisplay(res.data.data);
-                }
-            })
+        if(input !== ""){
+            axios.get(`${backendURL}/api/v1/product/?search=${input}`)
+                .then(res => {
+                    if (res.status === 200) {
+                        if(res.data.data.length > 0){
+                            setDataDisplay(res.data.data);
+                            setShowEmpty(false)
+                        }else{
+                            setShowEmpty(true)
+                        }
+                    }
+                })
+        }
     }
 
     return (
@@ -38,6 +49,7 @@ const Search = () => {
                 <TouchableWithoutFeedback style={{ flexDirection: "column", width: "100%" }}>
                     <View style={s.areaInput}>
                         <SafeAreaView style={s.inputWrap}>
+                            <FontAwesome5 name={"search"} size={18} color='#eb8937' style={{ marginLeft: 8 }} onPress={() => getRealProduct()} />
                             <TextInput
                                 placeholder="Cari produk"
                                 style={s.inputComp}
@@ -46,7 +58,6 @@ const Search = () => {
                                 onChangeText={onChangeText}
                                 onSubmitEditing={() => getRealProduct()}
                             />
-                            <FontAwesome5 name={"search"} size={18} color='#eb8937' style={{ marginRight: 15 }} onPress={() => getRealProduct()} />
                         </SafeAreaView>
                     </View>
                 </TouchableWithoutFeedback>
@@ -78,7 +89,29 @@ const Search = () => {
                 ) : (
                     )}
                 </View> */}
-            <Card data={dataDisplay} />
+            <ScrollView showsVerticalScrollIndicator={false}>
+                {showEmpty ? (
+                    <>
+                        <LottieView
+                            source={require('../animations/empty-search.json')}
+                            autoPlay
+                            loop
+                            style={{
+                                marginTop: 80,
+                                height: height / 3.5,
+                                alignSelf: 'center'
+                            }}
+                        />
+                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 35 }}>Produk Tidak Ditemukan</Text>
+                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Produk untuk pencarian tidak tersedia</Text>
+                    </>
+                ):(
+                    <>
+                        <Card data={dataDisplay} />
+                        <View style={{ height: 80 }}></View>
+                    </>
+                )}
+            </ScrollView>
         </>
     )
 }
@@ -94,7 +127,7 @@ const s = StyleSheet.create({
         borderRadius: 10
     },
     inputComp: {
-        marginLeft: 3,
+        marginRight: 2,
         marginTop: 2,
         fontSize: 14,
         color: "#595959",
