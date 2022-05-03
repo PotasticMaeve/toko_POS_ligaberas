@@ -29,6 +29,9 @@ const Telur = () => {
           }
         }
       })
+      .catch(err => {
+        setIsEmpty(true)
+      })
   }
 
   useEffect(() => {

@@ -29,6 +29,9 @@ const Minyak = () => {
           }
         }
       })
+      .catch(err => {
+        setIsEmpty(true)
+      })
   }
 
 

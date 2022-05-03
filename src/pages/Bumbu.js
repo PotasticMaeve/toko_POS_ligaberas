@@ -29,6 +29,9 @@ const Bumbu = () => {
           }
         }
       })
+      .catch(err => {
+        setIsEmpty(true)
+      })
   }
 
 

@@ -118,7 +118,7 @@ const Profil = (props) => {
                         marginHorizontal: 15,
                         flexDirection: "row"
                     }}
-                    onPress={() => Actions.AlamatPengiriman()}
+                    onPress={() => Actions.PersonalInfo()}
                 >
                     <View style={{ height: "100%", width: 40, borderRadius: 5, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
                         <FontAwesome5 name={"user-lock"} size={18} color='#fff' />

@@ -34,7 +34,7 @@ import AddProduct from "./pages/AddProduct";
 import DelayTransaksi from "./components/DelayTransaksi";
 import AlamatPengiriman from "./pages/AlamatPengiriman";
 import Pembayaran from "./pages/Pembayaran";
-import { setRefreshToken } from "./Helper"
+import PersonalInfo from "./pages/PersonalInfo";
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -108,6 +108,7 @@ const Routes = () => {
                 <Scene key="DelayTransaksi" component={isAuthorized ? DelayTransaksi : Auth} title="DelayTransaksi" />
                 <Scene key="AlamatPengiriman" component={isAuthorized ? AlamatPengiriman : Auth} title="AlamatPengiriman" />
                 <Scene key="Pembayaran" component={isAuthorized ? Pembayaran : Auth} title="Pembayaran" />
+                <Scene key="PersonalInfo" component={isAuthorized ? PersonalInfo : Auth} title="PersonalInfo" />
             </Scene>
         </Router>
     )

@@ -25,12 +25,17 @@ const PesananTiba = (props) => {
             if (customer_id !== null) {
                 axios.get(`${backendURL}/api/v1/sales_order/?customer_id=${customer_id}&status=proses`)
                     .then(res => {
-                        if(res.data.data.length > 0){
-                            setData(res.data.data);
-                        }else{
-                            setIsEmpty(true)
+                        if (res.status === 200) {
+                            if (res.data.data.length > 0) {
+                                setData(res.data.data);
+                            } else {
+                                setIsEmpty(true)
+                            }
                         }
                         setIsLoading(false)
+                    })
+                    .catch(err => {
+                        setIsEmpty(true)
                     })
             }
         })

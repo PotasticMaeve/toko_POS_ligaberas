@@ -55,6 +55,9 @@ const Keranjang = (props) => {
                   setIsLoading(false)
                 }
               })
+              .catch(err => {
+                setIsEmpty(true)
+              })
           }
         })
       }

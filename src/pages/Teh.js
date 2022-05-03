@@ -29,6 +29,9 @@ const Teh = () => {
           }
         }
       })
+      .catch(err => {
+        setIsEmpty(true)
+      })
   }
 
   useEffect(() => {

@@ -29,6 +29,9 @@ const Tepung = () => {
           }
         }
       })
+      .catch(err => {
+        setIsEmpty(true)
+      })
   }
 
   useEffect(() => {

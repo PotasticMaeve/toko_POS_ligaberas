@@ -29,6 +29,9 @@ const Susu = () => {
           }
         }
       })
+      .catch(err => {
+        setIsEmpty(true)
+      })
   }
 
   useEffect(() => {

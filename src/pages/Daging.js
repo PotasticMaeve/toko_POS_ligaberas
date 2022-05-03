@@ -29,6 +29,9 @@ const Daging = () => {
           }
         }
       })
+      .catch(err => {
+        setIsEmpty(true)
+      })
   }
 
 

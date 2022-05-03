@@ -29,6 +29,9 @@ const Beras = () => {
           }
         }
       })
+      .catch(err => {
+        setIsEmpty(true)
+      })
   }
 
   useEffect(() => {

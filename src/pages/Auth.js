@@ -89,8 +89,17 @@ const Auth = () => {
                 email: email,
                 nama: nama
             }).then(() => {
+                toast("Register Berhasil", "success")
                 setIsLoading(false)
+            }).catch((err) => {
+                if(err.response.status === 401){
+                    toast("Register Gagal", "danger")
+                    setIsLoading(false)
+                }
             })
+        }else{
+            toast("Form Wajib Diisi", "info")
+            setIsLoading(false)
         }
     }
 

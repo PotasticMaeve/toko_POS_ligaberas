@@ -36,6 +36,8 @@ target 'skripsi' do
 
   pod 'react-native-orientation', :path => '../node_modules/react-native-orientation'
 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
   target 'skripsiTests' do
     inherit! :search_paths
     # Pods for testing
