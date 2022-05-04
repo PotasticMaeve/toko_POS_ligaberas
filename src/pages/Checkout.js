@@ -41,6 +41,8 @@ const Checkout = (props) => {
     const [activePayment, setActivePayment] = useState(false)
     const [activeButtonPayment, setActiveButtonPayment] = useState(false)
     const [loadBarang, setLoadBarang] = useState(false)
+    const [phoneNull, setPhoneNull] = useState(false)
+    const [alamatNull, setAlamatNull] = useState(false)
 
     const displayProfil = () => {
         setIsLoading(true)
@@ -54,6 +56,12 @@ const Checkout = (props) => {
                         axios.get(`${backendURL}/api/v1/customer/?username=${username}`, key)
                             .then((res) => {
                                 if (res.status === 200) {
+                                    if (res.data.data.phone === null) {
+                                        setPhoneNull(true)
+                                    }
+                                    if (res.data.data.alamat === null) {
+                                        setAlamatNull(true)
+                                    }
                                     setProfil(res.data.data);
                                     setIsLoading(false)
                                 }
@@ -97,8 +105,7 @@ const Checkout = (props) => {
     }
 
     const submitPembayaran = () => {
-        if(activeButtonPayment && profil.nama !== "" && profil.phone !== "" && profil.alamat !== ""){
-            setActiveButtonPayment(true)
+        if (activeButtonPayment) {
             setValidatePembayaran(true)
             setTimeout(() => {
                 axios.post(`${backendURL}/api/v1/sales_order/`, {
@@ -115,7 +122,7 @@ const Checkout = (props) => {
                     })
             }, 2000);
             Actions.DelayTransaksi()
-        }else{
+        } else {
             return false;
         }
     }
@@ -132,9 +139,9 @@ const Checkout = (props) => {
     const ResponsiveUpdateProfil = () => {
         displayProfil()
     }
-    
+
     const selectMethod = () => {
-        if(activePayment){
+        if (activePayment) {
             return (
                 <View style={{ width: "100%", marginTop: 1 }}>
                     <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#eb8937", borderWidth: 1.3, borderRadius: 10 }}>
@@ -152,7 +159,7 @@ const Checkout = (props) => {
                     </View>
                 </View>
             )
-        }else{
+        } else {
             return (
                 <View style={{ width: "100%", marginTop: 1 }} >
                     <View style={{ paddingHorizontal: 10, paddingVertical: 5, borderColor: "#ddd", borderWidth: .5, borderRadius: 10 }}>
@@ -175,8 +182,13 @@ const Checkout = (props) => {
 
     const selectPayment = () => {
         setActivePayment(true)
+        if (profil.nama !== null && profil.phone !== null && profil.alamat !== null) {
+            setActiveButtonPayment(true)
+        } else {
+            setActiveButtonPayment(false)
+        }
     }
-    
+
     const unselectPayment = () => {
         setActivePayment(false)
         setActiveButtonPayment(false)
@@ -231,8 +243,50 @@ const Checkout = (props) => {
             </LinearGradient>
             <ScrollView showsVerticalScrollIndicator={false} style={{ backgroundColor: "#fff", paddingHorizontal: 15 }}>
                 <View style={{ paddingVertical: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                    <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Alamat Pengiriman</Text>
+                    <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Personal Info</Text>
                     <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.PersonalInfo({ ResponsiveUpdateProfil: ResponsiveUpdateProfil })}>
+                        <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
+                    </Ripple>
+                </View>
+                <View style={{ justifyContent: "flex-start", width: "100%", flexDirection: "row" }}>
+                    <View style={{ height: 45, width: 45, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }}>
+                        <Icon name="person-sharp" size={22} color='#eb8937' />
+                    </View>
+                    <View style={{ marginLeft: 20, flexDirection: "column", justifyContent: "space-around" }}>
+                        {isLoading ? (
+                            <>
+                                <ShimmerPlaceHolder
+                                    shimmerColors={colorShimmer}
+                                    style={{
+                                        width: "60%",
+                                        borderRadius: 5,
+                                    }}
+                                />
+                                <ShimmerPlaceHolder
+                                    shimmerColors={colorShimmer}
+                                    style={{
+                                        marginTop: 7,
+                                        width: "30%",
+                                        borderRadius: 5,
+                                    }}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>{profil.nama}</Text>
+                                {phoneNull ? (
+                                    <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "red", fontFamily: "Poppins-Medium" }}>no HP tujuan belum diperbarui</Text>
+                                ) : (
+                                    <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium" }}>{profil.phone}</Text>
+
+                                )}
+                            </>
+                        )}
+                    </View>
+                </View>
+                <View style={{ paddingTop: 20, paddingBottom: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Alamat Pengiriman</Text>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.AlamatPengiriman({ ResponsiveUpdateProfil: ResponsiveUpdateProfil })}>
                         <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>
@@ -263,14 +317,6 @@ const Checkout = (props) => {
                                         shimmerColors={colorShimmer}
                                         style={{
                                             marginTop: 7,
-                                            width: "45%",
-                                            borderRadius: 5,
-                                        }}
-                                    />
-                                    <ShimmerPlaceHolder
-                                        shimmerColors={colorShimmer}
-                                        style={{
-                                            marginTop: 7,
                                             width: "90%",
                                             borderRadius: 5,
                                         }}
@@ -280,10 +326,18 @@ const Checkout = (props) => {
                         ) : (
                             <>
                                 <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: `${profil.nama ? "#6b705c" : "red"}`, fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>{profil.nama ? profil.nama : "nama pelanggan belum diperbarui"}</Text>
-                                <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: `${profil.phone ? "#6b705c" : "red"}`, fontFamily: "Poppins-Medium" }}>{profil.phone ? profil.phone : "no HP tujuan belum diperbarui"}</Text>
+                                {phoneNull ? (
+                                    <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "red", fontFamily: "Poppins-Medium" }}>no HP tujuan belum diperbarui</Text>
+                                ) : (
+                                    <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium" }}>{profil.phone}</Text>
+
+                                )}
                                 <View style={{ marginTop: 10 }}>
-                                    <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium" }}>{profil.email ? profil.email : "email belum diperbarui"} </Text>
-                                    <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: `${profil.alamat ? "#6b705c" : "red"}`, fontFamily: "Poppins-Medium" }}>{profil.alamat ? profil.alamat : "alamat belum diperbarui"}</Text>
+                                    {alamatNull ? (
+                                        <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "red", fontFamily: "Poppins-Medium" }}>alamat belum diperbarui</Text>
+                                    ) : (
+                                        <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium" }}>{profil.alamat}</Text>
+                                    )}
                                 </View>
                             </>
                         )}
@@ -408,7 +462,11 @@ const Checkout = (props) => {
                         <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>
-                {selectMethod()}
+                {noKartu.length > 0 ? (
+                    selectMethod()
+                ) : (
+                    <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", color: 'red' }}>Belum ada kartu terdaftar</Text>
+                )}
                 <Space />
                 <View style={{ height: 100 }}></View>
             </ScrollView >
@@ -459,7 +517,7 @@ const Checkout = (props) => {
                         <Text style={{ fontFamily: "Poppins-Bold", fontSize: 13.5, color: "#27ae60" }}>{convertToIDR(grandTotal)}</Text>
                     )}
                 </View>
-                <Ripple rippleColor={activeButtonPayment && "#fff"} style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: `${ activeButtonPayment ? "#eb8937" : "#ccc"}`, justifyContent: "center", alignItems: "center" }} onPress={() => submitPembayaran()}>
+                <Ripple rippleColor={activeButtonPayment && "#fff"} style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: `${activeButtonPayment ? "#eb8937" : "#ccc"}`, justifyContent: "center", alignItems: "center" }} onPress={() => submitPembayaran()}>
                     {validatePembayaran ? (
                         <ActivityIndicator color="#fff" />
                     ) : (

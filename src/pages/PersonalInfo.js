@@ -19,6 +19,7 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 
 const colorHeader = ['#f3a337', '#eb8937']
+
 const PersonalInfo = (props) => {
     const [profil, setProfil] = useState({})
     const { backend_url } = useContext(MainContext)
@@ -51,10 +52,9 @@ const PersonalInfo = (props) => {
             ...data,
             nama: profil.nama,
             gender: profil.gender,
-            phone: profil.phone,
-            alamat: profil.alamat
+            phone: profil.phone
         }
-        if (profil.nama === "" || profil.gender === "" || profil.phone === "" || profil.alamat === "") {
+        if (profil.nama === "" || profil.gender === "" || profil.phone === "") {
             toast("Data Profil Harus Diisi", "danger")
             detailProfil()
             setEdit(false)
@@ -70,12 +70,12 @@ const PersonalInfo = (props) => {
                     let nama = res.data.nama
                     let gender = res.data.gender
                     let phone = res.data.phone
-                    let alamat = res.data.alamat
                     toast("Berhasil Menyimpan Profil", "success")
                     setIsLoading(false)
                     setEdit(false)
-                    setProfil({ ...profil, nama: nama, gender: gender, phone: phone, alamat: alamat });
+                    setProfil({ ...profil, nama: nama, gender: gender, phone: phone });
                     props.ResponsiveUpdateProfil && props.ResponsiveUpdateProfil()
+                    props.updateNama && props.updateNama()
                 })
                 .catch((err) => {
                     toast("Gagal Menyimpan Data Profil", "danger")

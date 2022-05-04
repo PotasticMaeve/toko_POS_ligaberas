@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { View } from 'react-native';
 import { Text, ScrollView, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
@@ -6,15 +6,45 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
 import Space from "../components/Space"
 import Ripple from 'react-native-material-ripple';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MainContext } from "../context/MainContext"
-import { toast } from "../Helper"
 import { Actions } from 'react-native-router-flux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { MainContext } from '../context/MainContext';
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
+const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 
 const colorHeader = ['#f3a337', '#eb8937']
 
 const Profil = () => {
+    const { backend_url } = useContext(MainContext)
+    const [backendURL] = backend_url
+    const [customerNama, setCustomerNama] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
+
+    const displayNama = () => {
+        setIsLoading(false)
+        AsyncStorage.getItem("customerUsername").then(res => {
+            let username = JSON.parse(res)
+            if (username !== null) {
+                axios.get(`${backendURL}/api/v1/customer/?username=${username}`)
+                    .then(res => {
+                        setCustomerNama(res.data.data.nama);
+                        setIsLoading(false)
+                    })
+            }
+        })
+    }
+
+    const updateNama = () => {
+        displayNama()
+    }
+
+    useEffect(() => {
+        displayNama()
+    }, [])
+
     return (
         <>
             <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
@@ -36,7 +66,18 @@ const Profil = () => {
                     </View>
                 </View>
                 <View style={{ paddingVertical: 10, marginBottom: 20 }}>
-                    <Text style={{ color: "#6b705c", fontFamily: "Poppins-SemiBold", textAlign: "center" }}>Liliana Chisa Mikusachi</Text>
+                    {isLoading ? (
+                        <ShimmerPlaceHolder
+                            shimmerColors={colorShimmer}
+                            style={{
+                                width: "40%",
+                                height: 15,
+                                alignSelf: "center"
+                            }}
+                        />
+                    ) : (
+                        <Text style={{ color: "#6b705c", fontFamily: "Poppins-SemiBold", textAlign: "center", textTransform: "capitalize" }}>{customerNama}</Text>
+                    )}
                     <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 12 }}>Pelanggan</Text>
                 </View>
                 <Ripple
@@ -58,14 +99,14 @@ const Profil = () => {
                         marginHorizontal: 15,
                         flexDirection: "row"
                     }}
-                    onPress={() => Actions.PersonalInfo()}
+                    onPress={() => Actions.PersonalInfo({ updateNama: updateNama })}
                 >
                     <View style={{ height: "100%", width: 40, borderRadius: 5, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
                         <FontAwesome5 name={"user-lock"} size={18} color='#fff' />
                     </View>
-                    <View style={{ height: "100%", justifyContent: "space-between", alignItems: "center", marginLeft: 15, flexDirection: 'row', width: 240 }}>
+                    <View style={{ height: "100%", alignItems: "center", marginLeft: 15, flexDirection: 'row', width: 240 }}>
                         <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 13 }}>Atur Personal Info</Text>
-                        <FontAwesome5 name={"angle-right"} size={22} color='#f3a337' />
+                        <FontAwesome5 name={"angle-right"} size={22} color='#f3a337' style={{ position: "absolute", right: 0, bottom: 10 }} />
                     </View>
                 </Ripple>
                 <Ripple
@@ -92,9 +133,9 @@ const Profil = () => {
                     <View style={{ height: "100%", width: 40, borderRadius: 5, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
                         <FontAwesome5 name={"truck"} size={18} color='#fff' />
                     </View>
-                    <View style={{ height: "100%", justifyContent: "space-between", alignItems: "center", marginLeft: 15, flexDirection: 'row', width: 240 }}>
+                    <View style={{ height: "100%", alignItems: "center", marginLeft: 15, flexDirection: 'row', width: 240 }}>
                         <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 13 }}>Atur Alamat Pengiriman</Text>
-                        <FontAwesome5 name={"angle-right"} size={22} color='#f3a337' />
+                        <FontAwesome5 name={"angle-right"} size={22} color='#f3a337' style={{ position: "absolute", right: 0, bottom: 10 }} />
                     </View>
                 </Ripple>
                 <Ripple
@@ -121,9 +162,9 @@ const Profil = () => {
                     <View style={{ height: "100%", width: 40, borderRadius: 5, backgroundColor: '#f3a337', justifyContent: "center", alignItems: "center" }}>
                         <FontAwesome5 name={"credit-card"} size={18} color='#fff' />
                     </View>
-                    <View style={{ height: "100%", justifyContent: "space-between", alignItems: "center", marginLeft: 15, flexDirection: 'row', width: 240 }}>
+                    <View style={{ height: "100%", alignItems: "center", marginLeft: 15, flexDirection: 'row', width: 240 }}>
                         <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 13 }}>Atur Rekening Pembayaran</Text>
-                        <FontAwesome5 name={"angle-right"} size={22} color='#f3a337' />
+                        <FontAwesome5 name={"angle-right"} size={22} color='#f3a337' style={{ position: "absolute", right: 0, bottom: 10 }} />
                     </View>
                 </Ripple>
                 <Space />
