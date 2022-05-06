@@ -58,10 +58,10 @@ const SideMenu = () => {
             <View style={styles.menu}>
                 {isAdmin ? (
                     <>
-                        <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Customers()}>
+                        {/* <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Customers()}>
                             <FontAwesome5 name={"users"} size={18} color="#e36414" />
                             <Text style={styles.menu_text}>Pelanggan</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                         <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Products()}>
                             <FontAwesome5 name={"box-open"} size={18} color="#e36414" />
                             <Text style={styles.menu_text}>Produk</Text>

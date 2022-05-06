@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MainContext } from "../context/MainContext"
 import { toast } from "../Helper"
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+import { Actions } from 'react-native-router-flux';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
@@ -160,8 +161,11 @@ const Pembayaran = (props) => {
 
     return (
         <>
-            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Daftar Kartu</Text>
+            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                <TouchableOpacity onPress={() => Actions.pop()}>
+                    <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
+                </TouchableOpacity>
+                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Daftar Kartu</Text>
             </LinearGradient>
             <ScrollView style={{ paddingTop: 15, backgroundColor: "#fafafa", height: "100%" }} showsVerticalScrollIndicator={false}>
                 {emptyData ? (
@@ -258,7 +262,7 @@ const Pembayaran = (props) => {
                             onChange={_onChange}
                             validColor="#27ae60"
                             placeholderColor="#ccc"
-                            placeholders={{ number: "2222 2222 2222", expiry: "MM/YY", cvc: "CVV", name: "John Doe" }}
+                            placeholders={{ number: "2145 0943 2176", expiry: "04/23", cvc: "542", name: "John Doe" }}
                             labels={{ number: "Nomor Kartu", expiry: "EXPIRY", cvc: "kode CVV", name: "Nama CardHolders" }}
                             labelStyle={{ fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}
                         />
@@ -307,7 +311,7 @@ const Pembayaran = (props) => {
                                         />
                                     ) : (
                                         <TextInput
-                                            placeholder="Nama Nasabah"
+                                            placeholder="John Doe"
                                             style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
                                             spellCheck={false}
                                             value={singleCardData.nama_nasabah}
@@ -333,7 +337,7 @@ const Pembayaran = (props) => {
                                         />
                                     ) : (
                                         <TextInput
-                                            placeholder="No Kartu"
+                                            placeholder="214434210021"
                                             style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
                                             spellCheck={false}
                                             value={singleCardData.no_kartu}
@@ -360,7 +364,7 @@ const Pembayaran = (props) => {
                                         />
                                     ) : (
                                         <TextInput
-                                            placeholder="Expiry"
+                                            placeholder="0423"
                                             style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
                                             spellCheck={false}
                                             value={singleCardData.expiry}
@@ -387,7 +391,7 @@ const Pembayaran = (props) => {
                                         />
                                     ) : (
                                         <TextInput
-                                            placeholder="CVV"
+                                            placeholder="452"
                                             style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
                                             spellCheck={false}
                                             value={singleCardData.cvv}

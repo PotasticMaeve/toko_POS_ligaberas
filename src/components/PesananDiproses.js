@@ -11,7 +11,7 @@ import LottieView from 'lottie-react-native';
 
 const { height } = Dimensions.get("screen")
 
-const PesananTiba = (props) => {
+const PesananDiproses = (props) => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [isLoading, setIsLoading] = useState(false)
@@ -20,25 +20,42 @@ const PesananTiba = (props) => {
 
     const getData = () => {
         setIsLoading(true)
-        AsyncStorage.getItem("customerID").then(value => {
-            let customer_id = JSON.parse(value)
-            if (customer_id !== null) {
-                axios.get(`${backendURL}/api/v1/sales_order/?customer_id=${customer_id}&status=proses`)
-                    .then(res => {
-                        if (res.status === 200) {
-                            if (res.data.data.length > 0) {
-                                setData(res.data.data);
-                            } else {
-                                setIsEmpty(true)
-                            }
-                        }
-                        setIsLoading(false)
-                    })
-                    .catch(err => {
+        if(props.isAdmin){
+            axios.get(`${backendURL}/api/v1/sales_order/?status=proses`)
+            .then(res => {
+                if (res.status === 200) {
+                    if (res.data.data.length > 0) {
+                        setData(res.data.data);
+                    } else {
                         setIsEmpty(true)
-                    })
-            }
-        })
+                    }
+                }
+                setIsLoading(false)
+            })
+            .catch(err => {
+                setIsEmpty(true)
+            })
+        }else{
+            AsyncStorage.getItem("customerID").then(value => {
+                let customer_id = JSON.parse(value)
+                if (customer_id !== null) {
+                    axios.get(`${backendURL}/api/v1/sales_order/?customer_id=${customer_id}&status=proses`)
+                        .then(res => {
+                            if (res.status === 200) {
+                                if (res.data.data.length > 0) {
+                                    setData(res.data.data);
+                                } else {
+                                    setIsEmpty(true)
+                                }
+                            }
+                            setIsLoading(false)
+                        })
+                        .catch(err => {
+                            setIsEmpty(true)
+                        })
+                }
+            })
+        }
     }
 
     useEffect(() => {
@@ -75,4 +92,4 @@ const PesananTiba = (props) => {
     )
 }
 
-export default PesananTiba
+export default PesananDiproses

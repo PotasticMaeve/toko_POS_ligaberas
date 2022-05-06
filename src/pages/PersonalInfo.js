@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View } from 'react-native';
-import { Text, ScrollView, Image, SafeAreaView, StyleSheet, TextInput } from 'react-native';
+import { Text, ScrollView, Image, SafeAreaView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import Icon from 'react-native-vector-icons/Feather'
@@ -14,6 +14,7 @@ import { MainContext } from "../context/MainContext"
 import { toast } from "../Helper"
 import { ActivityIndicator } from 'react-native';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+import { Actions } from 'react-native-router-flux';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
@@ -89,8 +90,11 @@ const PersonalInfo = (props) => {
 
     return (
         <>
-            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Personal Info</Text>
+            <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center" }}>
+                <TouchableOpacity onPress={() => Actions.pop()}>
+                    <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
+                </TouchableOpacity>
+                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Personal Info</Text>
             </LinearGradient>
             <ScrollView style={{ paddingTop: 15, backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
                 <View style={{

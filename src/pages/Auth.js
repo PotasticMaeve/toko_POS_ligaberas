@@ -4,6 +4,7 @@ import { Easing, ActivityIndicator } from 'react-native'
 import { View, Dimensions, StyleSheet, Animated, Text, Image, Keyboard } from "react-native"
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
+import Icons from 'react-native-vector-icons/Ionicons'
 import Ripple from 'react-native-material-ripple'
 import Icon from "react-native-vector-icons/Entypo"
 import { MainContext } from '../context/MainContext'
@@ -26,6 +27,10 @@ const Auth = () => {
     const [email, setEmail] = useState("")
     const [showPass, setShowPass] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [editUsernameLogin, setEditUsernameLogin] = useState(false)
+    const [editUsernameRegister, setEditUsernameRegister] = useState(false)
+    const [editNama, setEditNama] = useState(false)
+    const [editEmail, setEditEmail] = useState(false)
 
     const animatedContainer = {
         height: screenAnimation
@@ -107,6 +112,66 @@ const Auth = () => {
         }
     }
 
+    const clearUsernameLogin = () => {
+        setUsernameLogin("")
+        setEditUsernameLogin(false)
+    }
+
+    const clearUsernameRegister = () => {
+        setUsernameRegister("")
+        setEditUsernameRegister(false)
+    }
+
+    const clearNama = () => {
+        setNama("")
+        setEditNama(false)
+    }
+
+    const clearEmail = () => {
+        setEmail("")
+        setEditEmail(false)
+    }
+
+    const changeUsernameLogin = (usernameLogin) => {
+        if(usernameLogin !== ""){
+            setEditUsernameLogin(true)
+            setUsernameLogin(usernameLogin)
+        }else{
+            setUsernameLogin("")
+            setEditUsernameLogin(false)
+        }
+    }
+
+    const changeUsernameRegister = (usernameRegister) => {
+        if(usernameRegister !== ""){
+            setEditUsernameRegister(true)
+            setUsernameRegister(usernameRegister)
+        }else{
+            setUsernameRegister("")
+            setEditUsernameRegister(false)
+        }
+    }
+
+    const changeNama = (nama) => {
+        if(nama !== ""){
+            setEditNama(true)
+            setNama(nama)
+        }else{
+            setNama("")
+            setEditNama(false)
+        }
+    }
+
+    const changeEmail = (email) => {
+        if(email !== ""){
+            setEditEmail(true)
+            setEmail(email)
+        }else{
+            setEmail("")
+            setEditEmail(false)
+        }
+    }
+
     useEffect(() => {
         animateContainer()
     }, [])
@@ -126,20 +191,23 @@ const Auth = () => {
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Username"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
+                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "90%" }}
                                     spellCheck={false}
                                     autoCorrect={false}
                                     autoCapitalize='none'
                                     name="usernameLogin"
                                     value={usernameLogin}
-                                    onChangeText={new_text => setUsernameLogin(new_text)}
+                                    onChangeText={changeUsernameLogin}
                                 />
+                                {editUsernameLogin && (
+                                    <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginRight: 8, position: "absolute", right: 0, bottom: 10 }} onPress={() => clearUsernameLogin()} />
+                                )}
                             </View>
                             <View style={[styles.input, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
                                 {showPass ? (
                                     <TextInput
                                         placeholder="Password"
-                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "85%" }}
+                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "90%" }}
                                         spellCheck={false}
                                         autoCorrect={false}
                                         autoCapitalize='none'
@@ -150,7 +218,7 @@ const Auth = () => {
                                 ) : (
                                     <TextInput
                                         placeholder="Password"
-                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "85%" }}
+                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "90%" }}
                                         spellCheck={false}
                                         autoCorrect={false}
                                         autoCapitalize='none'
@@ -225,44 +293,53 @@ const Auth = () => {
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Username"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
+                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "90%" }}
                                     spellCheck={false}
                                     autoCorrect={false}
                                     autoCapitalize='none'
                                     name="usernameRegister"
                                     value={usernameRegister}
-                                    onChangeText={new_text => setUsernameRegister(new_text)}
+                                    onChangeText={changeUsernameRegister}
                                 />
+                                {editUsernameRegister && (
+                                    <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginLeft: 5 }} onPress={() => clearUsernameRegister()} />
+                                )}
                             </View>
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="nama"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
+                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "90%" }}
                                     spellCheck={false}
                                     autoCorrect={false}
                                     autoCapitalize='none'
                                     name="nama"
                                     value={nama}
-                                    onChangeText={new_text => setNama(new_text)}
+                                    onChangeText={changeNama}
                                 />
+                                {editNama && (
+                                    <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginLeft: 5 }} onPress={() => clearNama()} />
+                                )}
                             </View>
                             <View style={styles.input}>
                                 <TextInput
                                     placeholder="Email"
-                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium" }}
+                                    style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "90%" }}
                                     spellCheck={false}
                                     autoCorrect={false}
                                     autoCapitalize='none'
                                     name="Email"
                                     value={email}
-                                    onChangeText={new_text => setEmail(new_text)}
+                                    onChangeText={changeEmail}
                                 />
+                                {editEmail && (
+                                    <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginLeft: 5 }} onPress={() => clearEmail()} />
+                                )}
                             </View>
                             <View style={[styles.input, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
                                 {showPass ? (
                                     <TextInput
                                         placeholder="Password"
-                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "85%" }}
+                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "90%" }}
                                         spellCheck={false}
                                         autoCorrect={false}
                                         autoCapitalize='none'
@@ -273,7 +350,7 @@ const Auth = () => {
                                 ) : (
                                     <TextInput
                                         placeholder="Password"
-                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "85%" }}
+                                        style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "90%" }}
                                         spellCheck={false}
                                         autoCorrect={false}
                                         autoCapitalize='none'
@@ -378,8 +455,9 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "#fafafa",
         height: 45,
+        flexDirection: "row",
         borderRadius: 8,
-        justifyContent: "center",
+        alignItems: "center",
         marginVertical: 10,
         shadowColor: '#aaa',
         shadowOffset: { width: 0, height: 2 },

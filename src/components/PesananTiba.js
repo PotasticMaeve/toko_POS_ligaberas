@@ -11,7 +11,7 @@ import LottieView from 'lottie-react-native';
 
 const { height } = Dimensions.get("screen")
 
-const PesananTiba = () => {
+const PesananTiba = (props) => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [isLoading, setIsLoading] = useState(false)
@@ -20,25 +20,42 @@ const PesananTiba = () => {
 
     const getData = () => {
         setIsLoading(true)
-        AsyncStorage.getItem("customerID").then(value => {
-            let customer_id = JSON.parse(value)
-            if (customer_id !== null) {
-                axios.get(`${backendURL}/api/v1/sales_order/?customer_id=${customer_id}&status=selesai`)
-                    .then(res => {
-                        if (res.status === 200) {
-                            if (res.data.data.length > 0) {
-                                setData(res.data.data);
-                            } else {
-                                setIsEmpty(true)
-                            }
+        if (props.isAdmin) {
+            axios.get(`${backendURL}/api/v1/sales_order/?status=selesai`)
+                .then(res => {
+                    if (res.status === 200) {
+                        if (res.data.data.length > 0) {
+                            setData(res.data.data);
+                        } else {
+                            setIsEmpty(true)
                         }
-                        setIsLoading(false)
-                    })
-                    .catch(err => {
-                        setIsEmpty(true)
-                    })
-            }
-        })
+                    }
+                    setIsLoading(false)
+                })
+                .catch(err => {
+                    setIsEmpty(true)
+                })
+        } else {
+            AsyncStorage.getItem("customerID").then(value => {
+                let customer_id = JSON.parse(value)
+                if (customer_id !== null) {
+                    axios.get(`${backendURL}/api/v1/sales_order/?customer_id=${customer_id}&status=selesai`)
+                        .then(res => {
+                            if (res.status === 200) {
+                                if (res.data.data.length > 0) {
+                                    setData(res.data.data);
+                                } else {
+                                    setIsEmpty(true)
+                                }
+                            }
+                            setIsLoading(false)
+                        })
+                        .catch(err => {
+                            setIsEmpty(true)
+                        })
+                }
+            })
+        }
     }
 
     useEffect(() => {

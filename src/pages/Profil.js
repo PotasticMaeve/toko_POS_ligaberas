@@ -21,16 +21,23 @@ const Profil = () => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [customerNama, setCustomerNama] = useState("")
+    const [role, setRole] = useState("")
     const [isLoading, setIsLoading] = useState(false)
 
     const displayNama = () => {
-        setIsLoading(false)
+        setIsLoading(true)
         AsyncStorage.getItem("customerUsername").then(res => {
             let username = JSON.parse(res)
             if (username !== null) {
                 axios.get(`${backendURL}/api/v1/customer/?username=${username}`)
                     .then(res => {
-                        setCustomerNama(res.data.data.nama);
+                        if (res.data.data.is_admin) {
+                            setCustomerNama(res.data.data.username)
+                            setRole("Pegawai")
+                        } else {
+                            setCustomerNama(res.data.data.nama);
+                            setRole("Pelanggan")
+                        }
                         setIsLoading(false)
                     })
             }
@@ -67,18 +74,34 @@ const Profil = () => {
                 </View>
                 <View style={{ paddingVertical: 10, marginBottom: 20 }}>
                     {isLoading ? (
-                        <ShimmerPlaceHolder
-                            shimmerColors={colorShimmer}
-                            style={{
-                                width: "40%",
-                                height: 15,
-                                alignSelf: "center"
-                            }}
-                        />
+                        <>
+                            <ShimmerPlaceHolder
+                                shimmerColors={colorShimmer}
+                                style={{
+                                    marginTop: 5,
+                                    width: "40%",
+                                    height: 15,
+                                    alignSelf: "center",
+                                    borderRadius: 5
+                                }}
+                            />
+                            <ShimmerPlaceHolder
+                                shimmerColors={colorShimmer}
+                                style={{
+                                    marginTop: 7,
+                                    width: "25%",
+                                    height: 15,
+                                    alignSelf: "center",
+                                    borderRadius: 5
+                                }}
+                            />
+                        </>
                     ) : (
-                        <Text style={{ color: "#6b705c", fontFamily: "Poppins-SemiBold", textAlign: "center", textTransform: "capitalize" }}>{customerNama}</Text>
+                        <>
+                            <Text style={{ color: "#6b705c", fontFamily: "Poppins-SemiBold", textAlign: "center", textTransform: "capitalize" }}>{customerNama}</Text>
+                            <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 12 }}>{role}</Text>
+                        </>
                     )}
-                    <Text style={{ color: "#6b705c", fontFamily: "Poppins-Medium", textAlign: "center", fontSize: 12 }}>Pelanggan</Text>
                 </View>
                 <Ripple
                     rippleColor="#fff"
@@ -168,7 +191,7 @@ const Profil = () => {
                     </View>
                 </Ripple>
                 <Space />
-            </ScrollView>
+            </ScrollView >
         </>
     )
 }

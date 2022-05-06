@@ -3,6 +3,7 @@ import { StyleSheet, TextInput, TouchableOpacity, View, Dimensions, Text, SafeAr
 import LinearGradient from 'react-native-linear-gradient'
 import { Actions } from 'react-native-router-flux'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import Icons from 'react-native-vector-icons/Ionicons'
 import styles from '../stylesheets/Main'
 import axios from 'axios';
 import { MainContext } from "../context/MainContext"
@@ -18,26 +19,39 @@ const Search = () => {
     const [input, setInput] = useState("")
     const [dataDisplay, setDataDisplay] = useState([])
     const [showIdle, setShowIdle] = useState(true)
+    const [editing, setEditing] = useState(false)
     const [showEmpty, setShowEmpty] = useState(false)
 
     const onChangeText = (search) => {
-        setInput(search)
+        if(search !== ""){
+            setEditing(true)
+            setInput(search)
+        }else{
+            setInput("")
+            setEditing(false)
+        }
     }
 
     const getRealProduct = () => {
-        if(input !== ""){
+        if (input !== "") {
             axios.get(`${backendURL}/api/v1/product/?search=${input}`)
                 .then(res => {
                     if (res.status === 200) {
-                        if(res.data.data.length > 0){
+                        if (res.data.data.length > 0) {
                             setDataDisplay(res.data.data);
                             setShowEmpty(false)
-                        }else{
+                            setEditing(false)
+                        } else {
                             setShowEmpty(true)
                         }
                     }
                 })
         }
+    }
+
+    const clearMode = () => {
+        setInput("")
+        setEditing(false)
     }
 
     return (
@@ -49,15 +63,19 @@ const Search = () => {
                 <TouchableWithoutFeedback style={{ flexDirection: "column", width: "100%" }}>
                     <View style={s.areaInput}>
                         <SafeAreaView style={s.inputWrap}>
-                            <FontAwesome5 name={"search"} size={18} color='#eb8937' style={{ marginLeft: 8 }} onPress={() => getRealProduct()} />
+                            <FontAwesome5 name={"search"} size={16} color='#eb8937' style={{ marginLeft: 8 }} onPress={() => getRealProduct()} />
                             <TextInput
                                 placeholder="Cari produk"
                                 style={s.inputComp}
                                 spellCheck={false}
+                                value={input}
                                 autoCorrect={false}
                                 onChangeText={onChangeText}
                                 onSubmitEditing={() => getRealProduct()}
                             />
+                            {editing && (
+                                <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginRight: 8 }} onPress={() => clearMode()} />
+                            )}
                         </SafeAreaView>
                     </View>
                 </TouchableWithoutFeedback>
@@ -105,7 +123,7 @@ const Search = () => {
                         <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 35 }}>Produk Tidak Ditemukan</Text>
                         <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Produk untuk pencarian tidak tersedia</Text>
                     </>
-                ):(
+                ) : (
                     <>
                         <Card data={dataDisplay} />
                         <View style={{ height: 80 }}></View>
@@ -118,7 +136,6 @@ const Search = () => {
 
 const s = StyleSheet.create({
     inputWrap: {
-        justifyContent: "space-between",
         flexDirection: "row",
         alignItems: "center",
         paddingHorizontal: 3,
@@ -134,7 +151,7 @@ const s = StyleSheet.create({
         paddingVertical: 6,
         fontFamily: "Poppins-Medium",
         paddingHorizontal: 10,
-        width: "90%"
+        width: "83%"
     },
     areaInput: {
         width: "100%",

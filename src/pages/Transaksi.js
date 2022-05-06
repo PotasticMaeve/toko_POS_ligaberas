@@ -9,7 +9,6 @@ import PesananDiproses from '../components/PesananDiproses';
 import { MainContext } from '../context/MainContext';
 import Ripple from 'react-native-material-ripple';
 import { Actions } from 'react-native-router-flux';
-import Maintenance from '../components/Maintenance';
 
 const colorHeader = ['#f3a337', '#eb8937']
 
@@ -18,9 +17,9 @@ const Transaksi = (props) => {
     const [backtoShop, setBacktoShop] = back_to_shop
     const [isAdmin] = is_admin
 
-    const pesanan_diproses = () => <PesananDiproses />
-    const pesanan_dikirim = () => <PesananDikirim />
-    const pesanan_tiba = () => <PesananTiba />
+    const pesanan_diproses = () => <PesananDiproses isAdmin={isAdmin} />
+    const pesanan_dikirim = () => <PesananDikirim isAdmin={isAdmin} />
+    const pesanan_tiba = () => <PesananTiba isAdmin={isAdmin} />
 
     const renderScene = SceneMap({
         first: pesanan_diproses,
@@ -68,35 +67,43 @@ const Transaksi = (props) => {
                 <Text style={{ fontSize: 16, color: "#fff", marginTop: 5, fontFamily: "Poppins-SemiBold" }}>Transaksi</Text>
             </LinearGradient>
             {isAdmin ? (
-                <Maintenance />
-            ):(
                 <>
-                <TabView
-                    navigationState={{ index, routes }}
-                    renderScene={renderScene}
-                    renderTabBar={renderTabBar}
-                    onIndexChange={setIndex}
-                    initialLayout={{ width: layout.width }}
-                />
-                {props.backToShopping && (
-                    <View style={{ position: "absolute", left: 0, bottom: 0, height: 80, paddingTop: 10, paddingBottom: 10, width: "100%", paddingHorizontal: 15, backgroundColor: "#fafafa", justifyContent: "center", alignItems: "center" }}>
-                        <Ripple
-                            rippleColor="#fff"
-                            style={{
-                                height: 40,
-                                borderRadius: 10,
-                                backgroundColor: '#eb8937',
-                                overflow: 'hidden',
-                                width: "100%",
-                                justifyContent: "center",
-                                alignItems: 'center',
-                            }}
-                            onPress={() => backHomeReload()}
-                        >
-                            <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>Kembali Berbelanja</Text>
-                        </Ripple>
-                    </View>
-                )}
+                    <TabView
+                        navigationState={{ index, routes }}
+                        renderScene={renderScene}
+                        renderTabBar={renderTabBar}
+                        onIndexChange={setIndex}
+                        initialLayout={{ width: layout.width }}
+                    />
+                </>
+            ) : (
+                <>
+                    <TabView
+                        navigationState={{ index, routes }}
+                        renderScene={renderScene}
+                        renderTabBar={renderTabBar}
+                        onIndexChange={setIndex}
+                        initialLayout={{ width: layout.width }}
+                    />
+                    {props.backToShopping && (
+                        <View style={{ position: "absolute", left: 0, bottom: 0, height: 80, paddingTop: 10, paddingBottom: 10, width: "100%", paddingHorizontal: 15, backgroundColor: "#fafafa", justifyContent: "center", alignItems: "center" }}>
+                            <Ripple
+                                rippleColor="#fff"
+                                style={{
+                                    height: 40,
+                                    borderRadius: 10,
+                                    backgroundColor: '#eb8937',
+                                    overflow: 'hidden',
+                                    width: "100%",
+                                    justifyContent: "center",
+                                    alignItems: 'center',
+                                }}
+                                onPress={() => backHomeReload()}
+                            >
+                                <Text style={{ fontFamily: "Poppins-SemiBold", color: "#fff", textTransform: "capitalize", fontSize: 13.5, marginTop: 5 }}>Kembali Berbelanja</Text>
+                            </Ripple>
+                        </View>
+                    )}
                 </>
             )}
         </>
