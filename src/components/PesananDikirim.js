@@ -86,7 +86,7 @@ const PesananDikirim = (props) => {
                     ))
                 )
             )}
-            <Space />
+            <Space height={100} />
         </ScrollView>
     )
 }

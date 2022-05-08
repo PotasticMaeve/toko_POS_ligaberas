@@ -24,7 +24,7 @@ import Teh from "./pages/Teh";
 import Bumbu from "./pages/Bumbu";
 import Checkout from "./pages/Checkout";
 import Profil from "./pages/Profil";
-import Customers from "./pages/Customers";
+import Suppliers from "./pages/Suppliers";
 import Products from "./pages/Products";
 import { MainContext } from "./context/MainContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -100,7 +100,7 @@ const Routes = () => {
                 <Scene key="Bumbu" component={Bumbu} title="Bumbu" />
                 <Scene key="Checkout" component={Checkout} title="Checkout" />
                 <Scene key="Profil" component={isAuthorized ? Profil : Auth} title="Profil" />
-                <Scene key="Customers" component={isAuthorized ? Customers : Auth} title="Customers" />
+                <Scene key="Suppliers" component={isAuthorized ? Suppliers : Auth} title="Suppliers" />
                 <Scene key="Products" component={isAuthorized ? Products : Auth} title="Products" />
                 <Scene key="ConfirmKeranjang" component={isAuthorized ? ConfirmKeranjang : Auth} title="ConfirmKeranjang" />
                 <Scene key="DetailCardAdmin" component={isAuthorized ? DetailCardAdmin : Auth} title="DetailCardAdmin" />

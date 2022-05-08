@@ -16,11 +16,7 @@ const CardItem = (props) => {
     }, [])
 
     const onPressAction = (id) => {
-        if (props.detailAdmin) {
-            Actions.DetailCardAdmin({ id: id })
-        } else {
-            Actions.DetailCard({ id: id })
-        }
+        Actions.DetailCard({ id: id })
     }
 
     if (isLoading) {

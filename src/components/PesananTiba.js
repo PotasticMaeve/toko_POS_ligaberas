@@ -87,7 +87,7 @@ const PesananTiba = (props) => {
                     ))
                 )
             )}
-            <Space />
+            <Space height={100} />
         </ScrollView>
     )
 }

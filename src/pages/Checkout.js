@@ -467,8 +467,7 @@ const Checkout = (props) => {
                 ) : (
                     <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium", color: 'red' }}>Belum ada kartu terdaftar</Text>
                 )}
-                <Space />
-                <View style={{ height: 100 }}></View>
+                <Space height={200} />
             </ScrollView >
             <View style={{ position: "absolute", left: 0, bottom: 0, height: 180, paddingTop: 10, paddingBottom: 10, width: "100%", paddingHorizontal: 15, backgroundColor: "#fafafa" }}>
                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>

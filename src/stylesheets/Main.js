@@ -115,8 +115,13 @@ const styles = StyleSheet.create({
         margin: 5,
         borderRadius: 10    
     },
-    space: {
-        height: height / 5
+    productBlank: {
+        flex: 1,
+        display: "flex",
+        backgroundColor: "#fff",
+        height: width,
+        margin: 5,
+        borderRadius: 10    
     },
     blankCard: {
         backgroundColor: "transparent"

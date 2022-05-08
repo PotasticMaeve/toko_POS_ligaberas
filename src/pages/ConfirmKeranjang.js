@@ -180,7 +180,7 @@ const ConfirmKeranjang = (props) => {
                     data && data.length > 0 && data.map((el, i) => (
                         <KeranjangCard responsiveDeleteKeranjang={props.responsiveDeleteKeranjang} key={i} exist={true} data={el} calculate={calculateTotal} remove={removeItem} />
                     )))}
-                <Space />
+                <Space height={200} />
                 {modalShow && (
                     <Modal
                         isVisible={modalShow} style={{ justifyContent: "center", alignItems: "center" }}>

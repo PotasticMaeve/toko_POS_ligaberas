@@ -49,7 +49,7 @@ const Daging = () => {
       </LinearGradient>
       <ScrollView style={{ paddingTop: 10 }} showsVerticalScrollIndicator={false}>
         <Card data={data} empty={isEmpty} />
-        <Space />
+        <Space height={100} />
       </ScrollView>
     </>
   )

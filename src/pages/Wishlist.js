@@ -115,7 +115,7 @@ const Wishlist = (props) => {
                         </>
                     )
                 )}
-                <Space />
+                <Space height={100} />
             </ScrollView>
         </>
     )

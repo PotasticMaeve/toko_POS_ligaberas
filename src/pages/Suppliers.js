@@ -9,7 +9,7 @@ import { MainContext } from '../context/MainContext';
 import Maintenance from "../components/Maintenance"
 
 const colorHeader = ['#f3a337', '#eb8937']
-const Customers = () => {
+const Suppliers = () => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [data, setData] = useState([])
@@ -47,7 +47,7 @@ const Customers = () => {
                 <TouchableOpacity onPress={() => Actions.pop()}>
                     <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
                 </TouchableOpacity>
-                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Pelanggan</Text>
+                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Supplier</Text>
             </LinearGradient>
             <Maintenance />
             {/* <FlatList
@@ -60,4 +60,4 @@ const Customers = () => {
     )
 }
 
-export default Customers
+export default Suppliers

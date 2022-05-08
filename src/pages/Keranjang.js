@@ -186,7 +186,7 @@ const Keranjang = (props) => {
             ))
           )
         )}
-        <Space />
+        <Space height={200} />
       </ScrollView>
       {!isEmpty && (
         <View style={{
