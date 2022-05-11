@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, View, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Dimensions, Text, SafeAreaView, View, ScrollView, Image, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
@@ -8,7 +8,8 @@ import { MainContext } from '../context/MainContext';
 import Icons from 'react-native-vector-icons/Ionicons'
 import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
-import { convertToIDR } from "../Helper"
+import { convertToIDR, toast } from "../Helper"
+import LottieView from 'lottie-react-native';
 import BottomSheet from "react-native-gesture-bottom-sheet";
 import ShimmerProduct from '../components/ShimmerProduct';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
@@ -19,19 +20,23 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 
 const colorHeader = ['#f3a337', '#eb8937']
-
+const { height } = Dimensions.get("screen")
 const Products = () => {
     const bs = useRef(null)
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingForm, setIsLoadingForm] = useState(false)
     const [data, setData] = useState([])
     const [input, setInput] = useState("")
+    const [updateIDSupplier, setUpdateIDSupplier] = useState(0)
     const [dataDisplay, setDataDisplay] = useState([])
     const [dataSupplier, setDataSupplier] = useState([])
     const [dataCategory, setDataCategory] = useState([])
     const [editing, setEditing] = useState(false)
+    const [editForm, setEditForm] = useState(false)
     const [singleData, setSingleData] = useState({})
+    const [showEmpty, setShowEmpty] = useState(false)
 
     const getData = () => {
         setIsLoading(true)
@@ -48,12 +53,14 @@ const Products = () => {
     }
 
     const getDataById = (id) => {
-        setIsLoading(true)
+        setIsLoadingForm(true)
         axios.get(`${backendURL}/api/v1/product/${id}/`)
             .then((res) => {
-                if (res.data.status === 200) {
+                if (res.status === 200) {
+                    let id_supplier = res.data.data[0].supplier.id
                     setSingleData(res.data.data[0]);
-                    setIsLoading(false)
+                    setIsLoadingForm(false)
+                    setUpdateIDSupplier(id_supplier)
                 }
             })
             .catch((err) => {
@@ -76,7 +83,11 @@ const Products = () => {
         axios.get(`${backendURL}/api/v1/product/?search=${input}`)
             .then(res => {
                 if (res.status === 200) {
-                    setDataDisplay(res.data.data);
+                    if (res.data.data.length > 0) {
+                        setDataDisplay(res.data.data);
+                    } else {
+                        setShowEmpty(true)
+                    }
                     setIsLoading(false)
                 }
             })
@@ -91,21 +102,18 @@ const Products = () => {
         axios.get(`${backendURL}/api/v1/supplier/`)
             .then(res => {
                 if (res.status === 200) {
-                    setDataSupplier(res.data.data);
+                    let data = res.data.data
+                    setDataSupplier(data)
                 }
             })
     }
 
     const getCategory = () => {
-        let category_names = []
         axios.get(`${backendURL}/api/v1/product_category/`)
             .then(res => {
                 if (res.status === 200) {
                     let data = res.data.data
-                    data.map(el => {
-                        category_names.push(el.nama)
-                    })
-                    setDataCategory(category_names)
+                    setDataCategory(data)
                 }
             })
     }
@@ -115,8 +123,47 @@ const Products = () => {
         bs.current.show()
     }
 
+    const saveProduct = () => {
+        setIsLoading(true)
+        let payloadUpdate = {
+            nama: singleData.nama_barang,
+            harga: singleData.harga,
+            qty: singleData.qty,
+            deskripsi: singleData.deskripsi,
+            supplier: updateIDSupplier
+        }
+        if (singleData.nama_barang === "" || singleData.harga === "" || singleData.qty === "" || singleData.deskripsi === "") {
+            toast("Data Produk Harus Diisi", "danger")
+            getDataById(singleData.id)
+            setEditForm(false)
+        } else {
+            let body = JSON.stringify(payloadUpdate)
+            axios
+                .patch(`${backendURL}/api/v1/product/${singleData.id}/`, body, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then((res) => {
+                    toast("Berhasil Menyimpan Data Produk", "success")
+                    setIsLoading(false)
+                    setEditForm(false)
+                    setInput("")
+                    setDataDisplay([])
+                    getData()
+                    bs.current.close()
+                })
+                .catch((err) => {
+                    console.log(err);
+                    toast("Gagal Menyimpan Data Produk", "danger")
+                    setIsLoading(false)
+                });
+        }
+    }
+
     useEffect(() => {
         getCategory()
+        getSupplier()
         getData()
     }, [])
 
@@ -146,57 +193,45 @@ const Products = () => {
                         )}
                     </SafeAreaView>
                 </View>
-                {isLoading ? (
+                {showEmpty ? (
                     <>
-                        <ShimmerProduct />
-                        <ShimmerProduct />
-                        <ShimmerProduct />
+                        <LottieView
+                            source={require('../animations/empty-search.json')}
+                            autoPlay
+                            loop
+                            style={{
+                                marginTop: 50,
+                                height: height / 3.5,
+                                alignSelf: 'center'
+                            }}
+                        />
+                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 10 }}>Produk Tidak Ditemukan</Text>
+                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Produk untuk pencarian tidak tersedia</Text>
                     </>
                 ) : (
-                    <View style={s.productsWrap}>
-                        {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
-                            <TouchableOpacity style={[styles.cardItemWrap, {
-                                flexDirection: 'column',
-                                height: "auto",
-                                width: "100%",
-                                borderRadius: 5,
-                                backgroundColor: '#fff',
-                                marginHorizontal: 0,
-                                marginVertical: 5,
-                                padding: 10,
-                                borderRadius: 5
-                            }]}
-                                key={i}
-                                onPress={() => showDetailProduct(el.id)}
-                            >
-                                <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                    <View style={{ height: "100%", width: 100 }} >
-                                        <Image
-                                            source={{ uri: el.photo }}
-                                            style={{ height: 80, width: "auto" }}
-                                        />
-                                    </View>
-                                    <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 20, justifyContent: 'space-around' }}>
-                                        <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama_barang}</Text>
-                                        <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{convertToIDR(el.harga)}</Text>
-                                        <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#f5576c' }}>Stok {el.qty}</Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        )) : (
-                            data.length > 0 && data.map((el, i) => (
-                                <TouchableOpacity
-                                    style={[styles.cardItemWrap, {
-                                        flexDirection: 'column',
-                                        height: "auto",
-                                        width: "100%",
-                                        borderRadius: 5,
-                                        backgroundColor: '#fff',
-                                        marginHorizontal: 0,
-                                        marginVertical: 5,
-                                        padding: 10,
-                                        borderRadius: 5
-                                    }]}
+                    isLoading ? (
+                        <>
+                            <ShimmerProduct />
+                            <ShimmerProduct />
+                            <ShimmerProduct />
+                            <ShimmerProduct />
+                            <ShimmerProduct />
+                            <ShimmerProduct />
+                        </>
+                    ) : (
+                        <View style={s.productsWrap}>
+                            {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
+                                <TouchableOpacity style={[styles.cardItemWrap, {
+                                    flexDirection: 'column',
+                                    height: "auto",
+                                    width: "100%",
+                                    borderRadius: 5,
+                                    backgroundColor: '#fff',
+                                    marginHorizontal: 0,
+                                    marginVertical: 5,
+                                    padding: 10,
+                                    borderRadius: 5
+                                }]}
                                     key={i}
                                     onPress={() => showDetailProduct(el.id)}
                                 >
@@ -210,25 +245,57 @@ const Products = () => {
                                         <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 20, justifyContent: 'space-around' }}>
                                             <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama_barang}</Text>
                                             <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{convertToIDR(el.harga)}</Text>
-                                            {el.qty > 0 ? (
-                                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#f5576c' }}>Stok {el.qty}</Text>
-                                            ) : (
-                                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Stok Habis</Text>
-                                            )}
+                                            <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#f5576c' }}>Stok {el.qty}</Text>
                                         </View>
                                     </View>
                                 </TouchableOpacity>
-                            ))
+                            )) : (
+                                data.length > 0 && data.map((el, i) => (
+                                    <TouchableOpacity
+                                        style={[styles.cardItemWrap, {
+                                            flexDirection: 'column',
+                                            height: "auto",
+                                            width: "100%",
+                                            borderRadius: 5,
+                                            backgroundColor: '#fff',
+                                            marginHorizontal: 0,
+                                            marginVertical: 5,
+                                            padding: 10,
+                                            borderRadius: 5
+                                        }]}
+                                        key={i}
+                                        onPress={() => showDetailProduct(el.id)}
+                                    >
+                                        <View style={{ display: 'flex', flexDirection: 'row' }}>
+                                            <View style={{ height: "100%", width: 100 }} >
+                                                <Image
+                                                    source={{ uri: el.photo }}
+                                                    style={{ height: 80, width: "auto" }}
+                                                />
+                                            </View>
+                                            <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around' }}>
+                                                <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama_barang}</Text>
+                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{convertToIDR(el.harga)}</Text>
+                                                {el.qty > 0 ? (
+                                                    <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#f5576c' }}>Stok {el.qty}</Text>
+                                                ) : (
+                                                    <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Stok Habis</Text>
+                                                )}
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                ))
                         )}
-                        <Space height={50} />
-                    </View>
+                            <Space height={50} />
+                        </View>
+                    )
                 )}
             </ScrollView>
             <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => Actions.AddProduct()}>
                 <FontAwesome5 name={"plus"} size={14} color="#fff" />
             </Ripple>
             <SafeAreaView style={s.container}>
-                <BottomSheet hasDraggableIcon ref={bs} height={700}>
+                <BottomSheet hasDraggableIcon ref={bs} height={620}>
                     <View style={{
                         paddingHorizontal: 20,
                     }}>
@@ -237,32 +304,7 @@ const Products = () => {
                             <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Supplier</Text>
                             <View style={s.areaInputDetail}>
                                 <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
-                                        <ShimmerPlaceHolder
-                                            shimmerColors={colorShimmer}
-                                            style={{
-                                                height: 20,
-                                                width: "50%",
-                                                marginLeft: 20,
-                                                marginVertical: 14
-                                            }}
-                                        />
-                                    ) : (
-                                        <TextInput
-                                            placeholder="John Doe"
-                                            style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
-                                            spellCheck={false}
-                                            autoCorrect={false}
-                                            value={singleData.supplier && singleData.supplier.nama}
-                                            editable={editing}
-                                        />
-                                    )}
-                                </SafeAreaView>
-                            </View>
-                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Kategori</Text>
-                            <View style={s.areaInputDetail}>
-                                <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
+                                    {isLoadingForm ? (
                                         <ShimmerPlaceHolder
                                             shimmerColors={colorShimmer}
                                             style={{
@@ -274,35 +316,88 @@ const Products = () => {
                                         />
                                     ) : (
                                         <SelectDropdown
-                                            data={dataCategory}
+                                            data={dataSupplier.map(el => el.nama)}
+                                            onSelect={(selectedItem, index) => {
+                                                var data = { ...singleData }
+                                                data.supplier.nama = selectedItem;
+                                                setSingleData(data)
+                                                dataSupplier.map(el => {
+                                                    if(el.nama === selectedItem){
+                                                        setUpdateIDSupplier(el.id);
+                                                    }
+                                                })
+                                            }}
+                                            defaultButtonText={singleData.supplier && singleData.supplier.nama}
+                                            buttonTextAfterSelection={(selectedItem, index) => {
+                                                return selectedItem
+                                            }}
+                                            rowTextForSelection={(item, index) => {
+                                                return item
+                                            }}
+                                            buttonStyle={{
+                                                width: "100%",
+                                                backgroundColor: "#eaeaea"
+                                            }}
+                                            rowTextStyle={{
+                                                fontSize: 14,
+                                                color: "#595959",
+                                                fontFamily: "Poppins-Medium",
+                                            }}
+                                            buttonTextStyle={{
+                                                fontSize: 14,
+                                                color: "#595959",
+                                                fontFamily: "Poppins-Medium",
+                                                textAlign: "left"
+                                            }}
+                                            disabled={!editForm}
+                                        />
+                                    )}
+                                </SafeAreaView>
+                            </View>
+                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Kategori</Text>
+                            <View style={s.areaInputDetail}>
+                                <SafeAreaView style={s.inputWrap}>
+                                    {isLoadingForm ? (
+                                        <ShimmerPlaceHolder
+                                            shimmerColors={colorShimmer}
+                                            style={{
+                                                height: 20,
+                                                width: "50%",
+                                                marginLeft: 20,
+                                                marginVertical: 14
+                                            }}
+                                        />
+                                    ) : (
+                                        <SelectDropdown
+                                            data={dataCategory.map(el => el.nama)}
                                             onSelect={(selectedItem, index) => {
                                                 var data = { ...singleData }
                                                 data.kategori.nama = selectedItem;
                                                 setSingleData(data)
                                             }}
-                                    defaultButtonText={singleData.kategori ? singleData.kategori.nama : "Pilih Kategori"}
-                                    buttonTextAfterSelection={(selectedItem, index) => {
-                                        return selectedItem
-                                    }}
-                                    rowTextForSelection={(item, index) => {
-                                        return item
-                                    }}
-                                    buttonStyle={{
-                                        width: "100%",
-                                        backgroundColor: "#eaeaea"
-                                    }}
-                                    rowTextStyle={{
-                                        fontSize: 14,
-                                        color: "#595959",
-                                        fontFamily: "Poppins-Medium",
-                                    }}
-                                    buttonTextStyle={{
-                                        fontSize: 14,
-                                        color: "#595959",
-                                        fontFamily: "Poppins-Medium",
-                                        textAlign: "left"
-                                    }}
-                                    disabled={!editing}
+                                            defaultButtonText={singleData.kategori ? singleData.kategori.nama : "Pilih Kategori"}
+                                            buttonTextAfterSelection={(selectedItem, index) => {
+                                                return selectedItem
+                                            }}
+                                            rowTextForSelection={(item, index) => {
+                                                return item
+                                            }}
+                                            buttonStyle={{
+                                                width: "100%",
+                                                backgroundColor: "#eaeaea"
+                                            }}
+                                            rowTextStyle={{
+                                                fontSize: 14,
+                                                color: "#595959",
+                                                fontFamily: "Poppins-Medium",
+                                            }}
+                                            buttonTextStyle={{
+                                                fontSize: 14,
+                                                color: "#595959",
+                                                fontFamily: "Poppins-Medium",
+                                                textAlign: "left"
+                                            }}
+                                            disabled={true}
                                         />
                                     )}
                                 </SafeAreaView>
@@ -310,7 +405,7 @@ const Products = () => {
                             <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Nama Produk</Text>
                             <View style={s.areaInputDetail}>
                                 <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
+                                    {isLoadingForm ? (
                                         <ShimmerPlaceHolder
                                             shimmerColors={colorShimmer}
                                             style={{
@@ -326,8 +421,9 @@ const Products = () => {
                                             style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
                                             spellCheck={false}
                                             value={singleData.nama_barang}
+                                            onChangeText={text => setSingleData({ ...singleData, nama_barang: text })}
                                             autoCorrect={false}
-                                            editable={editing}
+                                            editable={editForm}
                                         />
                                     )}
                                 </SafeAreaView>
@@ -335,7 +431,7 @@ const Products = () => {
                             <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Harga Satuan</Text>
                             <View style={s.areaInputDetail}>
                                 <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
+                                    {isLoadingForm ? (
                                         <ShimmerPlaceHolder
                                             shimmerColors={colorShimmer}
                                             style={{
@@ -351,7 +447,8 @@ const Products = () => {
                                             style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
                                             spellCheck={false}
                                             autoCorrect={false}
-                                            editable={editing}
+                                            editable={editForm}
+                                            onChangeText={text => setSingleData({ ...singleData, harga: text })}
                                             value={`${singleData.harga}`}
                                             keyboardType={'phone-pad'}
                                         />
@@ -361,7 +458,7 @@ const Products = () => {
                             <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Jumlah</Text>
                             <View style={s.areaInputDetail}>
                                 <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
+                                    {isLoadingForm ? (
                                         <ShimmerPlaceHolder
                                             shimmerColors={colorShimmer}
                                             style={{
@@ -378,7 +475,8 @@ const Products = () => {
                                             spellCheck={false}
                                             autoCorrect={false}
                                             value={`${singleData.qty}`}
-                                            editable={editing}
+                                            onChangeText={text => setSingleData({ ...singleData, qty: text })}
+                                            editable={editForm}
                                             keyboardType={'phone-pad'}
                                         />
                                     )}
@@ -387,7 +485,7 @@ const Products = () => {
                             <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Deskripsi</Text>
                             <View style={s.areaInputDetail}>
                                 <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
+                                    {isLoadingForm ? (
                                         <ShimmerPlaceHolder
                                             shimmerColors={colorShimmer}
                                             style={{
@@ -403,48 +501,26 @@ const Products = () => {
                                             style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
                                             spellCheck={false}
                                             autoCorrect={false}
+                                            onChangeText={text => setSingleData({ ...singleData, deskripsi: text })}
                                             value={singleData.deskripsi}
-                                            editable={editing}
+                                            editable={editForm}
                                         />
                                     )}
                                 </SafeAreaView>
                             </View>
-                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Foto</Text>
-                            <View style={s.areaInputDetail}>
-                                <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
-                                        <ShimmerPlaceHolder
-                                            shimmerColors={colorShimmer}
-                                            style={{
-                                                height: 20,
-                                                width: "50%",
-                                                marginLeft: 20,
-                                                marginVertical: 14
-                                            }}
-                                        />
-                                    ) : (
-                                        <TextInput
-                                            style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
-                                            spellCheck={false}
-                                            autoCorrect={false}
-                                            editable={editing}
-                                        />
-                                    )}
-                                </SafeAreaView>
-                            </View>
-                            {editing ? (
+                            {editForm ? (
                                 <View style={{ width: "100%", marginTop: 10, flexDirection: "row", justifyContent: "space-between" }}>
                                     <Ripple
                                         rippleColor="#fff"
                                         style={{ height: 40, width: "48%", borderRadius: 10, borderColor: '#eb8937', borderWidth: 1, justifyContent: "center", alignItems: "center" }}
-                                        onPress={() => setEditing(false)}
+                                        onPress={() => setEditForm(false)}
                                     >
                                         <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>Tutup</Text>
                                     </Ripple>
                                     <Ripple
                                         rippleColor="#fff"
                                         style={{ height: 40, width: "48%", borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }}
-                                        onPress={() => { }}
+                                        onPress={() => saveProduct()}
                                     >
                                         {isLoading ? (
                                             <ActivityIndicator color="#fff" />
@@ -457,7 +533,7 @@ const Products = () => {
                                 <Ripple
                                     rippleColor="#fff"
                                     style={{ height: 40, width: "100%", borderRadius: 10, borderColor: '#eb8937', borderWidth: 1, justifyContent: "center", alignItems: "center", marginTop: 10 }}
-                                    onPress={() => setEditing(true)}
+                                    onPress={() => setEditForm(true)}
                                 >
                                     <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>Ubah Data</Text>
                                 </Ripple>
@@ -531,4 +607,5 @@ const s = StyleSheet.create({
         alignItems: "center",
     },
 })
+
 export default Products

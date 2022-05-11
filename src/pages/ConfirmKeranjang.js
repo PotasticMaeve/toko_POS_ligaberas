@@ -168,7 +168,7 @@ const ConfirmKeranjang = (props) => {
     return (
         <>
             <LinearGradient colors={colorHeader} style={styles.headerWrap, { height: 82, paddingTop: 30, paddingHorizontal: 17, display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ fontSize: 16, color: "#fff", fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Konfirmasi Keranjang</Text>
+                <Text style={{ fontSize: 16, color: "#fff", fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Konfirmasi Pesanan</Text>
             </LinearGradient>
             <ScrollView style={{ paddingTop: 5, paddingHorizontal: 10 }} showsVerticalScrollIndicator={false}>
                 {isLoading ? (

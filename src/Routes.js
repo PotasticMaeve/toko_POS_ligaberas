@@ -31,6 +31,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ConfirmKeranjang from "./pages/ConfirmKeranjang";
 import DetailCardAdmin from "./pages/DetailCardAdmin";
 import AddProduct from "./pages/AddProduct";
+import AddSupplier from "./pages/AddSupplier";
 import DelayTransaksi from "./components/DelayTransaksi";
 import AlamatPengiriman from "./pages/AlamatPengiriman";
 import Pembayaran from "./pages/Pembayaran";
@@ -105,6 +106,7 @@ const Routes = () => {
                 <Scene key="ConfirmKeranjang" component={isAuthorized ? ConfirmKeranjang : Auth} title="ConfirmKeranjang" />
                 <Scene key="DetailCardAdmin" component={isAuthorized ? DetailCardAdmin : Auth} title="DetailCardAdmin" />
                 <Scene key="AddProduct" component={isAuthorized ? AddProduct : Auth} title="AddProduct" />
+                <Scene key="AddSupplier" component={isAuthorized ? AddSupplier : Auth} title="AddSupplier" />
                 <Scene key="DelayTransaksi" component={isAuthorized ? DelayTransaksi : Auth} title="DelayTransaksi" />
                 <Scene key="AlamatPengiriman" component={isAuthorized ? AlamatPengiriman : Auth} title="AlamatPengiriman" />
                 <Scene key="Pembayaran" component={isAuthorized ? Pembayaran : Auth} title="Pembayaran" />

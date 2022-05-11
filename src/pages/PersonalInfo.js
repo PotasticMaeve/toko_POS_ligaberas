@@ -255,7 +255,7 @@ const PersonalInfo = (props) => {
                                         onSelect={(selectedItem, index) => {
                                             setProfil({ ...profil, gender: selectedItem })
                                         }}
-                                        defaultButtonText={profil.gender ? profil.gender : "Pilih Jenis Kelamin"}
+                                        defaultButtonText={profil.gender ? profil.gender : "-- Pilih Jenis Kelamin --"}
                                         buttonTextAfterSelection={(selectedItem, index) => {
                                             return selectedItem
                                         }}
