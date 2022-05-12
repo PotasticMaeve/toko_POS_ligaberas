@@ -154,7 +154,6 @@ const Products = () => {
                     bs.current.close()
                 })
                 .catch((err) => {
-                    console.log(err);
                     toast("Gagal Menyimpan Data Produk", "danger")
                     setIsLoading(false)
                 });
