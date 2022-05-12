@@ -278,7 +278,6 @@ const AddProduct = () => {
                                 )}
                         </SafeAreaView>
                     </View>
-                    <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Foto</Text>
                     <Ripple
                         rippleColor="#fff"
                         style={{ height: 40, width: "100%", borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center", marginTop: 20 }}

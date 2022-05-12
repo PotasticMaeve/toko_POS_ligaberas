@@ -33,6 +33,10 @@ const TransaksiCard = (props) => {
                                 <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>{displayDate(props.tgl)}</Text>
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
+                                <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>Pelanggan : </Text>
+                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{props.customer}</Text>
+                            </View>
+                            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
                                 <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>Status Pembayaran : </Text>
                                 <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{props.lunas ? "lunas" : "belum dibayar"}</Text>
                             </View>
@@ -42,7 +46,7 @@ const TransaksiCard = (props) => {
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
                                 <Text style={{ fontSize: 13, color: '#333', textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>jumlah item : </Text>
-                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>{`${props.data.length}`} item</Text>
+                                <Text style={{ fontSize: 13, color: '#0185e5', fontFamily: "Poppins-SemiBold" }}>{props.data} item</Text>
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 1 }}>
                                 <Text style={{ fontSize: 13, color: "#27ae60", textTransform: "capitalize", fontFamily: "Poppins-Medium" }}>total transaksi : </Text>

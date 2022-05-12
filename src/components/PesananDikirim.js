@@ -16,10 +16,11 @@ const PesananDikirim = (props) => {
     const [isLoading, setIsLoading] = useState(false)
     const [data, setData] = useState([])
     const [isEmpty, setIsEmpty] = useState(false)
+    const [admin] = useState(props.isAdmin)
 
     const getData = () => {
         setIsLoading(true)
-        if (props.isAdmin) {
+        if (admin) {
             axios.get(`${backendURL}/api/v1/sales_order/?status=kirim`)
                 .then(res => {
                     if (res.status === 200) {
@@ -82,7 +83,7 @@ const PesananDikirim = (props) => {
                     </>
                 ) : (
                     data.map((el, i) => (
-                        <TransaksiCard key={i} data={el.cart_item} id_so={el.id_so} grandtotal={el.grandtotal} lunas={el.lunas} tgl={el.cart_item[0].modified_date} kirim={el.barang_dikirim} exist={true} />
+                        <TransaksiCard key={i} isAdmin={admin} data={el.cart_item.length} customer={el.customer} id_so={el.id_so} grandtotal={el.grandtotal} lunas={el.lunas} tgl={el.cart_item[0].modified_date} kirim={el.barang_dikirim} exist={true} />
                     ))
                 )
             )}
