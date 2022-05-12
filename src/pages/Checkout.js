@@ -325,7 +325,7 @@ const Checkout = (props) => {
                             </>
                         ) : (
                             <>
-                                <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: `${profil.nama ? "#6b705c" : "red"}`, fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>{profil.nama ? profil.nama : "nama pelanggan belum diperbarui"}</Text>
+                                <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: `${profil.nama ? "#6b705c" : "red"}`, fontFamily: "Poppins-Medium", textTransform: "capitalize" }}>{profil.nama && profil.nama}</Text>
                                 {phoneNull ? (
                                     <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "red", fontFamily: "Poppins-Medium" }}>no HP tujuan belum diperbarui</Text>
                                 ) : (

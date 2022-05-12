@@ -27,6 +27,7 @@ const Pembayaran = (props) => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [isLoading, setIsLoading] = useState(false)
+    const [isLoadingForm, setIsLoadingForm] = useState(false)
     const [creditData, setCreditData] = useState({})
     const [validatePembayaran, setValidatePembayaran] = useState(false)
     const [emptyData, setEmptyData] = useState(false)
@@ -110,12 +111,14 @@ const Pembayaran = (props) => {
     }
 
     const openDetailCard = (payment_id) => {
+        bs2.current.show()
         setPaymentID(payment_id)
+        setIsLoadingForm(true)
         axios.get(`${backendURL}/api/v1/paymentinfo/${payment_id}/`)
             .then(res => {
                 setSingleCardData(res.data);
+                setIsLoadingForm(false)
             })
-        bs2.current.show()
     }
 
     const updateSingleCard = () => {
@@ -299,7 +302,7 @@ const Pembayaran = (props) => {
                             <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold" }}>Nama Nasabah</Text>
                             <View style={s.areaInput}>
                                 <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
+                                    {isLoadingForm ? (
                                         <ShimmerPlaceHolder
                                             shimmerColors={colorShimmer}
                                             style={{
@@ -325,7 +328,7 @@ const Pembayaran = (props) => {
                             <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold" }}>Nomor Kartu</Text>
                             <View style={s.areaInput}>
                                 <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
+                                    {isLoadingForm ? (
                                         <ShimmerPlaceHolder
                                             shimmerColors={colorShimmer}
                                             style={{
@@ -352,7 +355,7 @@ const Pembayaran = (props) => {
                             <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold" }}>Expiry</Text>
                             <View style={s.areaInput}>
                                 <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
+                                    {isLoadingForm ? (
                                         <ShimmerPlaceHolder
                                             shimmerColors={colorShimmer}
                                             style={{
@@ -379,7 +382,7 @@ const Pembayaran = (props) => {
                             <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold" }}>CVV</Text>
                             <View style={s.areaInput}>
                                 <SafeAreaView style={s.inputWrap}>
-                                    {isLoading ? (
+                                    {isLoadingForm ? (
                                         <ShimmerPlaceHolder
                                             shimmerColors={colorShimmer}
                                             style={{

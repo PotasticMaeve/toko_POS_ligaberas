@@ -1,24 +1,22 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { TextInput, StyleSheet, TouchableOpacity, Dimensions, Text, SafeAreaView, View, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, View, ScrollView, Image, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
 import axios from 'axios';
+import ImagePicker from 'react-native-image-crop-picker';
 import { MainContext } from '../context/MainContext';
+import BottomSheet from "react-native-gesture-bottom-sheet";
 import Icons from 'react-native-vector-icons/Ionicons'
 import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
-import { convertToIDR, toast } from "../Helper"
-import LottieView from 'lottie-react-native';
-import BottomSheet from "react-native-gesture-bottom-sheet";
-import ShimmerProduct from '../components/ShimmerProduct';
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import { Actions } from 'react-native-router-flux';
 import SelectDropdown from 'react-native-select-dropdown'
 
 const colorHeader = ['#f3a337', '#eb8937']
 
 const AddProduct = () => {
+    const bs = useRef(null)
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [dataSupplier, setDataSupplier] = useState([])
@@ -34,6 +32,8 @@ const AddProduct = () => {
     const [editHarga, setEditHarga] = useState(false)
     const [editQty, setEditQty] = useState(false)
     const [editDeskripsi, setEditDeskripsi] = useState(false)
+    const [imageSelected, setImageSelected] = useState(false)
+    const [uri, setUri] = useState("")
 
     const getSupplier = () => {
         axios.get(`${backendURL}/api/v1/supplier/`)
@@ -114,6 +114,30 @@ const AddProduct = () => {
         setDeskripsi("")
         setEditDeskripsi(false)
     }
+
+    const pickPicture = () => {
+        ImagePicker.openPicker({
+            width: 300,
+            height: 400,
+            cropping: true,
+        }).then(image => {
+            setUri(image.path);
+            setImageSelected(true)
+            bs.current.close()
+        });
+    };
+
+    const openCamera = () => {
+        ImagePicker.openCamera({
+            width: 300,
+            height: 400,
+            cropping: true,
+        }).then(image => {
+            setUri(image.path)
+            setImageSelected(true)
+            bs.current.close()
+        });
+    };
 
     useEffect(() => {
         getSupplier()
@@ -275,9 +299,32 @@ const AddProduct = () => {
                             />
                             {editDeskripsi && (
                                 <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginRight: 8, position: "absolute", right: 0, bottom: 10 }} onPress={() => clearDeskripsi()} />
-                                )}
+                            )}
                         </SafeAreaView>
                     </View>
+                    {imageSelected ? (
+                        <>
+                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Foto Produk</Text>
+                            <TouchableOpacity onPress={() => bs.current.show()}>
+                                <Image
+                                    style={{
+                                        width: 100,
+                                        height: 100,
+                                    }}
+                                    source={{uri: uri}}
+                                />
+                            </TouchableOpacity>
+                        </>
+
+                    ) : (
+                        <TouchableOpacity
+                            style={{ height: 70, width: "100%", backgroundColor: "#FCE6C6", borderRadius: 5, marginTop: 5, justifyContent: "center", alignItems: "center", borderStyle: "dashed", borderWidth: 1, borderColor: "#eb8937" }}
+                            onPress={() => bs.current.show()}
+                        >
+                            <FontAwesome5 name={"images"} size={27} color='#eb8937' />
+                            <Text style={{ fontSize: 13, color: "#eb8937", fontFamily: "Poppins-Medium" }}>Tambah Foto</Text>
+                        </TouchableOpacity>
+                    )}
                     <Ripple
                         rippleColor="#fff"
                         style={{ height: 40, width: "100%", borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center", marginTop: 20 }}
@@ -291,11 +338,53 @@ const AddProduct = () => {
                     <Space height={250} />
                 </View>
             </ScrollView>
+            <SafeAreaView style={s.container}>
+                <BottomSheet hasDraggableIcon ref={bs} height={150}>
+                    <View style={{
+                        paddingVertical: 20,
+                        paddingHorizontal: 10,
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        flex: 1
+                    }}>
+                        <Ripple
+                            rippleColor="#fff"
+                            style={s.boxUpload}
+                            onPress={pickPicture}
+                        >
+                            <FontAwesome5 name={"image"} size={50} color='#aaa' />
+                            <Text style={{ fontSize: 13, color: "#aaa", fontFamily: "Poppins-Medium" }}>Galeri</Text>
+                        </Ripple>
+                        <Ripple
+                            rippleColor="#fff"
+                            style={s.boxUpload}
+                            onPress={openCamera}
+                        >
+                            <Icons name={"camera"} size={50} color='#aaa' />
+                            <Text style={{ fontSize: 13, color: "#aaa", fontFamily: "Poppins-Medium" }}>Kamera</Text>
+                        </Ripple>
+                    </View>
+                </BottomSheet>
+            </SafeAreaView>
         </>
     )
 }
 
 const s = StyleSheet.create({
+    boxUpload: {
+        height: "100%",
+        width: "45%",
+        backgroundColor: "#ddd",
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: '#eaeaea',
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+        elevation: 1,
+    },
     inputWrap: {
         flexDirection: "row",
         alignItems: "center",

@@ -11,6 +11,7 @@ import { MainContext } from "../context/MainContext"
 import { toast } from "../Helper"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { setStorage, setRefreshToken } from "../Helper"
+import ShimmerCard from "../components/ShimmerCard"
 
 const Home = () => {
   const { backend_url, close_checkout, back_to_shop, is_admin } = useContext(MainContext)
@@ -19,8 +20,10 @@ const Home = () => {
   const [backtoShop, setBacktoShop] = back_to_shop
   const [isAdmin, setIsAdmin] = is_admin
   const [data, setData] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const getData = () => {
+    setIsLoading(true)
     setCloseCheckout(false)
     setBacktoShop(false)
     axios.get(`${backendURL}/api/v1/product/`)
@@ -28,6 +31,7 @@ const Home = () => {
         if (res.data.status === 200) {
           setData(res.data.data);
         }
+        setIsLoading(false)
       })
       .catch((err) => {
         toast("Gagal Memuat Data Produk", "danger")
@@ -74,7 +78,20 @@ const Home = () => {
         <Slider />
         <Menu />
         <Label />
-        <Card data={data} />
+        {isLoading ? (
+          <View style={{ flexDirection: "column", paddingHorizontal: 10 }}>
+            <View style={{ flexDirection: "row" }}>
+              <ShimmerCard />
+              <ShimmerCard />
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <ShimmerCard />
+              <ShimmerCard />
+            </View>
+          </View>
+        ) : (
+          <Card data={data} />
+        )}
         <View style={{ height: 30 }} />
       </ScrollView>
     </View>

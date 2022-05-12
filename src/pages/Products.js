@@ -96,6 +96,8 @@ const Products = () => {
     const clearMode = () => {
         setInput("")
         setEditing(false)
+        setDataDisplay([])
+        getData()
     }
 
     const getSupplier = () => {
@@ -119,8 +121,8 @@ const Products = () => {
     }
 
     const showDetailProduct = (id) => {
-        getDataById(id)
         bs.current.show()
+        getDataById(id)
     }
 
     const saveProduct = () => {
@@ -250,7 +252,7 @@ const Products = () => {
                                 </TouchableOpacity>
                             )) : (
                                 data.length > 0 && data.map((el, i) => (
-                                    <TouchableOpacity
+                                    <View
                                         style={[styles.cardItemWrap, {
                                             flexDirection: 'column',
                                             height: "auto",
@@ -263,7 +265,6 @@ const Products = () => {
                                             borderRadius: 5
                                         }]}
                                         key={i}
-                                        onPress={() => showDetailProduct(el.id)}
                                     >
                                         <View style={{ display: 'flex', flexDirection: 'row' }}>
                                             <View style={{ height: "100%", width: 100 }} >
@@ -282,9 +283,28 @@ const Products = () => {
                                                 )}
                                             </View>
                                         </View>
-                                    </TouchableOpacity>
+                                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+                                            <View style={{ flexDirection: 'row' }}>
+                                                <Ripple
+                                                    // rippleColor="#27ae60"
+                                                    // onPress={() => showDetailProduct(el.id)}
+                                                    style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#60a3bc", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>Ubah Foto</Text>
+                                                </Ripple>
+                                                <Ripple
+                                                    rippleColor="#27ae60"
+                                                    onPress={() => showDetailProduct(el.id)}
+                                                    style={{ width: 100, height: 30, marginLeft: 10, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#27ae60", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Detail</Text>
+                                                </Ripple>
+                                            </View>
+                                            <View style={{ width: 40, height: 30, marginTop: 5, padding: 3, justifyContent: "center", alignItems: "center" }}>
+                                                <FontAwesome5 name={"trash"} size={16} color="red" />
+                                            </View>
+                                        </View>
+                                    </View>
                                 ))
-                        )}
+                            )}
                             <Space height={50} />
                         </View>
                     )
@@ -321,7 +341,7 @@ const Products = () => {
                                                 data.supplier.nama = selectedItem;
                                                 setSingleData(data)
                                                 dataSupplier.map(el => {
-                                                    if(el.nama === selectedItem){
+                                                    if (el.nama === selectedItem) {
                                                         setUpdateIDSupplier(el.id);
                                                     }
                                                 })

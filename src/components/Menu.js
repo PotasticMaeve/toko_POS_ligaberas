@@ -3,14 +3,14 @@ import { FlatList, View } from 'react-native'
 import MenuItem from './MenuItem'
 
 const dataMenu = [
-    { key: "1", imgName: "beras", text: "Beras", color: "#F2E1AD" },
-    { key: "2", imgName: "tepung", text: "Tepung", color: "#E8CFC8" },
-    { key: "3", imgName: "daging", text: "Daging", color: "#EDDCC8" },
-    { key: "4", imgName: "minyak", text: "Minyak", color: "#BDE2E4" },
-    { key: "5", imgName: "susu", text: "Susu", color: "#F6D8B6" },
-    { key: "6", imgName: "telur", text: "Telur", color: "#E0E7D7" },
-    { key: "7", imgName: "teh", text: "Teh & Kopi", color: "#E5EFC9" },
-    { key: "8", imgName: "bumbu", text: "Bumbu Dapur", color: "#DEE3FC" },
+    { key: "1", path: "beras", text: "Beras", color: "#F2E1AD" },
+    { key: "2", path: "tepung", text: "Tepung", color: "#E8CFC8" },
+    { key: "3", path: "daging", text: "Daging", color: "#EDDCC8" },
+    { key: "4", path: "minyak", text: "Minyak", color: "#BDE2E4" },
+    { key: "5", path: "susu", text: "Susu", color: "#F6D8B6" },
+    { key: "6", path: "telur", text: "Telur", color: "#E0E7D7" },
+    { key: "7", path: "teh", text: "Teh & Kopi", color: "#E5EFC9" },
+    { key: "8", path: "bumbu", text: "Bumbu Dapur", color: "#DEE3FC" },
 ]
 
 const formatFlatList = (dataList, numColumns) => {
@@ -35,7 +35,7 @@ const renderMenu = ({ item }) => {
         )
     }
     return (
-        <MenuItem imgName={item.imgName} text={item.text} color={item.color} />
+        <MenuItem path={item.path} text={item.text} color={item.color} />
     )
 }
 

@@ -80,8 +80,8 @@ const Suppliers = () => {
     }
 
     const showDetailSupplier = (id) => {
-        getDataById(id)
         bs.current.show()
+        getDataById(id)
     }
 
     const saveSupplier = () => {

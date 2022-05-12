@@ -4,58 +4,35 @@ import Ripple from 'react-native-material-ripple'
 import { Actions } from 'react-native-router-flux'
 import styles from "../stylesheets/Main"
 
-const getImage = (imgName) => {
-    if (imgName === "beras") {
+const getImage = (name) => {
+    if (name === "beras") {
         return require("../../assets/images/flour.png")
     }
-    if (imgName === "tepung") {
+    if (name === "tepung") {
         return require("../../assets/images/wheat.png")
     }
-    if (imgName === "daging") {
+    if (name === "daging") {
         return require("../../assets/images/beef.png")
     }
-    if (imgName === "minyak") {
+    if (name === "minyak") {
         return require("../../assets/images/cooking-oil.png")
     }
-    if (imgName === "susu") {
+    if (name === "susu") {
         return require("../../assets/images/milk.png")
     }
-    if (imgName === "telur") {
+    if (name === "telur") {
         return require("../../assets/images/eggs.png")
     }
-    if (imgName === "teh") {
+    if (name === "teh") {
         return require("../../assets/images/coffee.png")
     }
-    if (imgName === "bumbu") {
+    if (name === "bumbu") {
         return require("../../assets/images/seasoning.png")
     }
 }
 
-const getRoute = (imgName) => {
-    if (imgName === "beras") {
-        Actions.Beras()
-    }
-    if (imgName === "tepung") {
-        Actions.Tepung()
-    }
-    if (imgName === "daging") {
-        Actions.Daging()
-    }
-    if (imgName === "minyak") {
-        Actions.Minyak()
-    }
-    if (imgName === "susu") {
-        Actions.Susu()
-    }
-    if (imgName === "telur") {
-        Actions.Telur()
-    }
-    if (imgName === "teh") {
-        Actions.Teh()
-    }
-    if (imgName === "bumbu") {
-        Actions.Bumbu()
-    }
+const getRoute = (path, text) => {
+    Actions.Kategori({ path: path, text: text })
 }
 
 const MenuItem = (props) => {
@@ -64,10 +41,10 @@ const MenuItem = (props) => {
             <Ripple
                 style={[styles.imgMenu, { backgroundColor: props.color }]}
                 rippleColor="#fff"
-                onPress={() => getRoute(props.imgName)}
+                onPress={() => getRoute(props.path, props.text)}
             >
                 <Image
-                    source={getImage(props.imgName)}
+                    source={getImage(props.path)}
                     style={{
                         height: 50,
                         width: 50,
