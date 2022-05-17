@@ -54,23 +54,29 @@ const Wishlist = (props) => {
 
     const removeItem = (id) => {
         let id_produk = id
-        AsyncStorage.getItem("customerID").then(value => {
-            if (value !== null) {
-                let customer_id = JSON.parse(value)
-                axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`)
-                    .then(res => {
-                        let wishlist_data = res.data.data
-                        wishlist_data.map(el => {
-                            if (el.product.id === id_produk) {
-                                let wishlist_id = el.wishlist_id
-                                axios.delete(`${backendURL}/api/v1/wishlist/${wishlist_id}/`)
-                                    .then(res => {
-                                        toast("Produk Berhasil Dihapus", "danger")
-                                        getData()
-                                    })
-                            }
-                        })
-                    })
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(value => {
+                    if (value !== null) {
+                        let customer_id = JSON.parse(value)
+                        axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`, key)
+                            .then(res => {
+                                let wishlist_data = res.data.data
+                                wishlist_data.map(el => {
+                                    if (el.product.id === id_produk) {
+                                        let wishlist_id = el.wishlist_id
+                                        axios.delete(`${backendURL}/api/v1/wishlist/${wishlist_id}/`, key)
+                                            .then(res => {
+                                                toast("Produk Berhasil Dihapus", "danger")
+                                                getData()
+                                            })
+                                    }
+                                })
+                            })
+                    }
+                })
             }
         })
     }

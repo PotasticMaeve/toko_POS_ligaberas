@@ -7,6 +7,8 @@ import Space from './Space'
 import TransaksiCard from "./TransaksiCard"
 import { MainContext } from "../context/MainContext"
 import LottieView from 'lottie-react-native';
+import * as OpenAnything from "react-native-openanything"
+import { toast } from '../Helper'
 
 const { height } = Dimensions.get("screen")
 
@@ -20,26 +22,12 @@ const PesananDikirim = (props) => {
 
     const getData = () => {
         setIsLoading(true)
-        if (admin) {
-            axios.get(`${backendURL}/api/v1/sales_order/?status=kirim`)
-                .then(res => {
-                    if (res.status === 200) {
-                        if (res.data.data.length > 0) {
-                            setData(res.data.data);
-                        } else {
-                            setIsEmpty(true)
-                        }
-                    }
-                    setIsLoading(false)
-                })
-                .catch(err => {
-                    setIsEmpty(true)
-                })
-        } else {
-            AsyncStorage.getItem("customerID").then(value => {
-                let customer_id = JSON.parse(value)
-                if (customer_id !== null) {
-                    axios.get(`${backendURL}/api/v1/sales_order/?customer_id=${customer_id}&status=kirim`)
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                if (admin) {
+                    axios.get(`${backendURL}/api/v1/sales_order/?status=kirim`, key)
                         .then(res => {
                             if (res.status === 200) {
                                 if (res.data.data.length > 0) {
@@ -53,9 +41,48 @@ const PesananDikirim = (props) => {
                         .catch(err => {
                             setIsEmpty(true)
                         })
+                } else {
+                    AsyncStorage.getItem("customerID").then(value => {
+                        let customer_id = JSON.parse(value)
+                        if (customer_id !== null) {
+                            axios.get(`${backendURL}/api/v1/sales_order/?customer_id=${customer_id}&status=kirim`, key)
+                                .then(res => {
+                                    if (res.status === 200) {
+                                        if (res.data.data.length > 0) {
+                                            setData(res.data.data);
+                                        } else {
+                                            setIsEmpty(true)
+                                        }
+                                    }
+                                    setIsLoading(false)
+                                })
+                                .catch(err => {
+                                    setIsEmpty(true)
+                                })
+                        }
+                    })
                 }
-            })
-        }
+            }
+        })
+    }
+
+    const print = (id_so) => {
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                axios.get(`${backendURL}/report/so_detail_download/${id_so}`, key)
+                    .then(res => {
+                        if (res.status === 200) {
+                            let path = res.data.url
+                            OpenAnything.Pdf(path)
+                        }
+                    })
+                    .catch(err => {
+                        toast("Gagal Mencetak Data SO", "danger")
+                    })
+            }
+        })
     }
 
     useEffect(() => {
@@ -83,7 +110,7 @@ const PesananDikirim = (props) => {
                     </>
                 ) : (
                     data.map((el, i) => (
-                        <TransaksiCard key={i} isAdmin={admin} data={el.cart_item.length} customer={el.customer} id_so={el.id_so} grandtotal={el.grandtotal} lunas={el.lunas} tgl={el.cart_item[0].modified_date} kirim={el.barang_dikirim} exist={true} />
+                        <TransaksiCard key={i} isAdmin={admin} data={el.cart_item.length} customer={el.customer} id_so={el.id_so} grandtotal={el.grandtotal} lunas={el.lunas} tgl={el.cart_item[0].modified_date} kirim={el.barang_dikirim} exist={true} print={print} />
                     ))
                 )
             )}

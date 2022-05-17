@@ -15,7 +15,7 @@ import LottieView from "lottie-react-native"
 const colorHeader = ['#f3a337', '#eb8937']
 const { height } = Dimensions.get("screen")
 
-const Beras = (props) => {
+const Kategori = (props) => {
   const [data, setData] = useState([])
   const { backend_url } = useContext(MainContext)
   const [backendURL] = backend_url
@@ -91,4 +91,4 @@ const Beras = (props) => {
   )
 }
 
-export default Beras
+export default Kategori

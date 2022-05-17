@@ -13,6 +13,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
 import Ripple from 'react-native-material-ripple';
 import Icon from "react-native-vector-icons/Ionicons"
+import Icons from "react-native-vector-icons/FontAwesome"
 import { MainContext } from "../context/MainContext"
 import { Image } from 'react-native';
 import { convertToIDR, toast } from '../Helper';
@@ -105,26 +106,32 @@ const Checkout = (props) => {
     }
 
     const submitPembayaran = () => {
-        if (activeButtonPayment) {
-            setValidatePembayaran(true)
-            setTimeout(() => {
-                axios.post(`${backendURL}/api/v1/sales_order/`, {
-                    "customer_id": customerId,
-                    "payment_id": paymentId
-                })
-                    .then(res => {
-                        if (res.status === 200) {
-                            setValidatePembayaran(false)
-                            Actions.Transaksi({ backToShopping: true })
-                        } else {
-                            toast("Gagal Memproses Pesanan", "danger")
-                        }
-                    })
-            }, 2000);
-            Actions.DelayTransaksi()
-        } else {
-            return false;
-        }
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                if (activeButtonPayment) {
+                    setValidatePembayaran(true)
+                    setTimeout(() => {
+                        axios.post(`${backendURL}/api/v1/sales_order/`, {
+                            "customer_id": customerId,
+                            "payment_id": paymentId
+                        }, key)
+                            .then(res => {
+                                if (res.status === 200) {
+                                    setValidatePembayaran(false)
+                                    Actions.Transaksi({ backToShopping: true })
+                                } else {
+                                    toast("Gagal Memproses Pesanan", "danger")
+                                }
+                            })
+                    }, 2000);
+                    Actions.DelayTransaksi()
+                } else {
+                    return false;
+                }
+            }
+        })
     }
 
     const ResponsiveCalculateKeranjang = () => {
@@ -250,7 +257,7 @@ const Checkout = (props) => {
                 </View>
                 <View style={{ justifyContent: "flex-start", width: "100%", flexDirection: "row" }}>
                     <View style={{ height: 45, width: 45, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }}>
-                        <Icon name="person-sharp" size={22} color='#eb8937' />
+                        <Icons name="user" size={22} color='#eb8937' />
                     </View>
                     <View style={{ marginLeft: 20, flexDirection: "column", justifyContent: "space-around" }}>
                         {isLoading ? (

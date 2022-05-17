@@ -29,6 +29,7 @@ import DelayTransaksi from "./components/DelayTransaksi";
 import AlamatPengiriman from "./pages/AlamatPengiriman";
 import Pembayaran from "./pages/Pembayaran";
 import PersonalInfo from "./pages/PersonalInfo";
+import Customers from "./pages/Customers";
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -88,6 +89,7 @@ const Routes = () => {
                 <Scene key="Checkout" component={Checkout} title="Checkout" />
                 <Scene key="Profil" component={isAuthorized ? Profil : Auth} title="Profil" />
                 <Scene key="Suppliers" component={isAuthorized ? Suppliers : Auth} title="Suppliers" />
+                <Scene key="Customers" component={isAuthorized ? Customers : Auth} title="Customers" />
                 <Scene key="Products" component={isAuthorized ? Products : Auth} title="Products" />
                 <Scene key="ConfirmKeranjang" component={isAuthorized ? ConfirmKeranjang : Auth} title="ConfirmKeranjang" />
                 <Scene key="DetailCardAdmin" component={isAuthorized ? DetailCardAdmin : Auth} title="DetailCardAdmin" />

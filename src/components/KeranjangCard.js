@@ -6,7 +6,7 @@ import { convertToIDR } from '../Helper'
 import styles from '../stylesheets/Main'
 
 class KeranjangCard extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             amount: this.props.data.qty,
@@ -17,12 +17,12 @@ class KeranjangCard extends React.Component {
     updateAmount = (id, type) => {
         let { amount } = this.state
         if (type === 'min') {
-            if(amount > 1){
+            if (amount > 1) {
                 amount -= 1
             }
         }
         if (type === 'plus') {
-            if(amount < this.props.data.product.qty){
+            if (amount < this.props.data.product.qty) {
                 amount += 1
             }
         }
@@ -44,7 +44,7 @@ class KeranjangCard extends React.Component {
         this.props.responsiveDeleteKeranjang && this.props.responsiveDeleteKeranjang(id)
     }
 
-    render(){
+    render() {
         if (this.state.existCart) {
             return (
                 <View style={[styles.cardItemWrap, {
@@ -60,7 +60,7 @@ class KeranjangCard extends React.Component {
                             <View style={{ display: 'flex', flexDirection: 'row' }}>
                                 <View style={{ height: "100%", width: 100, backgroundColor: "#eee" }} >
                                     <Image
-                                        source={{uri: this.props.data.product.photo}}
+                                        source={{ uri: this.props.data.product.photo }}
                                         style={{ height: 80, width: "auto" }}
                                     />
                                 </View>
@@ -83,8 +83,14 @@ class KeranjangCard extends React.Component {
                                     </Ripple>
                                 </View>
                             </View>
-                            <View style={{ display: 'flex', justifyContent: "space-between", flexDirection: 'row', marginTop: 10, justifyContent: "space-around", borderTopWidth: 1, borderTopColor: "#ccc", width: "100%", paddingTop: 10 }}>
-                                <FontAwesome5 name={"trash"} size={17} color="red" onPress={() => this.removeKeranjang(this.props.data.product.id)}/>
+                            <View style={{ display: 'flex', justifyContent: "space-between", flexDirection: 'row', marginTop: 10, justifyContent: "space-around", borderTopWidth: 1, borderTopColor: "#ccc", width: "100%", paddingTop: 10, alignItems: "center" }}>
+                                <Ripple
+                                    rippleColor="#FC573B"
+                                    style={{ height: 30, width: 50, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
+                                    onPress={() => this.removeKeranjang(this.props.data.product.id)}
+                                >
+                                    <FontAwesome5 name={"trash"} size={16} color="red" />
+                                </Ripple>
                                 <Text style={{ color: "#e36414", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Subtotal</Text>
                                 <Text style={{ color: "#e36414", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>{this.displaySubTotal()}</Text>
                             </View>

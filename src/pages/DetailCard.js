@@ -74,15 +74,21 @@ const DetailCard = (props) => {
     }, [])
 
     const addToWishlist = () => {
-        AsyncStorage.getItem("customerID").then(data => {
-            if (data !== null) {
-                let id = JSON.parse(data)
-                axios.post(`${backendURL}/api/v1/wishlist/`, {
-                    customer: id,
-                    product: props.id
-                }).then((res) => {
-                    setFav(true)
-                    toast("Wishlist Berhasil Ditambahkan", "success")
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(data => {
+                    if (data !== null) {
+                        let id = JSON.parse(data)
+                        axios.post(`${backendURL}/api/v1/wishlist/`, {
+                            customer: id,
+                            product: props.id
+                        }, key).then((res) => {
+                            setFav(true)
+                            toast("Wishlist Berhasil Ditambahkan", "success")
+                        })
+                    }
                 })
             }
         })
@@ -119,22 +125,28 @@ const DetailCard = (props) => {
 
     const responsiveDeleteKeranjang = (id) => {
         let target_delete_id = id
-        AsyncStorage.getItem("customerID").then(value => {
-            if (value !== null) {
-                let customer_id = JSON.parse(value)
-                axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`)
-                    .then(res => {
-                        let cart_left = []
-                        let cart_list = res.data.data.cart_data
-                        if (cart_list.length > 0) {
-                            cart_list.map(el => {
-                                if (el.product.id !== target_delete_id) {
-                                    cart_left.push(el)
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(value => {
+                    if (value !== null) {
+                        let customer_id = JSON.parse(value)
+                        axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
+                            .then(res => {
+                                let cart_left = []
+                                let cart_list = res.data.data.cart_data
+                                if (cart_list.length > 0) {
+                                    cart_list.map(el => {
+                                        if (el.product.id !== target_delete_id) {
+                                            cart_left.push(el)
+                                        }
+                                    })
+                                    setNumberCart(cart_left.length);
                                 }
                             })
-                            setNumberCart(cart_left.length);
-                        }
-                    })
+                    }
+                })
             }
         })
     }
@@ -144,40 +156,52 @@ const DetailCard = (props) => {
     }
 
     const responsiveAddKeranjang = () => {
-        AsyncStorage.getItem("customerID").then(value => {
-            if (value !== null) {
-                let customer_id = JSON.parse(value)
-                axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`)
-                    .then(res => {
-                        let cart_list = res.data.data.cart_data
-                        if (cart_list.length > 0) {
-                            let cart_num = cart_list.length
-                            setNumberCart(cart_num);
-                        }
-                    })
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(value => {
+                    if (value !== null) {
+                        let customer_id = JSON.parse(value)
+                        axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
+                            .then(res => {
+                                let cart_list = res.data.data.cart_data
+                                if (cart_list.length > 0) {
+                                    let cart_num = cart_list.length
+                                    setNumberCart(cart_num);
+                                }
+                            })
+                    }
+                })
             }
         })
     }
 
     const removeFromWishlist = () => {
         let id_produk = props.id
-        AsyncStorage.getItem("customerID").then(value => {
-            if (value !== null) {
-                let customer_id = JSON.parse(value)
-                axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`)
-                    .then(res => {
-                        let wishlist_data = res.data.data
-                        wishlist_data.map(el => {
-                            if (el.product.id === id_produk) {
-                                let wishlist_id = el.wishlist_id
-                                axios.delete(`${backendURL}/api/v1/wishlist/${wishlist_id}/`)
-                                    .then(res => {
-                                        toast("Wishlist Berhasil Dihapus", "danger")
-                                        setFav(false)
-                                    })
-                            }
-                        })
-                    })
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(value => {
+                    if (value !== null) {
+                        let customer_id = JSON.parse(value)
+                        axios.get(`${backendURL}/api/v1/wishlist/?customer_id=${customer_id}`, key)
+                            .then(res => {
+                                let wishlist_data = res.data.data
+                                wishlist_data.map(el => {
+                                    if (el.product.id === id_produk) {
+                                        let wishlist_id = el.wishlist_id
+                                        axios.delete(`${backendURL}/api/v1/wishlist/${wishlist_id}/`, key)
+                                            .then(res => {
+                                                toast("Wishlist Berhasil Dihapus", "danger")
+                                                setFav(false)
+                                            })
+                                    }
+                                })
+                            })
+                    }
+                })
             }
         })
     }
@@ -199,7 +223,7 @@ const DetailCard = (props) => {
                                         cart: cart_id,
                                         product: props.id,
                                         qty: 1
-                                    })
+                                    }, key)
                                         .then(res => {
                                             setIsLoading(false)
                                             toast("Keranjang Berhasil Ditambahkan", "success")
@@ -218,13 +242,19 @@ const DetailCard = (props) => {
     }
 
     const displayNumberCart = () => {
-        AsyncStorage.getItem("customerID").then(value => {
-            if (value !== null) {
-                let customer_id = JSON.parse(value)
-                axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`)
-                    .then(res => {
-                        setNumberCart(res.data.data.total_cart_item);
-                    })
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(value => {
+                    if (value !== null) {
+                        let customer_id = JSON.parse(value)
+                        axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
+                            .then(res => {
+                                setNumberCart(res.data.data.total_cart_item);
+                            })
+                    }
+                })
             }
         })
     }

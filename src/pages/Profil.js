@@ -26,20 +26,26 @@ const Profil = () => {
 
     const displayNama = () => {
         setIsLoading(true)
-        AsyncStorage.getItem("customerUsername").then(res => {
-            let username = JSON.parse(res)
-            if (username !== null) {
-                axios.get(`${backendURL}/api/v1/customer/?username=${username}`)
-                    .then(res => {
-                        if (res.data.data.is_admin) {
-                            setCustomerNama(res.data.data.username)
-                            setRole("Pegawai")
-                        } else {
-                            setCustomerNama(res.data.data.nama);
-                            setRole("Pelanggan")
-                        }
-                        setIsLoading(false)
-                    })
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerUsername").then(res => {
+                    let username = JSON.parse(res)
+                    if (username !== null) {
+                        axios.get(`${backendURL}/api/v1/customer/?username=${username}`, key)
+                            .then(res => {
+                                if (res.data.data.is_admin) {
+                                    setCustomerNama(res.data.data.username)
+                                    setRole("Pegawai")
+                                } else {
+                                    setCustomerNama(res.data.data.nama);
+                                    setRole("Pelanggan")
+                                }
+                                setIsLoading(false)
+                            })
+                    }
+                })
             }
         })
     }

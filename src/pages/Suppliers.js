@@ -6,13 +6,15 @@ import styles from '../stylesheets/Main'
 import axios from 'axios';
 import { MainContext } from '../context/MainContext';
 import Icons from 'react-native-vector-icons/Ionicons'
+import * as OpenAnything from "react-native-openanything"
 import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
-import { convertToIDR, toast } from "../Helper"
+import { toast } from "../Helper"
 import BottomSheet from "react-native-gesture-bottom-sheet";
 import ShimmerSupplier from '../components/ShimmerSupplier';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import { Actions } from 'react-native-router-flux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
@@ -28,6 +30,7 @@ const Suppliers = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingForm, setIsLoadingForm] = useState(false)
     const [editing, setEditing] = useState(false)
+    const [editForm, setEditForm] = useState(false)
     const [singleData, setSingleData] = useState({})
 
     const getData = () => {
@@ -52,11 +55,13 @@ const Suppliers = () => {
     const clearMode = () => {
         setInput("")
         setEditing(false)
+        setDataDisplay([])
+        getData()
     }
 
     const getSearchSupplier = () => {
         setIsLoading(true)
-        axios.get(`${backendURL}/api/v1/product/?search=${input}`)
+        axios.get(`${backendURL}/api/v1/supplier/?search=${input}`)
             .then(res => {
                 if (res.status === 200) {
                     setDataDisplay(res.data.data);
@@ -96,7 +101,7 @@ const Suppliers = () => {
         if (singleData.nama === "" || singleData.phone === "" || singleData.alamat === "") {
             toast("Data Supplier Harus Diisi", "danger")
             getDataById(singleData.id)
-            setEditing(false)
+            setEditForm(false)
         } else {
             let body = JSON.stringify(payloadUpdate)
             axios
@@ -111,12 +116,13 @@ const Suppliers = () => {
                     let alamat = res.data.alamat
                     toast("Berhasil Menyimpan Data Supplier", "success")
                     setIsLoading(false)
-                    setEditing(false)
+                    setEditForm(false)
                     setSingleData({ ...singleData, nama: nama, phone: phone, alamat: alamat });
                     getData()
                     bs.current.close()
                 })
                 .catch((err) => {
+                    console.log(err);
                     toast("Gagal Menyimpan Data Supplier", "danger")
                 });
         }
@@ -124,6 +130,25 @@ const Suppliers = () => {
 
     const getAfterAdd = () => {
         getData()
+    }
+
+    const print = () => {
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                axios.get(`${backendURL}/report/supplier_download`, key)
+                .then(res => {
+                    if(res.status === 200){
+                        let path = res.data.url
+                        OpenAnything.Pdf(path)
+                    }
+                })
+                .catch(err => {
+                    toast("Gagal Mencetak Data Supplier", "danger")
+                })
+            }
+        })
     }
 
     useEffect(() => {
@@ -155,6 +180,11 @@ const Suppliers = () => {
                             <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginRight: 8 }} onPress={() => clearMode()} />
                         )}
                     </SafeAreaView>
+                </View>
+                <View style={{ paddingTop: 10, paddingHorizontal: 20, justifyContent: "center", alignItems: "flex-end" }}>
+                    <TouchableOpacity style={{ height: 30, width: 60, borderColor: "#f5576c", borderWidth: 1, justifyContent: "center", alignItems: "center" }} onPress={() => print()}>
+                        <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak</Text>
+                    </TouchableOpacity>
                 </View>
                 {isLoading ? (
                     <>
@@ -256,7 +286,7 @@ const Suppliers = () => {
                                             autoCorrect={false}
                                             value={singleData.nama}
                                             onChangeText={text => setSingleData({ ...singleData, nama: text })}
-                                            editable={editing}
+                                            editable={editForm}
                                         />
                                     )}
                                 </SafeAreaView>
@@ -281,7 +311,7 @@ const Suppliers = () => {
                                             spellCheck={false}
                                             value={singleData.phone}
                                             autoCorrect={false}
-                                            editable={editing}
+                                            editable={editForm}
                                             onChangeText={text => setSingleData({ ...singleData, phone: text })}
                                             keyboardType={'phone-pad'}
                                         />
@@ -307,19 +337,19 @@ const Suppliers = () => {
                                             style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
                                             spellCheck={false}
                                             autoCorrect={false}
-                                            editable={editing}
+                                            editable={editForm}
                                             onChangeText={text => setSingleData({ ...singleData, alamat: text })}
                                             value={singleData.alamat}
                                         />
                                     )}
                                 </SafeAreaView>
                             </View>
-                            {editing ? (
+                            {editForm ? (
                                 <View style={{ width: "100%", marginTop: 10, flexDirection: "row", justifyContent: "space-between" }}>
                                     <Ripple
                                         rippleColor="#fff"
                                         style={{ height: 40, width: "48%", borderRadius: 10, borderColor: '#eb8937', borderWidth: 1, justifyContent: "center", alignItems: "center" }}
-                                        onPress={() => setEditing(false)}
+                                        onPress={() => setEditForm(false)}
                                     >
                                         <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>Tutup</Text>
                                     </Ripple>
@@ -339,7 +369,7 @@ const Suppliers = () => {
                                 <Ripple
                                     rippleColor="#fff"
                                     style={{ height: 40, width: "100%", borderRadius: 10, borderColor: '#eb8937', borderWidth: 1, justifyContent: "center", alignItems: "center", marginTop: 10 }}
-                                    onPress={() => setEditing(true)}
+                                    onPress={() => setEditForm(true)}
                                 >
                                     <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>Ubah Data</Text>
                                 </Ripple>

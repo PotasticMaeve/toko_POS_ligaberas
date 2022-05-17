@@ -37,21 +37,27 @@ const Pembayaran = (props) => {
 
     const detailPembayaran = () => {
         setIsLoading(true)
-        AsyncStorage.getItem("customerID").then(value => {
-            let customer_id = JSON.parse(value)
-            if (customer_id !== null) {
-                axios.get(`${backendURL}/api/v1/paymentinfo/?customer_id=${customer_id}`)
-                    .then((res) => {
-                        if (res.data.data.length > 0) {
-                            setData(res.data.data)
-                        } else {
-                            setEmptyData(true)
-                        }
-                        setIsLoading(false)
-                    })
-                    .catch((err) => {
-                        toast("Gagal Memuat Data Pembayaran", "danger")
-                    })
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerID").then(value => {
+                    let customer_id = JSON.parse(value)
+                    if (customer_id !== null) {
+                        axios.get(`${backendURL}/api/v1/paymentinfo/?customer_id=${customer_id}`, key)
+                            .then((res) => {
+                                if (res.data.data.length > 0) {
+                                    setData(res.data.data)
+                                } else {
+                                    setEmptyData(true)
+                                }
+                                setIsLoading(false)
+                            })
+                            .catch((err) => {
+                                toast("Gagal Memuat Data Pembayaran", "danger")
+                            })
+                    }
+                })
             }
         })
     }
@@ -114,11 +120,17 @@ const Pembayaran = (props) => {
         bs2.current.show()
         setPaymentID(payment_id)
         setIsLoadingForm(true)
-        axios.get(`${backendURL}/api/v1/paymentinfo/${payment_id}/`)
-            .then(res => {
-                setSingleCardData(res.data);
-                setIsLoadingForm(false)
-            })
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                axios.get(`${backendURL}/api/v1/paymentinfo/${payment_id}/`, key)
+                    .then(res => {
+                        setSingleCardData(res.data);
+                        setIsLoadingForm(false)
+                    })
+            }
+        })
     }
 
     const updateSingleCard = () => {

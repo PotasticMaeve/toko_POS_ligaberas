@@ -28,17 +28,23 @@ const AlamatPengiriman = (props) => {
 
     const detailProfil = () => {
         setIsLoading(true)
-        AsyncStorage.getItem("customerUsername").then(value => {
-            if (value !== null) {
-                let username = JSON.parse(value)
-                axios.get(`${backendURL}/api/v1/customer/?username=${username}`)
-                    .then((res) => {
-                        setProfil(res.data.data);
-                        setIsLoading(false)
-                    })
-                    .catch((err) => {
-                        toast("Gagal Memuat Data Profil", "danger")
-                    })
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                AsyncStorage.getItem("customerUsername").then(value => {
+                    if (value !== null) {
+                        let username = JSON.parse(value)
+                        axios.get(`${backendURL}/api/v1/customer/?username=${username}`, key)
+                            .then((res) => {
+                                setProfil(res.data.data);
+                                setIsLoading(false)
+                            })
+                            .catch((err) => {
+                                toast("Gagal Memuat Data Profil", "danger")
+                            })
+                    }
+                })
             }
         })
     }

@@ -10,6 +10,8 @@ import { MainContext } from "../context/MainContext"
 import Card from "./Card"
 import LottieView from 'lottie-react-native';
 import { ScrollView } from 'react-native';
+import Space from "../components/Space"
+import ShimmerCard from './ShimmerCard';
 
 const colorHeader = ['#f3a337', '#eb8937']
 const { height } = Dimensions.get("screen")
@@ -18,21 +20,22 @@ const Search = () => {
     const [backendURL] = backend_url
     const [input, setInput] = useState("")
     const [dataDisplay, setDataDisplay] = useState([])
-    const [showIdle, setShowIdle] = useState(true)
     const [editing, setEditing] = useState(false)
     const [showEmpty, setShowEmpty] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     const onChangeText = (search) => {
-        if(search !== ""){
+        if (search !== "") {
             setEditing(true)
             setInput(search)
-        }else{
+        } else {
             setInput("")
             setEditing(false)
         }
     }
 
     const getRealProduct = () => {
+        setIsLoading(true)
         if (input !== "") {
             axios.get(`${backendURL}/api/v1/product/?search=${input}`)
                 .then(res => {
@@ -40,7 +43,7 @@ const Search = () => {
                         if (res.data.data.length > 0) {
                             setDataDisplay(res.data.data);
                             setShowEmpty(false)
-                            setEditing(false)
+                            setIsLoading(false)
                         } else {
                             setShowEmpty(true)
                         }
@@ -124,10 +127,23 @@ const Search = () => {
                         <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Produk untuk pencarian tidak tersedia</Text>
                     </>
                 ) : (
-                    <>
-                        <Card data={dataDisplay} />
-                        <View style={{ height: 80 }}></View>
-                    </>
+                    isLoading ? (
+                        <View style={{ flexDirection: "column", paddingHorizontal: 10 }}>
+                            <View style={{ flexDirection: "row" }}>
+                                <ShimmerCard />
+                                <ShimmerCard />
+                            </View>
+                            <View style={{ flexDirection: "row" }}>
+                                <ShimmerCard />
+                                <ShimmerCard />
+                            </View>
+                        </View>
+                    ) : (
+                        <>
+                            <Card data={dataDisplay} />
+                            <Space height={80} />
+                        </>
+                    )
                 )}
             </ScrollView>
         </>

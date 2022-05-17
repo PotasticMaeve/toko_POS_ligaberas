@@ -71,69 +71,87 @@ const Keranjang = (props) => {
     let id_cart = cartId
     let cart_list = data
     let cart_item_id = 0
-    if (cart_list.length > 0) {
-      cart_list.map(el => {
-        if (el.product.id === id_produk) {
-          cart_item_id = el.id
-          axios.patch(`${backendURL}/api/v1/cart_item/${cart_item_id}/`, {
-            cart: id_cart,
-            product: id_produk,
-            qty: qty_produk
+    AsyncStorage.getItem("tokenAccess").then(token => {
+      if (token !== null) {
+        let tokenAccess = JSON.parse(token)
+        let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+        if (cart_list.length > 0) {
+          cart_list.map(el => {
+            if (el.product.id === id_produk) {
+              cart_item_id = el.id
+              axios.patch(`${backendURL}/api/v1/cart_item/${cart_item_id}/`, {
+                cart: id_cart,
+                product: id_produk,
+                qty: qty_produk
+              }, key)
+                .then(res => {
+                  if (res.status === 200) {
+                    axios.get(`${backendURL}/api/v1/cart/?customer_id=${customerId}`, key)
+                      .then(res => {
+                        if (res.status === 200) {
+                          setTotal(res.data.data.grandtotal);
+                          setLoadTotal(false)
+                        }
+                      })
+                  }
+                })
+            }
           })
-            .then(res => {
-              if (res.status === 200) {
-                axios.get(`${backendURL}/api/v1/cart/?customer_id=${customerId}`)
-                  .then(res => {
-                    if (res.status === 200) {
-                      setTotal(res.data.data.grandtotal);
-                      setLoadTotal(false)
-                    }
-                  })
-              }
-            })
         }
-      })
-    }
+      }
+    })
   })
 
   const getTotal = () => {
     setLoadTotal(true)
-    AsyncStorage.getItem("customerID").then(value => {
-      if (value !== null) {
-        let customer_id = JSON.parse(value)
-        axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`)
-          .then(res => {
-            if (res.status === 200) {
-              setTotal(res.data.data.grandtotal);
-              setLoadTotal(false)
-            }
-          })
+    AsyncStorage.getItem("tokenAccess").then(token => {
+      if (token !== null) {
+        let tokenAccess = JSON.parse(token)
+        let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+        AsyncStorage.getItem("customerID").then(value => {
+          if (value !== null) {
+            let customer_id = JSON.parse(value)
+            axios.get(`${backendURL}/api/v1/cart/?customer_id=${customer_id}`, key)
+              .then(res => {
+                if (res.status === 200) {
+                  setTotal(res.data.data.grandtotal);
+                  setLoadTotal(false)
+                }
+              })
+          }
+        })
       }
     })
   }
 
   const removeItem = (id) => {
     let id_produk = id
-    AsyncStorage.getItem("customerID").then(value => {
-      if (value !== null) {
-        let customer_id = JSON.parse(value)
-        axios.get(`${backendURL}/api/v1/cart_item/?customer_id=${customer_id}`)
-          .then(res => {
-            let cart_list = res.data.data
-            cart_list.map(el => {
-              if (el.product.id === id_produk) {
-                let cart_items_id = el.id
-                axios.delete(`${backendURL}/api/v1/cart_item/${cart_items_id}/`)
-                  .then(res => {
-                    toast("Produk Berhasil Dihapus", "danger")
-                    getData()
-                    getTotal()
+    AsyncStorage.getItem("tokenAccess").then(token => {
+      if (token !== null) {
+          let tokenAccess = JSON.parse(token)
+          let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+          AsyncStorage.getItem("customerID").then(value => {
+            if (value !== null) {
+              let customer_id = JSON.parse(value)
+              axios.get(`${backendURL}/api/v1/cart_item/?customer_id=${customer_id}`, key)
+                .then(res => {
+                  let cart_list = res.data.data
+                  cart_list.map(el => {
+                    if (el.product.id === id_produk) {
+                      let cart_items_id = el.id
+                      axios.delete(`${backendURL}/api/v1/cart_item/${cart_items_id}/`, key)
+                        .then(res => {
+                          toast("Produk Berhasil Dihapus", "danger")
+                          getData()
+                          getTotal()
+                        })
+                    }
                   })
-              }
-            })
+                })
+            }
           })
       }
-    })
+  })
   }
 
   const checkoutCart = () => {

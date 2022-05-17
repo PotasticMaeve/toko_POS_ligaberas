@@ -4,6 +4,7 @@ export const MainContext = React.createContext()
 
 export const MainProvider = (props) => {
     const [backendURL, setBackendURL] = useState("http://192.168.18.23:7000")
+    // const [backendURL, setBackendURL] = useState("http://192.168.18.60:8000")
     const [isLoading, setIsLoading] = useState(true)
     const [IsAuthorized, setIsAuthorized] = useState(false)
     const [closeCheckout, setCloseCheckout] = useState(false)

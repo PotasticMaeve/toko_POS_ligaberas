@@ -30,7 +30,7 @@ const WishlistCard = (props) => {
                                         cart: cart_id,
                                         product: props.id,
                                         qty: 1
-                                    })
+                                    }, key)
                                         .then(res => {
                                             props.responsiveAddKeranjang && props.responsiveAddKeranjang()
                                             setIsLoading(false)

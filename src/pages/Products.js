@@ -12,9 +12,12 @@ import { convertToIDR, toast } from "../Helper"
 import LottieView from 'lottie-react-native';
 import BottomSheet from "react-native-gesture-bottom-sheet";
 import ShimmerProduct from '../components/ShimmerProduct';
+import * as OpenAnything from "react-native-openanything"
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import { Actions } from 'react-native-router-flux';
 import SelectDropdown from 'react-native-select-dropdown'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { setRefreshToken } from "../Helper"
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
@@ -30,6 +33,7 @@ const Products = () => {
     const [data, setData] = useState([])
     const [input, setInput] = useState("")
     const [updateIDSupplier, setUpdateIDSupplier] = useState(0)
+    const [updateNamaCategory, setUpdateNamaCategory] = useState("")
     const [dataDisplay, setDataDisplay] = useState([])
     const [dataSupplier, setDataSupplier] = useState([])
     const [dataCategory, setDataCategory] = useState([])
@@ -48,6 +52,9 @@ const Products = () => {
                 }
             })
             .catch((err) => {
+                if (err.response.status === 401) {
+                    setRefreshToken()
+                }
                 toast("Gagal Memuat Data Produk", "danger")
             })
     }
@@ -57,10 +64,12 @@ const Products = () => {
         axios.get(`${backendURL}/api/v1/product/${id}/`)
             .then((res) => {
                 if (res.status === 200) {
+                    let nama_category = res.data.data[0].kategori.nama
                     let id_supplier = res.data.data[0].supplier.id
                     setSingleData(res.data.data[0]);
                     setIsLoadingForm(false)
                     setUpdateIDSupplier(id_supplier)
+                    setUpdateNamaCategory(nama_category)
                 }
             })
             .catch((err) => {
@@ -97,6 +106,7 @@ const Products = () => {
         setInput("")
         setEditing(false)
         setDataDisplay([])
+        setShowEmpty(false)
         getData()
     }
 
@@ -162,6 +172,25 @@ const Products = () => {
         }
     }
 
+    const print = () => {
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                axios.get(`${backendURL}/report/product_download`, key)
+                    .then(res => {
+                        if (res.status === 200) {
+                            let path = res.data.url
+                            OpenAnything.Pdf(path)
+                        }
+                    })
+                    .catch(err => {
+                        toast("Gagal Mencetak Data Produk", "danger")
+                    })
+            }
+        })
+    }
+
     useEffect(() => {
         getCategory()
         getSupplier()
@@ -193,6 +222,11 @@ const Products = () => {
                             <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginRight: 8 }} onPress={() => clearMode()} />
                         )}
                     </SafeAreaView>
+                </View>
+                <View style={{ paddingTop: 10, paddingHorizontal: 20, justifyContent: "center", alignItems: "flex-end" }}>
+                    <TouchableOpacity style={{ height: 30, width: 60, borderColor: "#f5576c", borderWidth: 1, justifyContent: "center", alignItems: "center" }} onPress={() => print()}>
+                        <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak</Text>
+                    </TouchableOpacity>
                 </View>
                 {showEmpty ? (
                     <>
@@ -393,6 +427,11 @@ const Products = () => {
                                                 var data = { ...singleData }
                                                 data.kategori.nama = selectedItem;
                                                 setSingleData(data)
+                                                dataCategory.map(el => {
+                                                    if (el.nama === selectedItem) {
+                                                        setUpdateNamaCategory(el.nama);
+                                                    }
+                                                })
                                             }}
                                             defaultButtonText={singleData.kategori ? singleData.kategori.nama : "Pilih Kategori"}
                                             buttonTextAfterSelection={(selectedItem, index) => {
@@ -416,7 +455,7 @@ const Products = () => {
                                                 fontFamily: "Poppins-Medium",
                                                 textAlign: "left"
                                             }}
-                                            disabled={true}
+                                            disabled={!editForm}
                                         />
                                     )}
                                 </SafeAreaView>
