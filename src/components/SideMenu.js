@@ -59,16 +59,20 @@ const SideMenu = () => {
                 {isAdmin ? (
                     <>
                         <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Suppliers()}>
-                            <FontAwesome5 name={"users"} size={18} color="#e36414" />
+                            <FontAwesome5 name={"store"} size={18} color="#e36414" />
                             <Text style={styles.menu_text}>Supplier</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Customers()}>
-                            <FontAwesome5 name={"users"} size={18} color="#e36414" />
-                            <Text style={styles.menu_text}>Pelanggan</Text>
+                        <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Purchase()}>
+                            <FontAwesome5 name={"archive"} size={18} color="#e36414" />
+                            <Text style={styles.menu_text}>Pemesanan</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Products()}>
                             <FontAwesome5 name={"box-open"} size={18} color="#e36414" />
                             <Text style={styles.menu_text}>Produk</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Customers()}>
+                            <FontAwesome5 name={"users"} size={18} color="#e36414" />
+                            <Text style={styles.menu_text}>Pelanggan</Text>
                         </TouchableOpacity>
                         {isAuthorized ? (
                             <TouchableOpacity style={styles.menu_item} onPress={() => setModalShow(true)}>

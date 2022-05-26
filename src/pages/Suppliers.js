@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, View, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, View, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
@@ -9,7 +9,8 @@ import Icons from 'react-native-vector-icons/Ionicons'
 import * as OpenAnything from "react-native-openanything"
 import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
-import { toast } from "../Helper"
+import LottieView from 'lottie-react-native';
+import { toast, setRefreshToken } from "../Helper"
 import BottomSheet from "react-native-gesture-bottom-sheet";
 import ShimmerSupplier from '../components/ShimmerSupplier';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
@@ -18,8 +19,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
-
 const colorHeader = ['#f3a337', '#eb8937']
+
+const { height } = Dimensions.get("screen")
 const Suppliers = () => {
     const bs = useRef(null)
     const { backend_url } = useContext(MainContext)
@@ -32,12 +34,20 @@ const Suppliers = () => {
     const [editing, setEditing] = useState(false)
     const [editForm, setEditForm] = useState(false)
     const [singleData, setSingleData] = useState({})
+    const [showEmpty, setShowEmpty] = useState(false)
 
     const getData = () => {
         setIsLoading(true)
         axios.get(`${backendURL}/api/v1/supplier/`)
             .then((res) => {
                 setData(res.data.data);
+                setIsLoading(false)
+            })
+            .catch((err) => {
+                if (err.response.status === 401) {
+                    setRefreshToken()
+                }
+                toast("Gagal Memuat Data Supplier", "danger")
                 setIsLoading(false)
             })
     }
@@ -56,6 +66,7 @@ const Suppliers = () => {
         setInput("")
         setEditing(false)
         setDataDisplay([])
+        setShowEmpty(false)
         getData()
     }
 
@@ -64,7 +75,12 @@ const Suppliers = () => {
         axios.get(`${backendURL}/api/v1/supplier/?search=${input}`)
             .then(res => {
                 if (res.status === 200) {
-                    setDataDisplay(res.data.data);
+                    if (res.data.data.length > 0) {
+                        setDataDisplay(res.data.data);
+                        setShowEmpty(false)
+                    } else {
+                        setShowEmpty(true)
+                    }
                     setIsLoading(false)
                 }
             })
@@ -117,13 +133,16 @@ const Suppliers = () => {
                     toast("Berhasil Menyimpan Data Supplier", "success")
                     setIsLoading(false)
                     setEditForm(false)
+                    setEditing(false)
                     setSingleData({ ...singleData, nama: nama, phone: phone, alamat: alamat });
+                    setInput("")
+                    setDataDisplay([])
                     getData()
                     bs.current.close()
                 })
                 .catch((err) => {
-                    console.log(err);
                     toast("Gagal Menyimpan Data Supplier", "danger")
+                    setIsLoading(false)
                 });
         }
     }
@@ -138,15 +157,15 @@ const Suppliers = () => {
                 let tokenAccess = JSON.parse(token)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
                 axios.get(`${backendURL}/report/supplier_download`, key)
-                .then(res => {
-                    if(res.status === 200){
-                        let path = res.data.url
-                        OpenAnything.Pdf(path)
-                    }
-                })
-                .catch(err => {
-                    toast("Gagal Mencetak Data Supplier", "danger")
-                })
+                    .then(res => {
+                        if (res.status === 200) {
+                            let path = res.data.url
+                            OpenAnything.Pdf(path)
+                        }
+                    })
+                    .catch(err => {
+                        toast("Gagal Mencetak Data Supplier", "danger")
+                    })
             }
         })
     }
@@ -186,43 +205,31 @@ const Suppliers = () => {
                         <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak</Text>
                     </TouchableOpacity>
                 </View>
-                {isLoading ? (
+                {showEmpty ? (
                     <>
-                        <ShimmerSupplier />
-                        <ShimmerSupplier />
-                        <ShimmerSupplier />
+                        <LottieView
+                            source={require('../animations/empty-search.json')}
+                            autoPlay
+                            loop
+                            style={{
+                                marginTop: 50,
+                                height: height / 3.5,
+                                alignSelf: 'center'
+                            }}
+                        />
+                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 10 }}>Supplier Tidak Ditemukan</Text>
+                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Supplier untuk pencarian tidak tersedia</Text>
                     </>
-                ) : (
-                    <View style={s.productsWrap}>
-                        {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
-                            <TouchableOpacity
-                                style={[styles.cardItemWrap, {
-                                    flexDirection: 'column',
-                                    height: "auto",
-                                    width: "100%",
-                                    borderRadius: 5,
-                                    backgroundColor: '#fff',
-                                    marginHorizontal: 0,
-                                    marginVertical: 5,
-                                    padding: 10,
-                                    borderRadius: 5
-                                }]}
-                                key={i}
-                                onPress={() => showDetailSupplier(el.id)}
-                            >
-                                <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
-                                    <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
-                                        <FontAwesome5 name={"store"} size={22} color='#eb8937' />
-                                    </View>
-                                    <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
-                                        <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>
-                                        <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.phone}</Text>
-                                        <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>{el.alamat}</Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        )) : (
-                            data.length > 0 && data.map((el, i) => (
+                ):(
+                    isLoading ? (
+                        <>
+                            <ShimmerSupplier />
+                            <ShimmerSupplier />
+                            <ShimmerSupplier />
+                        </>
+                    ) : (
+                        <View style={s.productsWrap}>
+                            {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
                                 <TouchableOpacity
                                     style={[styles.cardItemWrap, {
                                         flexDirection: 'column',
@@ -249,10 +256,39 @@ const Suppliers = () => {
                                         </View>
                                     </View>
                                 </TouchableOpacity>
-                            ))
-                        )}
-                        <Space height={50} />
-                    </View>
+                            )) : (
+                                data.length > 0 && data.map((el, i) => (
+                                    <TouchableOpacity
+                                        style={[styles.cardItemWrap, {
+                                            flexDirection: 'column',
+                                            height: "auto",
+                                            width: "100%",
+                                            borderRadius: 5,
+                                            backgroundColor: '#fff',
+                                            marginHorizontal: 0,
+                                            marginVertical: 5,
+                                            padding: 10,
+                                            borderRadius: 5
+                                        }]}
+                                        key={i}
+                                        onPress={() => showDetailSupplier(el.id)}
+                                    >
+                                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
+                                            <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
+                                                <FontAwesome5 name={"store"} size={22} color='#eb8937' />
+                                            </View>
+                                            <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
+                                                <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>
+                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.phone}</Text>
+                                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>{el.alamat}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                ))
+                            )}
+                            <Space height={50} />
+                        </View>
+                    )
                 )}
             </ScrollView>
             <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => Actions.AddSupplier({ getAfterAdd: getAfterAdd })}>

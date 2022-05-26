@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, View, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, View, ScrollView, Dimensions } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
@@ -8,19 +8,15 @@ import { MainContext } from '../context/MainContext';
 import Icons from 'react-native-vector-icons/Ionicons'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import * as OpenAnything from "react-native-openanything"
-import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
-import { toast } from "../Helper"
-import BottomSheet from "react-native-gesture-bottom-sheet";
+import { toast, setRefreshToken } from "../Helper"
+import LottieView from 'lottie-react-native';
 import ShimmerSupplier from '../components/ShimmerSupplier';
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
-const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
-
 const colorHeader = ['#f3a337', '#eb8937']
+const { height } = Dimensions.get("screen")
 const Customers = () => {
     const bs = useRef(null)
     const { backend_url } = useContext(MainContext)
@@ -29,15 +25,21 @@ const Customers = () => {
     const [dataDisplay, setDataDisplay] = useState([])
     const [input, setInput] = useState("")
     const [isLoading, setIsLoading] = useState(false)
-    const [isLoadingForm, setIsLoadingForm] = useState(false)
     const [editing, setEditing] = useState(false)
-    const [singleData, setSingleData] = useState({})
+    const [showEmpty, setShowEmpty] = useState(false)
 
     const getData = () => {
         setIsLoading(true)
         axios.get(`${backendURL}/api/v1/customer/`)
             .then((res) => {
                 setData(res.data.data);
+                setIsLoading(false)
+            })
+            .catch((err) => {
+                if (err.response.status === 401) {
+                    setRefreshToken()
+                }
+                toast("Gagal Memuat Data Pelanggan", "danger")
                 setIsLoading(false)
             })
     }
@@ -55,78 +57,25 @@ const Customers = () => {
     const clearMode = () => {
         setInput("")
         setEditing(false)
+        setDataDisplay([])
+        setShowEmpty(false)
+        getData()
     }
 
-    const getSearchSupplier = () => {
+    const getSearchCustomer = () => {
         setIsLoading(true)
-        axios.get(`${backendURL}/api/v1/supplier/?search=${input}`)
+        axios.get(`${backendURL}/api/v1/customer/?search=${input}`)
             .then(res => {
                 if (res.status === 200) {
-                    setDataDisplay(res.data.data);
-                    setIsLoading(false)
-                }
-            })
-    }
-
-    const getDataById = (id) => {
-        setIsLoadingForm(true)
-        axios.get(`${backendURL}/api/v1/supplier/${id}/`)
-            .then((res) => {
-                if (res.status === 200) {
-                    setSingleData(res.data);
-                    setIsLoadingForm(false)
-                }
-            })
-            .catch((err) => {
-                toast("Gagal Memuat Data Supplier", "danger")
-            })
-    }
-
-    const showDetailSupplier = (id) => {
-        bs.current.show()
-        getDataById(id)
-    }
-
-    const saveSupplier = () => {
-        setIsLoading(true)
-        let data = singleData
-        let payloadUpdate = {
-            ...data,
-            nama: singleData.nama,
-            phone: singleData.phone,
-            alamat: singleData.alamat
-        }
-        if (singleData.nama === "" || singleData.phone === "" || singleData.alamat === "") {
-            toast("Data Supplier Harus Diisi", "danger")
-            getDataById(singleData.id)
-            setEditing(false)
-        } else {
-            let body = JSON.stringify(payloadUpdate)
-            axios
-                .put(`${backendURL}/api/v1/supplier/${singleData.id}/`, body, {
-                    headers: {
-                        'Content-Type': 'application/json'
+                    if (res.data.data.length > 0) {
+                        setDataDisplay(res.data.data);
+                        setShowEmpty(false)
+                    } else {
+                        setShowEmpty(true)
                     }
-                })
-                .then((res) => {
-                    let nama = res.data.nama
-                    let phone = res.data.phone
-                    let alamat = res.data.alamat
-                    toast("Berhasil Menyimpan Data Supplier", "success")
                     setIsLoading(false)
-                    setEditing(false)
-                    setSingleData({ ...singleData, nama: nama, phone: phone, alamat: alamat });
-                    getData()
-                    bs.current.close()
-                })
-                .catch((err) => {
-                    toast("Gagal Menyimpan Data Supplier", "danger")
-                });
-        }
-    }
-
-    const getAfterAdd = () => {
-        getData()
+                }
+            })
     }
 
     const print = () => {
@@ -135,15 +84,15 @@ const Customers = () => {
                 let tokenAccess = JSON.parse(token)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
                 axios.get(`${backendURL}/report/customer_download`, key)
-                .then(res => {
-                    if(res.status === 200){
-                        let path = res.data.url
-                        OpenAnything.Pdf(path)
-                    }
-                })
-                .catch(err => {
-                    toast("Gagal Mencetak Data Supplier", "danger")
-                })
+                    .then(res => {
+                        if (res.status === 200) {
+                            let path = res.data.url
+                            OpenAnything.Pdf(path)
+                        }
+                    })
+                    .catch(err => {
+                        toast("Gagal Mencetak Data Supplier", "danger")
+                    })
             }
         })
     }
@@ -171,7 +120,7 @@ const Customers = () => {
                             value={input}
                             autoCorrect={false}
                             onChangeText={onChangeText}
-                            onSubmitEditing={() => getSearchSupplier()}
+                            onSubmitEditing={() => getSearchCustomer()}
                         />
                         {editing && (
                             <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginRight: 8 }} onPress={() => clearMode()} />
@@ -183,44 +132,32 @@ const Customers = () => {
                         <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak</Text>
                     </TouchableOpacity>
                 </View>
-                {isLoading ? (
+                {showEmpty ? (
                     <>
-                        <ShimmerSupplier />
-                        <ShimmerSupplier />
-                        <ShimmerSupplier />
+                        <LottieView
+                            source={require('../animations/empty-search.json')}
+                            autoPlay
+                            loop
+                            style={{
+                                marginTop: 50,
+                                height: height / 3.5,
+                                alignSelf: 'center'
+                            }}
+                        />
+                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 10 }}>Supplier Tidak Ditemukan</Text>
+                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Supplier untuk pencarian tidak tersedia</Text>
                     </>
                 ) : (
-                    <View style={s.productsWrap}>
-                        {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
-                            <TouchableOpacity
-                                style={[styles.cardItemWrap, {
-                                    flexDirection: 'column',
-                                    height: "auto",
-                                    width: "100%",
-                                    borderRadius: 5,
-                                    backgroundColor: '#fff',
-                                    marginHorizontal: 0,
-                                    marginVertical: 5,
-                                    padding: 10,
-                                    borderRadius: 5
-                                }]}
-                                key={i}
-                                onPress={() => showDetailSupplier(el.id)}
-                            >
-                                <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
-                                    <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
-                                        <FontAwesome5 name={"store"} size={22} color='#eb8937' />
-                                    </View>
-                                    <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
-                                        <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>
-                                        <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.phone}</Text>
-                                        <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>{el.alamat}</Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        )) : (
-                            data.length > 0 && data.map((el, i) => (
-                                <TouchableOpacity
+                    isLoading ? (
+                        <>
+                            <ShimmerSupplier />
+                            <ShimmerSupplier />
+                            <ShimmerSupplier />
+                        </>
+                    ) : (
+                        <View style={s.productsWrap}>
+                            {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
+                                <View
                                     style={[styles.cardItemWrap, {
                                         flexDirection: 'column',
                                         height: "auto",
@@ -233,7 +170,6 @@ const Customers = () => {
                                         borderRadius: 5
                                     }]}
                                     key={i}
-                                    onPress={() => showDetailSupplier(el.id)}
                                 >
                                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
                                         <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
@@ -241,140 +177,62 @@ const Customers = () => {
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
                                             <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>
-                                            <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.phone}</Text>
-                                            <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>{el.alamat}</Text>
+                                            {el.phone ? (
+                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.phone}</Text>
+                                            ) : (
+                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>No hp belum ditambahkan</Text>
+                                            )}
+                                            {el.alamat ? (
+                                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>{el.alamat}</Text>
+                                            ) : (
+                                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Alamat belum ditambahkan</Text>
+                                            )}
                                         </View>
                                     </View>
-                                </TouchableOpacity>
-                            ))
-                        )}
-                        <Space height={50} />
-                    </View>
+                                </View>
+                            )) : (
+                                data.length > 0 && data.map((el, i) => (
+                                    <View
+                                        style={[styles.cardItemWrap, {
+                                            flexDirection: 'column',
+                                            height: "auto",
+                                            width: "100%",
+                                            borderRadius: 5,
+                                            backgroundColor: '#fff',
+                                            marginHorizontal: 0,
+                                            marginVertical: 5,
+                                            padding: 10,
+                                            borderRadius: 5
+                                        }]}
+                                        key={i}
+                                    >
+                                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
+                                            <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
+                                                <Icon name={"user"} size={22} color='#eb8937' />
+                                            </View>
+                                            <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
+                                                <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>
+                                                {el.phone ? (
+                                                    <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.phone}</Text>
+                                                ) : (
+                                                    <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>No hp belum ditambahkan</Text>
+                                                )}
+                                                {el.alamat ? (
+                                                    <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>{el.alamat}</Text>
+                                                ) : (
+                                                    <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Alamat belum ditambahkan</Text>
+                                                )}
+                                            </View>
+                                        </View>
+                                    </View>
+                                ))
+                            )}
+                            <Space height={50} />
+                        </View>
+                    )
+
                 )}
             </ScrollView>
-            <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => Actions.AddSupplier({ getAfterAdd: getAfterAdd })}>
-                <FontAwesome5 name={"plus"} size={14} color="#fff" />
-            </Ripple>
-            <SafeAreaView style={s.container}>
-                <BottomSheet hasDraggableIcon ref={bs} height={380}>
-                    <View style={{
-                        paddingHorizontal: 20,
-                    }}>
-                        <Text style={{ fontSize: 15, color: "#000", textAlign: "center", fontFamily: "Poppins-SemiBold", marginVertical: 10 }}>Detail Supplier</Text>
-                        <View>
-                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Nama Supplier</Text>
-                            <View style={s.areaInputDetail}>
-                                <SafeAreaView style={s.inputWrap}>
-                                    {isLoadingForm ? (
-                                        <ShimmerPlaceHolder
-                                            shimmerColors={colorShimmer}
-                                            style={{
-                                                height: 20,
-                                                width: "50%",
-                                                marginLeft: 20,
-                                                marginVertical: 14
-                                            }}
-                                        />
-                                    ) : (
-                                        <TextInput
-                                            placeholder="John Doe"
-                                            style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
-                                            spellCheck={false}
-                                            autoCorrect={false}
-                                            value={singleData.nama}
-                                            onChangeText={text => setSingleData({ ...singleData, nama: text })}
-                                            editable={editing}
-                                        />
-                                    )}
-                                </SafeAreaView>
-                            </View>
-                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Nomor Telepon</Text>
-                            <View style={s.areaInputDetail}>
-                                <SafeAreaView style={s.inputWrap}>
-                                    {isLoadingForm ? (
-                                        <ShimmerPlaceHolder
-                                            shimmerColors={colorShimmer}
-                                            style={{
-                                                height: 20,
-                                                width: "50%",
-                                                marginLeft: 20,
-                                                marginVertical: 14
-                                            }}
-                                        />
-                                    ) : (
-                                        <TextInput
-                                            placeholder="082118776231"
-                                            style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
-                                            spellCheck={false}
-                                            value={singleData.phone}
-                                            autoCorrect={false}
-                                            editable={editing}
-                                            onChangeText={text => setSingleData({ ...singleData, phone: text })}
-                                            keyboardType={'phone-pad'}
-                                        />
-                                    )}
-                                </SafeAreaView>
-                            </View>
-                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Alamat</Text>
-                            <View style={s.areaInputDetail}>
-                                <SafeAreaView style={s.inputWrap}>
-                                    {isLoadingForm ? (
-                                        <ShimmerPlaceHolder
-                                            shimmerColors={colorShimmer}
-                                            style={{
-                                                height: 20,
-                                                width: "50%",
-                                                marginLeft: 20,
-                                                marginVertical: 14
-                                            }}
-                                        />
-                                    ) : (
-                                        <TextInput
-                                            placeholder="alamat"
-                                            style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
-                                            spellCheck={false}
-                                            autoCorrect={false}
-                                            editable={editing}
-                                            onChangeText={text => setSingleData({ ...singleData, alamat: text })}
-                                            value={singleData.alamat}
-                                        />
-                                    )}
-                                </SafeAreaView>
-                            </View>
-                            {editing ? (
-                                <View style={{ width: "100%", marginTop: 10, flexDirection: "row", justifyContent: "space-between" }}>
-                                    <Ripple
-                                        rippleColor="#fff"
-                                        style={{ height: 40, width: "48%", borderRadius: 10, borderColor: '#eb8937', borderWidth: 1, justifyContent: "center", alignItems: "center" }}
-                                        onPress={() => setEditing(false)}
-                                    >
-                                        <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>Tutup</Text>
-                                    </Ripple>
-                                    <Ripple
-                                        rippleColor="#fff"
-                                        style={{ height: 40, width: "48%", borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }}
-                                        onPress={() => saveSupplier()}
-                                    >
-                                        {isLoading ? (
-                                            <ActivityIndicator color="#fff" />
-                                        ) : (
-                                            <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>Simpan</Text>
-                                        )}
-                                    </Ripple>
-                                </View>
-                            ) : (
-                                <Ripple
-                                    rippleColor="#fff"
-                                    style={{ height: 40, width: "100%", borderRadius: 10, borderColor: '#eb8937', borderWidth: 1, justifyContent: "center", alignItems: "center", marginTop: 10 }}
-                                    onPress={() => setEditing(true)}
-                                >
-                                    <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>Ubah Data</Text>
-                                </Ripple>
-                            )}
-                        </View>
-                    </View>
-                </BottomSheet>
-            </SafeAreaView>
         </>
     )
 }
@@ -416,29 +274,7 @@ const s = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "space-between",
         paddingVertical: 5
-    },
-    buttonAmount: {
-        position: "absolute",
-        bottom: 20,
-        right: 20,
-        height: 55,
-        width: 55,
-        backgroundColor: "#fb8b24",
-        borderRadius: 50,
-        display: 'flex',
-        justifyContent: "center",
-        alignItems: "center",
-        shadowColor: '#eee',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 1,
-        elevation: 2,
-    },
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
+    }
 })
 
 export default Customers

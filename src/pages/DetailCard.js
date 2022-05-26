@@ -18,8 +18,9 @@ const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
 const colorHeader = ['#f3a337', '#eb8937']
 
 const DetailCard = (props) => {
-    const { backend_url, authorized } = useContext(MainContext)
+    const { backend_url, authorized, is_admin } = useContext(MainContext)
     const [IsAuthorized] = authorized
+    const [isAdmin] = is_admin
     const [backendURL] = backend_url
     const [data, setData] = useState({})
     const [fav, setFav] = useState(false)
@@ -277,30 +278,38 @@ const DetailCard = (props) => {
                 <TouchableOpacity onPress={() => Actions.pop()}>
                     <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
                 </TouchableOpacity>
-                <View style={{ width: "38%", flexDirection: "row" }}>
-                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Search()}>
-                        <FontAwesome5 name={"search"} size={19} color='#fff' />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Wishlist({ responsiveDeleteWishlist: responsiveDeleteWishlist, responsiveAddKeranjang: responsiveAddKeranjang })}>
-                        <Icon name={"heart"} size={19} color="#fff" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang({ responsiveDeleteKeranjang: responsiveDeleteKeranjang, responsiveDeleteKeranjangFromCheckout: responsiveDeleteKeranjangFromCheckout })}>
-                        {IsAuthorized ? (
-                            numberCart !== 0 ? (
-                                <View>
-                                    <View style={{ position: "absolute", paddingHorizontal: 6, paddingVertical: 0, borderRadius: 100, backgroundColor: "red", zIndex: 99, top: -10, right: -10, justifyContent: "center", alignItems: "center" }}>
-                                        <Text style={{ fontSize: 10, color: "#fff", fontFamily: "Poppins-SemiBold" }}>{numberCart}</Text>
+                {isAdmin ? (
+                    <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                        <TouchableOpacity onPress={() => Actions.Search()}>
+                            <FontAwesome5 name={"search"} size={19} color='#fff' />
+                        </TouchableOpacity>
+                    </View>
+                ):(
+                    <View style={{ width: "38%", flexDirection: "row" }}>
+                        <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Search()}>
+                            <FontAwesome5 name={"search"} size={19} color='#fff' />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Wishlist({ responsiveDeleteWishlist: responsiveDeleteWishlist, responsiveAddKeranjang: responsiveAddKeranjang })}>
+                            <Icon name={"heart"} size={19} color="#fff" />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ marginHorizontal: 11 }} onPress={() => Actions.Keranjang({ responsiveDeleteKeranjang: responsiveDeleteKeranjang, responsiveDeleteKeranjangFromCheckout: responsiveDeleteKeranjangFromCheckout })}>
+                            {IsAuthorized ? (
+                                numberCart !== 0 ? (
+                                    <View>
+                                        <View style={{ position: "absolute", paddingHorizontal: 6, paddingVertical: 0, borderRadius: 100, backgroundColor: "red", zIndex: 99, top: -10, right: -10, justifyContent: "center", alignItems: "center" }}>
+                                            <Text style={{ fontSize: 10, color: "#fff", fontFamily: "Poppins-SemiBold" }}>{numberCart}</Text>
+                                        </View>
+                                        <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
                                     </View>
+                                ) : (
                                     <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
-                                </View>
+                                )
                             ) : (
                                 <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
-                            )
-                        ) : (
-                            <FontAwesome5 name={"shopping-cart"} size={19} color='#fff' />
-                        )}
-                    </TouchableOpacity>
-                </View>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                )}
             </LinearGradient>
             <ScrollView style={{ width: "100%" }} showsVerticalScrollIndicator={false}>
                 {shimmerLoad ? (
@@ -398,57 +407,62 @@ const DetailCard = (props) => {
                 </View>
                 <View style={{ height: 100, backgroundColor: "#fafafa", top: -10 }} />
             </ScrollView>
-            <View style={{
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
-                height: 70,
-                backgroundColor: "#fafafa",
-                paddingHorizontal: 20,
-                shadowColor: '#eaeaea',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.5,
-                shadowRadius: 1,
-                elevation: 3,
-            }}>
-                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-around" }}>
-                    {fav ? (
-                        <Ripple
-                            rippleColor="#fff"
-                            style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
-                            onPress={() => { IsAuthorized ? removeFromWishlist() : toast("Harap Login Terlebih Dahulu", "danger") }}
-                        >
-                            <View style={{ padding: 8, margin: 10 }}>
-                                <Icon name={"heart"} size={20} color="red" onPress={() => setFav(false)} />
-                            </View>
-                        </Ripple>
-                    ) : (
-                        <Ripple
-                            rippleColor="#fff"
-                            style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
-                            onPress={() => { IsAuthorized ? addToWishlist() : toast("Harap Login Terlebih Dahulu", "danger") }}
-                        >
-                            <View style={{ padding: 8, margin: 10 }}>
-                                <FontAwesome5 name={"heart"} size={20} color="red" onPress={() => setFav(true)} />
-                            </View>
-                        </Ripple>
-                    )}
-                    <Ripple
-                        onPress={() => beforeAddToKeranjang()}
-                        rippleColor={`${data.qty > 0 && "#fff"}`}
-                        style={{ height: 40, borderRadius: 10, backgroundColor: `${data.qty > 0 ? "#eb8937" : "#ccc"}`, overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
-                    >
-                        {isLoading ? (
-                            <ActivityIndicator color="#fff" />
+            {isAdmin ? (
+                <></>
+            ) : (
+
+                <View style={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: 70,
+                    backgroundColor: "#fafafa",
+                    paddingHorizontal: 20,
+                    shadowColor: '#eaeaea',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 1,
+                    elevation: 3,
+                }}>
+                    <View style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-around" }}>
+                        {fav ? (
+                            <Ripple
+                                rippleColor="#fff"
+                                style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
+                                onPress={() => { IsAuthorized ? removeFromWishlist() : toast("Harap Login Terlebih Dahulu", "danger") }}
+                            >
+                                <View style={{ padding: 8, margin: 10 }}>
+                                    <Icon name={"heart"} size={20} color="red" onPress={() => setFav(false)} />
+                                </View>
+                            </Ripple>
                         ) : (
-                            <Text style={{ color: '#fff', fontFamily: "Poppins-SemiBold", marginTop: 5, fontSize: 13 }}>Tambah ke Keranjang</Text>
+                            <Ripple
+                                rippleColor="#fff"
+                                style={{ height: 40, borderRadius: 8, borderWidth: 1, borderColor: 'red', overflow: 'hidden', justifyContent: "center", alignItems: "center" }}
+                                onPress={() => { IsAuthorized ? addToWishlist() : toast("Harap Login Terlebih Dahulu", "danger") }}
+                            >
+                                <View style={{ padding: 8, margin: 10 }}>
+                                    <FontAwesome5 name={"heart"} size={20} color="red" onPress={() => setFav(true)} />
+                                </View>
+                            </Ripple>
                         )}
-                    </Ripple>
+                        <Ripple
+                            onPress={() => beforeAddToKeranjang()}
+                            rippleColor={`${data.qty > 0 && "#fff"}`}
+                            style={{ height: 40, borderRadius: 10, backgroundColor: `${data.qty > 0 ? "#eb8937" : "#ccc"}`, overflow: 'hidden', marginLeft: 10, width: "80%", justifyContent: "center", alignItems: 'center' }}
+                        >
+                            {isLoading ? (
+                                <ActivityIndicator color="#fff" />
+                            ) : (
+                                <Text style={{ color: '#fff', fontFamily: "Poppins-SemiBold", marginTop: 5, fontSize: 13 }}>Tambah ke Keranjang</Text>
+                            )}
+                        </Ripple>
+                    </View>
                 </View>
-            </View>
+            )}
         </>
     )
 }

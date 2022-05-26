@@ -14,7 +14,9 @@ const setStorage = (key, value) => {
 }
 
 const setRefreshToken = () => {
-    const backendURL = "http://192.168.18.23:7000"
+    // const backendURL = "http://192.168.18.23:7000" // staging
+    // const backendURL = "http://192.168.18.38:8000"    // dev
+    const backendURL = "http://192.46.229.91:7000" // prod
     AsyncStorage.getItem("tokenRefresh").then(data => {
         if (data !== null) {
             let tokenRefresh = JSON.parse(data)

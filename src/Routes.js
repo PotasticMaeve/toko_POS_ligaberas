@@ -25,11 +25,13 @@ import ConfirmKeranjang from "./pages/ConfirmKeranjang";
 import DetailCardAdmin from "./pages/DetailCardAdmin";
 import AddProduct from "./pages/AddProduct";
 import AddSupplier from "./pages/AddSupplier";
+import AddPurchase from "./pages/AddPurchase";
 import DelayTransaksi from "./components/DelayTransaksi";
 import AlamatPengiriman from "./pages/AlamatPengiriman";
 import Pembayaran from "./pages/Pembayaran";
 import PersonalInfo from "./pages/PersonalInfo";
 import Customers from "./pages/Customers";
+import Purchase from "./pages/Purchase";
 
 const tabIcon = ({ name, focused, title }) => {
     if (focused) {
@@ -95,10 +97,12 @@ const Routes = () => {
                 <Scene key="DetailCardAdmin" component={isAuthorized ? DetailCardAdmin : Auth} title="DetailCardAdmin" />
                 <Scene key="AddProduct" component={isAuthorized ? AddProduct : Auth} title="AddProduct" />
                 <Scene key="AddSupplier" component={isAuthorized ? AddSupplier : Auth} title="AddSupplier" />
+                <Scene key="AddPurchase" component={isAuthorized ? AddPurchase : Auth} title="AddPurchase" />
                 <Scene key="DelayTransaksi" component={isAuthorized ? DelayTransaksi : Auth} title="DelayTransaksi" />
                 <Scene key="AlamatPengiriman" component={isAuthorized ? AlamatPengiriman : Auth} title="AlamatPengiriman" />
                 <Scene key="Pembayaran" component={isAuthorized ? Pembayaran : Auth} title="Pembayaran" />
                 <Scene key="PersonalInfo" component={isAuthorized ? PersonalInfo : Auth} title="PersonalInfo" />
+                <Scene key="Purchase" component={isAuthorized ? Purchase : Auth} title="Purchase" />
             </Scene>
         </Router>
     )

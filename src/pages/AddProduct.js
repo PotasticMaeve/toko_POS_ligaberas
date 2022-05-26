@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, View, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Text, SafeAreaView, Keyboard, View, ScrollView, Image, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
@@ -12,10 +12,13 @@ import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
 import { Actions } from 'react-native-router-flux';
 import SelectDropdown from 'react-native-select-dropdown'
+import RNFetchBlob from 'rn-fetch-blob';
+import { toast } from '../Helper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const colorHeader = ['#f3a337', '#eb8937']
 
-const AddProduct = () => {
+const AddProduct = (props) => {
     const bs = useRef(null)
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
@@ -28,12 +31,16 @@ const AddProduct = () => {
     const [harga, setHarga] = useState("")
     const [qty, setQty] = useState(0)
     const [deskripsi, setDeskripsi] = useState("")
+    const [photo, setPhoto] = useState("")
     const [editNama, setEditNama] = useState(false)
     const [editHarga, setEditHarga] = useState(false)
     const [editQty, setEditQty] = useState(false)
     const [editDeskripsi, setEditDeskripsi] = useState(false)
     const [imageSelected, setImageSelected] = useState(false)
-    const [uri, setUri] = useState("")
+    const [uri, setUri] = useState(null)
+    const [pic, setPic] = useState(null)
+    const [imgName, setImgName] = useState("")
+    const [uploadTime, setUploadTime] = useState(false)
 
     const getSupplier = () => {
         axios.get(`${backendURL}/api/v1/supplier/`)
@@ -119,25 +126,101 @@ const AddProduct = () => {
         ImagePicker.openPicker({
             width: 300,
             height: 400,
+            includeBase64: true,
             cropping: true,
         }).then(image => {
+            let source = image.path.split("/")
+            let target_name = source[source.length - 1]
+            setPic(image.data)
             setUri(image.path);
+            setImgName(target_name);
             setImageSelected(true)
+            setUploadTime(true)
             bs.current.close()
         });
     };
+
+    const uploadImg = () => {
+        RNFetchBlob.fetch(
+            'POST',
+            'http://192.168.18.23:7002/upload',
+            {
+                'Content-Type': 'multipart/form-data',
+            },
+            [
+                { name: 'file', filename: imgName, data: pic },
+            ],
+        )
+        .then(response => response.json())
+        .then((resp) => {
+            setPhoto(resp.filepath);
+            toast("Upload Foto Berhasil", "success")
+            setUploadTime(false)
+        })
+    }
 
     const openCamera = () => {
         ImagePicker.openCamera({
             width: 300,
             height: 400,
+            includeBase64: true,
             cropping: true,
         }).then(image => {
-            setUri(image.path)
+            let source = image.path.split("/")
+            let target_name = source[source.length - 1]
+            setPic(image.data)
+            setUri(image.path);
+            setImgName(target_name);
             setImageSelected(true)
+            setUploadTime(true)
             bs.current.close()
         });
     };
+
+    const saveProduct = () => {
+        let data = {
+            nama: namaBarang,
+            harga: harga,
+            qty: qty,
+            deskripsi: deskripsi,
+            photo: photo,
+            kategori: CategoryID,
+            supplier: supplierID
+        }
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                if (supplierID !== 0 && CategoryID !== 0 && namaBarang !== "" && harga !== "" && qty !== 0 && deskripsi !== "") {
+                    setIsLoading(true)
+                    Keyboard.dismiss()
+                    axios.post(`${backendURL}/api/v1/product/`, data, key)
+                        .then(() => {
+                            props.getAfterAdd && props.getAfterAdd()
+                            Actions.pop()
+                            toast("Produk Berhasil Ditambahkan", "success")
+                            setIsLoading(false)
+                            setNamaBarang("")
+                            setHarga("")
+                            setQty(0)
+                            setPhoto("")
+                            setDeskripsi("")
+                            setUri(null)
+                            setPic(null)
+                            setImgName("")
+                            setCategoryID(0)
+                            setSupplierID(0)
+                        }).catch((err) => {
+                            toast("Produk Gagal Ditambahkan", "danger")
+                            setIsLoading(false)
+                        })
+                } else {
+                    toast("Form Wajib Diisi", "info")
+                    setIsLoading(false)
+                }
+            }
+        })
+    }
 
     useEffect(() => {
         getSupplier()
@@ -204,11 +287,11 @@ const AddProduct = () => {
                             <SelectDropdown
                                 data={dataCategory.map(el => el.nama)}
                                 onSelect={(selectedItem, index) => {
-                                    // dataCategory.map(el => {
-                                    //     if(el.nama === selectedItem){
-                                    //         setCategoryID(el.id);
-                                    //     }
-                                    // })
+                                    dataCategory.map(el => {
+                                        if (el.nama === selectedItem) {
+                                            setCategoryID(el.id);
+                                        }
+                                    })
                                     return selectedItem
                                 }}
                                 defaultButtonText={"-- Pilih Kategori --"}
@@ -311,11 +394,10 @@ const AddProduct = () => {
                                         width: 100,
                                         height: 100,
                                     }}
-                                    source={{uri: uri}}
+                                    source={{ uri: uri }}
                                 />
                             </TouchableOpacity>
                         </>
-
                     ) : (
                         <TouchableOpacity
                             style={{ height: 70, width: "100%", backgroundColor: "#FCE6C6", borderRadius: 5, marginTop: 5, justifyContent: "center", alignItems: "center", borderStyle: "dashed", borderWidth: 1, borderColor: "#eb8937" }}
@@ -325,16 +407,31 @@ const AddProduct = () => {
                             <Text style={{ fontSize: 13, color: "#eb8937", fontFamily: "Poppins-Medium" }}>Tambah Foto</Text>
                         </TouchableOpacity>
                     )}
-                    <Ripple
-                        rippleColor="#fff"
-                        style={{ height: 40, width: "100%", borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center", marginTop: 20 }}
-                    >
-                        {isLoading ? (
-                            <ActivityIndicator color="#fff" />
-                        ) : (
-                            <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>Simpan</Text>
-                        )}
-                    </Ripple>
+                    {uploadTime ? (
+                        <Ripple
+                            rippleColor="#fff"
+                            style={{ height: 40, width: "100%", borderRadius: 10, backgroundColor: '#27ae60', justifyContent: "center", alignItems: "center", marginTop: 20 }}
+                            onPress={() => uploadImg()}
+                        >
+                            {isLoading ? (
+                                <ActivityIndicator color="#fff" />
+                            ) : (
+                                <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>Upload Foto</Text>
+                            )}
+                        </Ripple>
+                    ) : (
+                        <Ripple
+                            rippleColor="#fff"
+                            style={{ height: 40, width: "100%", borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center", marginTop: 20 }}
+                            onPress={() => saveProduct()}
+                        >
+                            {isLoading ? (
+                                <ActivityIndicator color="#fff" />
+                            ) : (
+                                <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>Simpan</Text>
+                            )}
+                        </Ripple>
+                    )}
                     <Space height={250} />
                 </View>
             </ScrollView>

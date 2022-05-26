@@ -16,6 +16,8 @@ const colorHeader = ['#f3a337', '#eb8937']
 const { height } = Dimensions.get("screen")
 
 const Kategori = (props) => {
+  const {is_admin} = useContext(MainContext)
+  const [isAdmin] = is_admin
   const [data, setData] = useState([])
   const { backend_url } = useContext(MainContext)
   const [backendURL] = backend_url
@@ -51,6 +53,11 @@ const Kategori = (props) => {
           <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
         </TouchableOpacity>
         <Text style={{ fontSize: 16, marginTop: 5, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>kategori {props.text}</Text>
+        {isAdmin && data.length > 0 && (
+          <View style={{ marginLeft: 10, paddingHorizontal: 10, backgroundColor: "#FCE6C6", borderRadius: 20, justifyContent: "center", alignItems: "center" }}>
+            <Text style={{ fontSize: 13, marginTop: 5, color: "#eb8937", fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{data.length}</Text>
+          </View>
+        )}
       </LinearGradient>
       <ScrollView style={{ paddingTop: 10 }} showsVerticalScrollIndicator={false}>
         {isEmpty ? (

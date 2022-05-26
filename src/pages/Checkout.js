@@ -285,7 +285,6 @@ const Checkout = (props) => {
                                     <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "red", fontFamily: "Poppins-Medium" }}>no HP tujuan belum diperbarui</Text>
                                 ) : (
                                     <Text numberOfLines={1} style={{ width: 230, fontSize: 12, color: "#6b705c", fontFamily: "Poppins-Medium" }}>{profil.phone}</Text>
-
                                 )}
                             </>
                         )}

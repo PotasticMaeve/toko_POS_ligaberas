@@ -67,6 +67,10 @@ const Home = () => {
     })
   }
 
+  const refreshData = () => {
+    getData()
+  }
+
   useEffect(() => {
     getData()
   }, [])
@@ -77,7 +81,7 @@ const Home = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <Slider />
         <Menu />
-        <Label />
+        <Label refreshData={refreshData} />
         {isLoading ? (
           <View style={{ flexDirection: "column", paddingHorizontal: 10 }}>
             <View style={{ flexDirection: "row" }}>

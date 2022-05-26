@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import { TextInput, StyleSheet, TouchableOpacity, Dimensions, Text, SafeAreaView, View, ScrollView, Image, ActivityIndicator } from 'react-native';
+import { TextInput, StyleSheet, TouchableOpacity, Dimensions, Text, SafeAreaView, View, ScrollView, Image, ActivityIndicator, Platform } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
@@ -8,7 +8,9 @@ import { MainContext } from '../context/MainContext';
 import Icons from 'react-native-vector-icons/Ionicons'
 import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
+import ImagePicker from 'react-native-image-crop-picker';
 import { convertToIDR, toast } from "../Helper"
+import Modal from "react-native-modal";
 import LottieView from 'lottie-react-native';
 import BottomSheet from "react-native-gesture-bottom-sheet";
 import ShimmerProduct from '../components/ShimmerProduct';
@@ -17,6 +19,7 @@ import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import { Actions } from 'react-native-router-flux';
 import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNFetchBlob from 'rn-fetch-blob';
 import { setRefreshToken } from "../Helper"
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
@@ -26,6 +29,7 @@ const colorHeader = ['#f3a337', '#eb8937']
 const { height } = Dimensions.get("screen")
 const Products = () => {
     const bs = useRef(null)
+    const bs2 = useRef(null)
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [isLoading, setIsLoading] = useState(false)
@@ -33,14 +37,20 @@ const Products = () => {
     const [data, setData] = useState([])
     const [input, setInput] = useState("")
     const [updateIDSupplier, setUpdateIDSupplier] = useState(0)
-    const [updateNamaCategory, setUpdateNamaCategory] = useState("")
+    const [updateIDCategory, setUpdateIDCategory] = useState(0)
     const [dataDisplay, setDataDisplay] = useState([])
     const [dataSupplier, setDataSupplier] = useState([])
     const [dataCategory, setDataCategory] = useState([])
     const [editing, setEditing] = useState(false)
     const [editForm, setEditForm] = useState(false)
     const [singleData, setSingleData] = useState({})
+    const [modalShow, setModalShow] = useState(false)
     const [showEmpty, setShowEmpty] = useState(false)
+    const [uri, setUri] = useState(null)
+    const [pic, setPic] = useState(null)
+    const [imgName, setImgName] = useState("")
+    const [imageSelected, setImageSelected] = useState(false)
+    const [idProduk, setIdProduk] = useState(0)
 
     const getData = () => {
         setIsLoading(true)
@@ -64,12 +74,12 @@ const Products = () => {
         axios.get(`${backendURL}/api/v1/product/${id}/`)
             .then((res) => {
                 if (res.status === 200) {
-                    let nama_category = res.data.data[0].kategori.nama
                     let id_supplier = res.data.data[0].supplier.id
+                    let id_category = res.data.data[0].kategori.id
                     setSingleData(res.data.data[0]);
                     setIsLoadingForm(false)
                     setUpdateIDSupplier(id_supplier)
-                    setUpdateNamaCategory(nama_category)
+                    setUpdateIDCategory(id_category)
                 }
             })
             .catch((err) => {
@@ -142,7 +152,8 @@ const Products = () => {
             harga: singleData.harga,
             qty: singleData.qty,
             deskripsi: singleData.deskripsi,
-            supplier: updateIDSupplier
+            supplier: updateIDSupplier,
+            kategori: updateIDCategory
         }
         if (singleData.nama_barang === "" || singleData.harga === "" || singleData.qty === "" || singleData.deskripsi === "") {
             toast("Data Produk Harus Diisi", "danger")
@@ -189,6 +200,119 @@ const Products = () => {
                     })
             }
         })
+    }
+
+    const pickPicture = () => {
+        ImagePicker.openPicker({
+            width: 300,
+            height: 400,
+            includeBase64: true,
+            cropping: true,
+        }).then(image => {
+            let source = image.path.split("/")
+            let target_name = source[source.length - 1]
+            setPic(image.data)
+            setUri(image.path);
+            setImgName(target_name);
+            setImageSelected(true)
+            bs2.current.close()
+        });
+    };
+
+    const uploadImage = async () => {
+        RNFetchBlob.fetch(
+            'POST',
+            'http://192.168.18.23:7002/upload',
+            {
+                'Content-Type': 'multipart/form-data',
+            },
+            [
+                { name: 'file', filename: imgName, data: pic },
+            ],
+        )
+            .then(response => response.json())
+            .then((resp) => {
+                toast("Ubah Foto Berhasil", "success")
+                setIsLoading(true)
+                let body = {
+                    nama: singleData.nama_barang,
+                    harga: singleData.harga,
+                    qty: singleData.qty,
+                    deskripsi: singleData.deskripsi,
+                    photo: resp.filepath,
+                    kategori: singleData.kategori.id,
+                    supplier: singleData.supplier.id
+                }
+                AsyncStorage.getItem("tokenAccess").then(token => {
+                    if (token !== null) {
+                        let tokenAccess = JSON.parse(token)
+                        let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                        axios.patch(`${backendURL}/api/v1/product/${idProduk}/`, body, key)
+                            .then(res => {
+                                setImageSelected(false)
+                                setIdProduk(0)
+                                setImgName("")
+                                setUri(null)
+                                setPic(null)
+                                setInput("")
+                                setDataDisplay([])
+                                getData()
+                            }).catch((err) => {
+                                toast("Gagal Merubah Foto", "danger")
+                                setIsLoading(false)
+                            })
+                    }
+                })
+            })
+    };
+
+    const openCamera = () => {
+        ImagePicker.openCamera({
+            width: 300,
+            height: 400,
+            includeBase64: true,
+            cropping: true,
+        }).then(image => {
+            let source = image.path.split("/")
+            let target_name = source[source.length - 1]
+            setPic(image.data)
+            setUri(image.path);
+            setImgName(target_name);
+            setImageSelected(true)
+            bs2.current.close()
+        });
+    };
+
+    const removeProduct = (id) => {
+        setModalShow(true)
+        setIdProduk(id)
+    }
+
+    const confirmRemoveProduct = () => {
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            let tokenAccess = JSON.parse(token)
+            let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+            if (tokenAccess !== null) {
+                axios.delete(`${backendURL}/api/v1/product/${idProduk}/`, key)
+                    .then(res => {
+                        setModalShow(false)
+                        toast("Produk Berhasil Dihapus", "danger")
+                        getData()
+                        setInput("")
+                        setDataDisplay([])
+                    })
+            }
+        })
+    }
+
+    const getAfterAdd = () => {
+        getData()
+    }
+
+    const openImageSelector = (id) => {
+        bs2.current.show()
+        setIdProduk(id)
+        getDataById(id)
     }
 
     useEffect(() => {
@@ -256,34 +380,75 @@ const Products = () => {
                     ) : (
                         <View style={s.productsWrap}>
                             {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
-                                <TouchableOpacity style={[styles.cardItemWrap, {
-                                    flexDirection: 'column',
-                                    height: "auto",
-                                    width: "100%",
-                                    borderRadius: 5,
-                                    backgroundColor: '#fff',
-                                    marginHorizontal: 0,
-                                    marginVertical: 5,
-                                    padding: 10,
-                                    borderRadius: 5
-                                }]}
+                                <View
+                                    style={[styles.cardItemWrap, {
+                                        flexDirection: 'column',
+                                        height: "auto",
+                                        width: "100%",
+                                        borderRadius: 5,
+                                        backgroundColor: '#fff',
+                                        marginHorizontal: 0,
+                                        marginVertical: 5,
+                                        padding: 10,
+                                        borderRadius: 5
+                                    }]}
                                     key={i}
-                                    onPress={() => showDetailProduct(el.id)}
                                 >
                                     <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                        <View style={{ height: "100%", width: 100 }} >
-                                            <Image
-                                                source={{ uri: el.photo }}
-                                                style={{ height: 80, width: "auto" }}
-                                            />
-                                        </View>
-                                        <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 20, justifyContent: 'space-around' }}>
+                                        {imageSelected && el.id === idProduk ? (
+                                            <View style={{ height: "100%", width: 100 }} >
+                                                <Image
+                                                    source={{ uri: uri }}
+                                                    style={{ height: 80, width: "auto" }}
+                                                />
+                                            </View>
+                                        ) : (
+                                            <View style={{ height: "100%", width: 100 }} >
+                                                <Image
+                                                    source={{ uri: el.photo }}
+                                                    style={{ height: 80, width: "auto" }}
+                                                />
+                                            </View>
+                                        )}
+                                        <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around' }}>
                                             <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama_barang}</Text>
                                             <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{convertToIDR(el.harga)}</Text>
-                                            <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#f5576c' }}>Stok {el.qty}</Text>
+                                            {el.qty > 0 ? (
+                                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#f5576c' }}>Stok {el.qty}</Text>
+                                            ) : (
+                                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Stok Habis</Text>
+                                            )}
                                         </View>
                                     </View>
-                                </TouchableOpacity>
+                                    <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
+                                        <View style={{ flexDirection: 'row' }}>
+                                            {imageSelected && el.id === idProduk ? (
+                                                <Ripple
+                                                    rippleColor="#27ae60"
+                                                    onPress={() => uploadImage()}
+                                                    style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "purple", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'purple' }}>Simpan Foto</Text>
+                                                </Ripple>
+                                            ) : (
+                                                <Ripple
+                                                    rippleColor="#27ae60"
+                                                    onPress={() => openImageSelector(el.id)}
+                                                    style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#60a3bc", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>Ubah Foto</Text>
+                                                </Ripple>
+                                            )}
+                                            <Ripple
+                                                rippleColor="#27ae60"
+                                                onPress={() => showDetailProduct(el.id)}
+                                                style={{ width: 100, height: 30, marginLeft: 10, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#27ae60", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Detail</Text>
+                                            </Ripple>
+                                        </View>
+                                        <Ripple rippleColor="red" style={{ width: 40, height: 30, marginTop: 5, padding: 3, justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "red", borderRadius: 10 }} onPress={() => removeProduct(el.id)}>
+                                            <FontAwesome5 name={"trash"} size={16} color="red" />
+                                        </Ripple>
+                                    </View>
+                                </View>
                             )) : (
                                 data.length > 0 && data.map((el, i) => (
                                     <View
@@ -301,12 +466,21 @@ const Products = () => {
                                         key={i}
                                     >
                                         <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                            <View style={{ height: "100%", width: 100 }} >
-                                                <Image
-                                                    source={{ uri: el.photo }}
-                                                    style={{ height: 80, width: "auto" }}
-                                                />
-                                            </View>
+                                            {imageSelected && el.id === idProduk ? (
+                                                <View style={{ height: "100%", width: 100 }} >
+                                                    <Image
+                                                        source={{ uri: uri }}
+                                                        style={{ height: 80, width: "auto" }}
+                                                    />
+                                                </View>
+                                            ) : (
+                                                <View style={{ height: "100%", width: 100 }} >
+                                                    <Image
+                                                        source={{ uri: el.photo }}
+                                                        style={{ height: 80, width: "auto" }}
+                                                    />
+                                                </View>
+                                            )}
                                             <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around' }}>
                                                 <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama_barang}</Text>
                                                 <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{convertToIDR(el.harga)}</Text>
@@ -319,12 +493,21 @@ const Products = () => {
                                         </View>
                                         <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 10 }}>
                                             <View style={{ flexDirection: 'row' }}>
-                                                <Ripple
-                                                    // rippleColor="#27ae60"
-                                                    // onPress={() => showDetailProduct(el.id)}
-                                                    style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#60a3bc", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
-                                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>Ubah Foto</Text>
-                                                </Ripple>
+                                                {imageSelected && el.id === idProduk ? (
+                                                    <Ripple
+                                                        rippleColor="#27ae60"
+                                                        onPress={() => uploadImage()}
+                                                        style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "purple", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                        <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'purple' }}>Simpan Foto</Text>
+                                                    </Ripple>
+                                                ) : (
+                                                    <Ripple
+                                                        rippleColor="#27ae60"
+                                                        onPress={() => openImageSelector(el.id)}
+                                                        style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#60a3bc", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                        <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>Ubah Foto</Text>
+                                                    </Ripple>
+                                                )}
                                                 <Ripple
                                                     rippleColor="#27ae60"
                                                     onPress={() => showDetailProduct(el.id)}
@@ -332,9 +515,9 @@ const Products = () => {
                                                     <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Detail</Text>
                                                 </Ripple>
                                             </View>
-                                            <View style={{ width: 40, height: 30, marginTop: 5, padding: 3, justifyContent: "center", alignItems: "center" }}>
+                                            <Ripple rippleColor="red" style={{ width: 40, height: 30, marginTop: 5, padding: 3, justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "red", borderRadius: 10 }} onPress={() => removeProduct(el.id)}>
                                                 <FontAwesome5 name={"trash"} size={16} color="red" />
-                                            </View>
+                                            </Ripple>
                                         </View>
                                     </View>
                                 ))
@@ -344,7 +527,7 @@ const Products = () => {
                     )
                 )}
             </ScrollView>
-            <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => Actions.AddProduct()}>
+            <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => Actions.AddProduct({ getAfterAdd: getAfterAdd })}>
                 <FontAwesome5 name={"plus"} size={14} color="#fff" />
             </Ripple>
             <SafeAreaView style={s.container}>
@@ -429,11 +612,11 @@ const Products = () => {
                                                 setSingleData(data)
                                                 dataCategory.map(el => {
                                                     if (el.nama === selectedItem) {
-                                                        setUpdateNamaCategory(el.nama);
+                                                        setUpdateIDCategory(el.id);
                                                     }
                                                 })
                                             }}
-                                            defaultButtonText={singleData.kategori ? singleData.kategori.nama : "Pilih Kategori"}
+                                            defaultButtonText={singleData.kategori && singleData.kategori.nama_barang}
                                             buttonTextAfterSelection={(selectedItem, index) => {
                                                 return selectedItem
                                             }}
@@ -600,11 +783,104 @@ const Products = () => {
                     </View>
                 </BottomSheet>
             </SafeAreaView>
+            <SafeAreaView style={s.container}>
+                <BottomSheet hasDraggableIcon ref={bs2} height={150}>
+                    <View style={{
+                        paddingVertical: 20,
+                        paddingHorizontal: 10,
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        flex: 1
+                    }}>
+                        <Ripple
+                            rippleColor="#fff"
+                            style={s.boxUpload}
+                            onPress={pickPicture}
+                        >
+                            <FontAwesome5 name={"image"} size={50} color='#aaa' />
+                            <Text style={{ fontSize: 13, color: "#aaa", fontFamily: "Poppins-Medium" }}>Galeri</Text>
+                        </Ripple>
+                        <Ripple
+                            rippleColor="#fff"
+                            style={s.boxUpload}
+                            onPress={openCamera}
+                        >
+                            <Icons name={"camera"} size={50} color='#aaa' />
+                            <Text style={{ fontSize: 13, color: "#aaa", fontFamily: "Poppins-Medium" }}>Kamera</Text>
+                        </Ripple>
+                    </View>
+                </BottomSheet>
+            </SafeAreaView>
+            {modalShow && (
+                <Modal
+                    isVisible={modalShow} style={{ justifyContent: "center", alignItems: "center" }}>
+                    <View
+                        style={{
+                            backgroundColor: "#fafafa",
+                            height: 300,
+                            width: 300,
+                            borderRadius: 10,
+                        }}>
+                        <View style={{ justifyContent: "center", alignItems: "center", paddingTop: 10 }}>
+                            <LottieView
+                                source={require('../animations/close-checkout.json')}
+                                autoPlay
+                                loop
+                                style={{
+                                    height: 200,
+                                    width: 200
+                                }}
+                            />
+                            <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium", marginTop: "-6%" }}>Yakin ingin menghapus barang?</Text>
+                            <Text style={{ fontSize: 13, fontFamily: "Poppins-Medium", color: "#d90429" }}>Aksi ini tidak dapat dikembalikan</Text>
+                        </View>
+                        <View style={{
+                            flexDirection: "row",
+                            justifyContent: "space-evenly",
+                            position: "absolute",
+                            width: "100%",
+                            height: 50,
+                            bottom: 0
+                        }}>
+                            <TouchableOpacity
+                                style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#ddd", justifyContent: "center", alignItems: "center" }}
+                                onPress={() => setModalShow(false)}
+                            >
+                                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                                    <Text style={{ fontFamily: "Poppins-Medium" }}>Tidak</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#eb8937", justifyContent: "center", alignItems: "center" }}
+                                onPress={() => confirmRemoveProduct()}
+                            >
+                                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                                    <Text style={{ fontFamily: "Poppins-Medium" }}>Ya</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            )}
         </>
     )
 }
 
 const s = StyleSheet.create({
+    boxUpload: {
+        height: "100%",
+        width: "45%",
+        backgroundColor: "#ddd",
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: '#eaeaea',
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+        elevation: 1,
+    },
     inputWrap: {
         flexDirection: "row",
         alignItems: "center",
