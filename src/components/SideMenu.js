@@ -70,6 +70,10 @@ const SideMenu = () => {
                             <FontAwesome5 name={"box-open"} size={18} color="#e36414" />
                             <Text style={styles.menu_text}>Produk</Text>
                         </TouchableOpacity>
+                        <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Staffs()}>
+                            <FontAwesome5 name={"user-lock"} size={18} color="#e36414" />
+                            <Text style={styles.menu_text}>Staff</Text>
+                        </TouchableOpacity>
                         <TouchableOpacity style={styles.menu_item} onPress={() => Actions.Customers()}>
                             <FontAwesome5 name={"users"} size={18} color="#e36414" />
                             <Text style={styles.menu_text}>Pelanggan</Text>

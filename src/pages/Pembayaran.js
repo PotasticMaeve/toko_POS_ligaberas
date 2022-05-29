@@ -180,7 +180,7 @@ const Pembayaran = (props) => {
                 <TouchableOpacity onPress={() => Actions.pop()}>
                     <FontAwesome5 name={"angle-left"} size={27} color='#fff' />
                 </TouchableOpacity>
-                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Daftar Kartu</Text>
+                <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Data Pembayaran</Text>
             </LinearGradient>
             <ScrollView style={{ paddingTop: 15, backgroundColor: "#fafafa", height: "100%" }} showsVerticalScrollIndicator={false}>
                 {emptyData ? (

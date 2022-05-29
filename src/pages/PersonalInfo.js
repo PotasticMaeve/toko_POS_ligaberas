@@ -27,6 +27,7 @@ const PersonalInfo = (props) => {
     const [backendURL] = backend_url
     const [isLoading, setIsLoading] = useState(false)
     const [edit, setEdit] = useState(false)
+    const [role, setRole] = useState("")
     const gender = ["Pria", "Wanita"]
 
     const detailProfil = () => {
@@ -40,6 +41,11 @@ const PersonalInfo = (props) => {
                         let username = JSON.parse(value)
                         axios.get(`${backendURL}/api/v1/customer/?username=${username}`, key)
                             .then((res) => {
+                                if (res.data.data.is_admin) {
+                                    setRole("Pegawai")
+                                } else {
+                                    setRole("Pelanggan")
+                                }
                                 setProfil(res.data.data);
                                 setIsLoading(false)
                             })
@@ -289,6 +295,38 @@ const PersonalInfo = (props) => {
                             </SafeAreaView>
                         </View>
                     </View>
+                    {role === "Pegawai" && (
+                        <View style={{ flexDirection: "row" }}>
+                            <View style={s.areaInput}>
+                                <SafeAreaView style={s.inputWrap}>
+                                    <View style={{ justifyContent: "center", alignItems: "center", marginLeft: 10 }}>
+                                        <Icon name={"home"} size={20} color='#eb8937' />
+                                    </View>
+                                    {isLoading ? (
+                                        <ShimmerPlaceHolder
+                                            shimmerColors={colorShimmer}
+                                            style={{
+                                                height: 20,
+                                                width: "70%",
+                                                marginLeft: 20,
+                                                marginVertical: 14
+                                            }}
+                                        />
+                                    ) : (
+                                        <TextInput
+                                            placeholder="Alamat"
+                                            style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "82%" }}
+                                            spellCheck={false}
+                                            value={profil && profil.alamat}
+                                            onChangeText={new_text => setProfil({ ...profil, alamat: new_text })}
+                                            autoCorrect={false}
+                                            editable={edit}
+                                        />
+                                    )}
+                                </SafeAreaView>
+                            </View>
+                        </View>
+                    )}
                     {edit ? (
                         <View style={{ width: "100%", marginTop: 30, flexDirection: "row", justifyContent: "space-between" }}>
                             <Ripple

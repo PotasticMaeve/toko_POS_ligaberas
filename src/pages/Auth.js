@@ -307,7 +307,7 @@ const Auth = () => {
                             </View>
                             <View style={styles.input}>
                                 <TextInput
-                                    placeholder="nama"
+                                    placeholder="Nama Lengkap"
                                     style={{ marginLeft: 3, fontSize: 14, color: "#595959", fontFamily: "Poppins-Medium", width: "90%" }}
                                     spellCheck={false}
                                     autoCorrect={false}

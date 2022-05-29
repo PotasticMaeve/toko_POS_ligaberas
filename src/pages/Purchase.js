@@ -185,7 +185,7 @@ const Purchase = () => {
             <ScrollView style={{ paddingVertical: 10, height: "100%", backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
                 <View style={s.areaInput}>
                     <SafeAreaView style={s.inputWrap}>
-                        <FontAwesome5 name={"search"} size={16} color='#eb8937' style={{ marginLeft: 8 }} onPress={() => getSearchProduct()} />
+                        <FontAwesome5 name={"search"} size={16} color='#eb8937' style={{ marginLeft: 8 }} onPress={() => getSearchSupplier()} />
                         <TextInput
                             placeholder="Cari pesanan"
                             style={s.inputComp}
@@ -220,7 +220,7 @@ const Purchase = () => {
                         <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 10 }}>Supplier Tidak Ditemukan</Text>
                         <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Supplier untuk pencarian tidak tersedia</Text>
                     </>
-                ):(
+                ) : (
                     isLoading ? (
                         <>
                             <ShimmerSupplier />
@@ -251,8 +251,8 @@ const Purchase = () => {
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
                                             <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>
-                                            <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.phone}</Text>
-                                            <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>{el.alamat}</Text>
+                                            <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>nama barang</Text>
+                                            <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>qty</Text>
                                         </View>
                                     </View>
                                 </TouchableOpacity>
@@ -279,8 +279,22 @@ const Purchase = () => {
                                             </View>
                                             <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
                                                 <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>
-                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.phone}</Text>
-                                                <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>{el.alamat}</Text>
+                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>nama barang</Text>
+                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>grandtotal</Text>
+                                                <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-evenly" }}>
+                                                    <Ripple
+                                                        rippleColor="red"
+                                                        onPress={() => { }}
+                                                        style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "red", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                        <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Batalkan</Text>
+                                                    </Ripple>
+                                                    <Ripple
+                                                        rippleColor="#27ae60"
+                                                        onPress={() => { }}
+                                                        style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#27ae60", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                        <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Terima</Text>
+                                                    </Ripple>
+                                                </View>
                                             </View>
                                         </View>
                                     </TouchableOpacity>
@@ -299,7 +313,7 @@ const Purchase = () => {
                     <View style={{
                         paddingHorizontal: 20,
                     }}>
-                        <Text style={{ fontSize: 15, color: "#000", textAlign: "center", fontFamily: "Poppins-SemiBold", marginVertical: 10 }}>Detail Supplier</Text>
+                        <Text style={{ fontSize: 15, color: "#000", textAlign: "center", fontFamily: "Poppins-SemiBold", marginVertical: 10 }}>Detail Pesanan</Text>
                         <View>
                             <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Nama Supplier</Text>
                             <View style={s.areaInputDetail}>

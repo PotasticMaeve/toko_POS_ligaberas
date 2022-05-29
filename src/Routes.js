@@ -31,6 +31,7 @@ import AlamatPengiriman from "./pages/AlamatPengiriman";
 import Pembayaran from "./pages/Pembayaran";
 import PersonalInfo from "./pages/PersonalInfo";
 import Customers from "./pages/Customers";
+import Staffs from "./pages/Staffs";
 import Purchase from "./pages/Purchase";
 
 const tabIcon = ({ name, focused, title }) => {
@@ -92,6 +93,7 @@ const Routes = () => {
                 <Scene key="Profil" component={isAuthorized ? Profil : Auth} title="Profil" />
                 <Scene key="Suppliers" component={isAuthorized ? Suppliers : Auth} title="Suppliers" />
                 <Scene key="Customers" component={isAuthorized ? Customers : Auth} title="Customers" />
+                <Scene key="Staffs" component={isAuthorized ? Staffs : Auth} title="Staffs" />
                 <Scene key="Products" component={isAuthorized ? Products : Auth} title="Products" />
                 <Scene key="ConfirmKeranjang" component={isAuthorized ? ConfirmKeranjang : Auth} title="ConfirmKeranjang" />
                 <Scene key="DetailCardAdmin" component={isAuthorized ? DetailCardAdmin : Auth} title="DetailCardAdmin" />
