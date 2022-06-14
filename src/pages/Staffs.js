@@ -30,7 +30,7 @@ const Customers = () => {
 
     const getData = () => {
         setIsLoading(true)
-        axios.get(`${backendURL}/api/v1/customer/`)
+        axios.get(`${backendURL}/api/v1/customer/?is_admin=true`)
             .then((res) => {
                 setData(res.data.data);
                 setIsLoading(false)
@@ -62,9 +62,9 @@ const Customers = () => {
         getData()
     }
 
-    const getSearchCustomer = () => {
+    const getSearchStaff = () => {
         setIsLoading(true)
-        axios.get(`${backendURL}/api/v1/customer/?search=${input}`)
+        axios.get(`${backendURL}/api/v1/customer/?search=${input}&is_admin=true`)
             .then(res => {
                 if (res.status === 200) {
                     if (res.data.data.length > 0) {
@@ -83,7 +83,7 @@ const Customers = () => {
             if (token !== null) {
                 let tokenAccess = JSON.parse(token)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-                axios.get(`${backendURL}/report/customer_download`, key)
+                axios.get(`${backendURL}/report/staff_download`, key)
                     .then(res => {
                         if (res.status === 200) {
                             let path = res.data.url
@@ -91,7 +91,7 @@ const Customers = () => {
                         }
                     })
                     .catch(err => {
-                        toast("Gagal Mencetak Data Supplier", "danger")
+                        toast("Gagal Mencetak Data Staff", "danger")
                     })
             }
         })
@@ -112,7 +112,7 @@ const Customers = () => {
             <ScrollView style={{ paddingVertical: 10, height: "100%", backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
                 <View style={s.areaInput}>
                     <SafeAreaView style={s.inputWrap}>
-                        <FontAwesome5 name={"search"} size={16} color='#eb8937' style={{ marginLeft: 8 }} onPress={() => getSearchProduct()} />
+                        <FontAwesome5 name={"search"} size={16} color='#eb8937' style={{ marginLeft: 8 }} onPress={() => getSearchStaff()} />
                         <TextInput
                             placeholder="Cari Staff"
                             style={s.inputComp}
@@ -120,7 +120,7 @@ const Customers = () => {
                             value={input}
                             autoCorrect={false}
                             onChangeText={onChangeText}
-                            onSubmitEditing={() => getSearchCustomer()}
+                            onSubmitEditing={() => getSearchStaff()}
                         />
                         {editing && (
                             <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginRight: 8 }} onPress={() => clearMode()} />
@@ -144,8 +144,8 @@ const Customers = () => {
                                 alignSelf: 'center'
                             }}
                         />
-                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 10 }}>Supplier Tidak Ditemukan</Text>
-                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Supplier untuk pencarian tidak tersedia</Text>
+                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 10 }}>Staff Tidak Ditemukan</Text>
+                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Staff untuk pencarian tidak tersedia</Text>
                     </>
                 ) : (
                     isLoading ? (
@@ -173,7 +173,7 @@ const Customers = () => {
                                 >
                                     <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
                                         <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
-                                            <Icon name={"user"} size={22} color='#eb8937' />
+                                            <FontAwesome5 name={"user-lock"} size={22} color='#eb8937' />
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
                                             <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>
@@ -208,7 +208,7 @@ const Customers = () => {
                                     >
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
                                             <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
-                                                <Icon name={"user"} size={22} color='#eb8937' />
+                                                <FontAwesome5 name={"user-lock"} size={22} color='#eb8937' />
                                             </View>
                                             <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
                                                 <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>

@@ -12,7 +12,7 @@ import { toast } from '../Helper';
 
 const colorHeader = ['#f3a337', '#eb8937']
 
-const AddProduct = (props) => {
+const AddSupplier = (props) => {
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [nama, setNama] = useState("")
@@ -213,4 +213,4 @@ const s = StyleSheet.create({
     },
 })
 
-export default AddProduct
+export default AddSupplier

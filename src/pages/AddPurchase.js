@@ -39,22 +39,29 @@ const AddPurchase = (props) => {
                 if (productID !== 0 && qty !== 0 && harga !== 0) {
                     setIsLoading(true)
                     Keyboard.dismiss()
-                    axios.post(`${backendURL}/api/v1/create_po/`, {
-                        id_barang: productID,
-                        qty_beli: qty,
-                        harga_beli: harga
-                    }, key).then(() => {
-                        Actions.pop()
-                        toast("Pesanan Berhasil Ditambahkan", "success")
-                        setIsLoading(false)
-                        setSupplierID(0)
-                        setProductID(0)
-                        setQty(0)
-                        setHarga(0)
-                    }).catch((err) => {
-                        toast("Pesanan Gagal Ditambahkan", "danger")
-                        setIsLoading(false)
-                    })
+                    let body = {
+                        products: [
+                            {
+                                id_barang: productID,
+                                qty_beli: qty,
+                                harga_beli: harga
+                            }
+                        ]
+                    }
+                    axios.post(`${backendURL}/api/v1/create_po/`, body, key)
+                        .then(res => {
+                            Actions.pop()
+                            toast("Pesanan Berhasil Ditambahkan", "success")
+                            props.getAfterAdd()
+                            setIsLoading(false)
+                            setSupplierID(0)
+                            setProductID(0)
+                            setQty(0)
+                            setHarga(0)
+                        }).catch((err) => {
+                            toast("Pesanan Gagal Ditambahkan", "danger")
+                            setIsLoading(false)
+                        })
                 } else {
                     toast("Form Wajib Diisi", "info")
                     setIsLoading(false)

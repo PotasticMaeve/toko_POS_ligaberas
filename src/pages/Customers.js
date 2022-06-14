@@ -91,7 +91,7 @@ const Customers = () => {
                         }
                     })
                     .catch(err => {
-                        toast("Gagal Mencetak Data Supplier", "danger")
+                        toast("Gagal Mencetak Data Pelanggan", "danger")
                     })
             }
         })
@@ -144,8 +144,8 @@ const Customers = () => {
                                 alignSelf: 'center'
                             }}
                         />
-                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 10 }}>Supplier Tidak Ditemukan</Text>
-                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Supplier untuk pencarian tidak tersedia</Text>
+                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 10 }}>Pelanggan Tidak Ditemukan</Text>
+                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Pelanggan untuk pencarian tidak tersedia</Text>
                     </>
                 ) : (
                     isLoading ? (

@@ -181,7 +181,10 @@ const Auth = () => {
     return (
         <Animated.View style={[styles.container, animatedContainer]}>
             <View style={[styles.centerAlign, { height: "100%" }]}>
-                <Image source={require("../../assets/images/bg-auth.jpg")} />
+                <Image source={require("../../assets/images/bg-auth.jpg")}/>
+                <View>
+                    <Image source={require("../../assets/images/logo.png")} style={{ height: 80, width: 80, zIndex: 999, position: "absolute", top: -260, right: 80 }} />
+                </View>
             </View>
             {loginActive ? (
                 <View style={[styles.centerAlign, { backgroundColor: "rgba(210, 210, 210, .9)", height: height }]}>
@@ -443,7 +446,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 1,
         shadowRadius: 1,
-        elevation: 3,
+        elevation: 3
     },
     title: {
         fontSize: 18,

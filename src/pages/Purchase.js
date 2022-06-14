@@ -10,7 +10,7 @@ import * as OpenAnything from "react-native-openanything"
 import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
 import LottieView from 'lottie-react-native';
-import { toast, setRefreshToken } from "../Helper"
+import { toast, setRefreshToken, convertToIDR } from "../Helper"
 import BottomSheet from "react-native-gesture-bottom-sheet";
 import ShimmerSupplier from '../components/ShimmerSupplier';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
@@ -38,18 +38,24 @@ const Purchase = () => {
 
     const getData = () => {
         setIsLoading(true)
-        axios.get(`${backendURL}/api/v1/supplier/`)
-            .then((res) => {
-                setData(res.data.data);
-                setIsLoading(false)
-            })
-            .catch((err) => {
-                if (err.response.status === 401) {
-                    setRefreshToken()
-                }
-                toast("Gagal Memuat Data Supplier", "danger")
-                setIsLoading(false)
-            })
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            let tokenAccess = JSON.parse(token)
+            if (tokenAccess !== null) {
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                axios.get(`${backendURL}/api/v1/purchase_detail/`, key)
+                    .then((res) => {
+                        setData(res.data.data);
+                        setIsLoading(false)
+                    })
+                    .catch((err) => {
+                        if (err.response.status === 401) {
+                            setRefreshToken()
+                        }
+                        toast("Gagal Memuat Data Pemesanan", "danger")
+                        setIsLoading(false)
+                    })
+            }
+        })
     }
 
     const onChangeText = (search) => {
@@ -88,19 +94,25 @@ const Purchase = () => {
 
     const getDataById = (id) => {
         setIsLoadingForm(true)
-        axios.get(`${backendURL}/api/v1/supplier/${id}/`)
-            .then((res) => {
-                if (res.status === 200) {
-                    setSingleData(res.data);
-                    setIsLoadingForm(false)
-                }
-            })
-            .catch((err) => {
-                toast("Gagal Memuat Data Supplier", "danger")
-            })
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            let tokenAccess = JSON.parse(token)
+            if (tokenAccess !== null) {
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                axios.get(`${backendURL}/api/v1/purchase_detail/${id}/`, key)
+                    .then((res) => {
+                        if (res.status === 200) {
+                            setSingleData(res.data);
+                            setIsLoadingForm(false)
+                        }
+                    })
+                    .catch((err) => {
+                        toast("Gagal Memuat Data Pesanan", "danger")
+                    })
+            }
+        })
     }
 
-    const showDetailSupplier = (id) => {
+    const showDetailPesanan = (id) => {
         bs.current.show()
         getDataById(id)
     }
@@ -156,7 +168,7 @@ const Purchase = () => {
             if (token !== null) {
                 let tokenAccess = JSON.parse(token)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-                axios.get(`${backendURL}/report/supplier_download`, key)
+                axios.get(`${backendURL}/report/po_download`, key)
                     .then(res => {
                         if (res.status === 200) {
                             let path = res.data.url
@@ -164,8 +176,48 @@ const Purchase = () => {
                         }
                     })
                     .catch(err => {
-                        toast("Gagal Mencetak Data Supplier", "danger")
+                        toast("Gagal Mencetak Data Pemesanan", "danger")
                     })
+            }
+        })
+    }
+
+    const receivePurchase = (id) => {
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                axios.post(`${backendURL}/api/v1/receive_po/`, {
+                    id_detail_po: id
+                }, key)
+                    .then(res => {
+                        getData()
+                        toast("Pesanan Selesai", "success")
+                    })
+                    .catch((err) => {
+                        toast("Gagal Menyelesaikan Pesanan", "danger")
+                        setIsLoading(false)
+                    })
+
+            }
+        })
+    }
+
+    const deletePurchase = (id) => {
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                axios.delete(`${backendURL}/api/v1/purchase_detail/${id}/`, key)
+                    .then(res => {
+                        toast("Pesanan Berhasil Dihapus", "success")
+                        getData()
+                    })
+                    .catch((err) => {
+                        toast("Gagal Menghapus Pesanan", "danger")
+                        setIsLoading(false)
+                    })
+
             }
         })
     }
@@ -230,34 +282,7 @@ const Purchase = () => {
                     ) : (
                         <View style={s.productsWrap}>
                             {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
-                                <TouchableOpacity
-                                    style={[styles.cardItemWrap, {
-                                        flexDirection: 'column',
-                                        height: "auto",
-                                        width: "100%",
-                                        borderRadius: 5,
-                                        backgroundColor: '#fff',
-                                        marginHorizontal: 0,
-                                        marginVertical: 5,
-                                        padding: 10,
-                                        borderRadius: 5
-                                    }]}
-                                    key={i}
-                                    onPress={() => showDetailSupplier(el.id)}
-                                >
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
-                                        <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
-                                            <FontAwesome5 name={"archive"} size={22} color='#eb8937' />
-                                        </View>
-                                        <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
-                                            <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>
-                                            <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>nama barang</Text>
-                                            <Text style={{ marginVertical: 6, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>qty</Text>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                            )) : (
-                                data.length > 0 && data.map((el, i) => (
+                                `${el.is_lunas}` === "false" && (
                                     <TouchableOpacity
                                         style={[styles.cardItemWrap, {
                                             flexDirection: 'column',
@@ -271,26 +296,26 @@ const Purchase = () => {
                                             borderRadius: 5
                                         }]}
                                         key={i}
-                                        onPress={() => showDetailSupplier(el.id)}
+                                        onPress={() => showDetailPesanan(el.id)}
                                     >
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
                                             <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
                                                 <FontAwesome5 name={"archive"} size={22} color='#eb8937' />
                                             </View>
                                             <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
-                                                <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "capitalize" }}>{el.nama}</Text>
-                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>nama barang</Text>
-                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>grandtotal</Text>
+                                                <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}>{el.nopo}</Text>
+                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.barang}</Text>
+                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Total: {convertToIDR(el.total)}</Text>
                                                 <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-evenly" }}>
                                                     <Ripple
                                                         rippleColor="red"
-                                                        onPress={() => { }}
+                                                        onPress={() => deletePurchase(el.id)}
                                                         style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "red", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
                                                         <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Batalkan</Text>
                                                     </Ripple>
                                                     <Ripple
                                                         rippleColor="#27ae60"
-                                                        onPress={() => { }}
+                                                        onPress={() => receivePurchase(el.id)}
                                                         style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#27ae60", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
                                                         <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Terima</Text>
                                                     </Ripple>
@@ -298,6 +323,51 @@ const Purchase = () => {
                                             </View>
                                         </View>
                                     </TouchableOpacity>
+                                )
+                            )) : (
+                                data.length > 0 && data.map((el, i) => (
+                                    `${el.is_lunas}` === "false" && (
+                                        <TouchableOpacity
+                                            style={[styles.cardItemWrap, {
+                                                flexDirection: 'column',
+                                                height: "auto",
+                                                width: "100%",
+                                                borderRadius: 5,
+                                                backgroundColor: '#fff',
+                                                marginHorizontal: 0,
+                                                marginVertical: 5,
+                                                padding: 10,
+                                                borderRadius: 5
+                                            }]}
+                                            key={i}
+                                            onPress={() => showDetailPesanan(el.id)}
+                                        >
+                                            <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
+                                                <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
+                                                    <FontAwesome5 name={"archive"} size={22} color='#eb8937' />
+                                                </View>
+                                                <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
+                                                    <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}>{el.nopo}</Text>
+                                                    <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.barang}</Text>
+                                                    <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Total: {convertToIDR(el.total)}</Text>
+                                                    <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-evenly" }}>
+                                                        <Ripple
+                                                            rippleColor="red"
+                                                            onPress={() => deletePurchase(el.id)}
+                                                            style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "red", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                            <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Batalkan</Text>
+                                                        </Ripple>
+                                                        <Ripple
+                                                            rippleColor="#27ae60"
+                                                            onPress={() => receivePurchase(el.id)}
+                                                            style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#27ae60", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                            <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Terima</Text>
+                                                        </Ripple>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
                                 ))
                             )}
                             <Space height={50} />
@@ -309,7 +379,7 @@ const Purchase = () => {
                 <FontAwesome5 name={"plus"} size={14} color="#fff" />
             </Ripple>
             <SafeAreaView style={s.container}>
-                <BottomSheet hasDraggableIcon ref={bs} height={380}>
+                <BottomSheet hasDraggableIcon ref={bs} height={450}>
                     <View style={{
                         paddingHorizontal: 20,
                     }}>
@@ -334,14 +404,14 @@ const Purchase = () => {
                                             style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
                                             spellCheck={false}
                                             autoCorrect={false}
-                                            value={singleData.nama}
-                                            onChangeText={text => setSingleData({ ...singleData, nama: text })}
+                                            value={singleData.supplier}
+                                            onChangeText={text => setSingleData({ ...singleData, supplier: text })}
                                             editable={editForm}
                                         />
                                     )}
                                 </SafeAreaView>
                             </View>
-                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Nomor Telepon</Text>
+                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Nama Barang</Text>
                             <View style={s.areaInputDetail}>
                                 <SafeAreaView style={s.inputWrap}>
                                     {isLoadingForm ? (
@@ -356,19 +426,45 @@ const Purchase = () => {
                                         />
                                     ) : (
                                         <TextInput
-                                            placeholder="082118776231"
+                                            placeholder="Telur Omega"
                                             style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
                                             spellCheck={false}
-                                            value={singleData.phone}
+                                            value={singleData.barang}
                                             autoCorrect={false}
                                             editable={editForm}
-                                            onChangeText={text => setSingleData({ ...singleData, phone: text })}
+                                            onChangeText={text => setSingleData({ ...singleData, barang: text })}
+                                        />
+                                    )}
+                                </SafeAreaView>
+                            </View>
+                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Harga Beli</Text>
+                            <View style={s.areaInputDetail}>
+                                <SafeAreaView style={s.inputWrap}>
+                                    {isLoadingForm ? (
+                                        <ShimmerPlaceHolder
+                                            shimmerColors={colorShimmer}
+                                            style={{
+                                                height: 20,
+                                                width: "50%",
+                                                marginLeft: 20,
+                                                marginVertical: 14
+                                            }}
+                                        />
+                                    ) : (
+                                        <TextInput
+                                            placeholder="10000"
+                                            style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
+                                            spellCheck={false}
+                                            autoCorrect={false}
+                                            editable={editForm}
+                                            onChangeText={text => setSingleData({ ...singleData, harga_beli: text })}
+                                            value={`${singleData.harga_beli}`}
                                             keyboardType={'phone-pad'}
                                         />
                                     )}
                                 </SafeAreaView>
                             </View>
-                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Alamat</Text>
+                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Jumlah</Text>
                             <View style={s.areaInputDetail}>
                                 <SafeAreaView style={s.inputWrap}>
                                     {isLoadingForm ? (
@@ -383,13 +479,14 @@ const Purchase = () => {
                                         />
                                     ) : (
                                         <TextInput
-                                            placeholder="alamat"
+                                            placeholder="10000"
                                             style={{ marginLeft: 3, fontSize: 13, color: "#595959", fontFamily: "Poppins-Medium", marginLeft: 10, width: "90%" }}
                                             spellCheck={false}
                                             autoCorrect={false}
                                             editable={editForm}
-                                            onChangeText={text => setSingleData({ ...singleData, alamat: text })}
-                                            value={singleData.alamat}
+                                            onChangeText={text => setSingleData({ ...singleData, qty: text })}
+                                            value={`${singleData.qty}`}
+                                            keyboardType={'phone-pad'}
                                         />
                                     )}
                                 </SafeAreaView>
