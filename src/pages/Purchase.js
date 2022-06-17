@@ -5,17 +5,16 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import styles from '../stylesheets/Main'
 import axios from 'axios';
 import { MainContext } from '../context/MainContext';
-import Icons from 'react-native-vector-icons/Ionicons'
 import * as OpenAnything from "react-native-openanything"
 import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
-import LottieView from 'lottie-react-native';
 import { toast, setRefreshToken, convertToIDR } from "../Helper"
 import BottomSheet from "react-native-gesture-bottom-sheet";
 import ShimmerSupplier from '../components/ShimmerSupplier';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SliderCard from '../components/SliderCard';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
 const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
@@ -28,13 +27,10 @@ const Purchase = () => {
     const [backendURL] = backend_url
     const [data, setData] = useState([])
     const [dataDisplay, setDataDisplay] = useState([])
-    const [input, setInput] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingForm, setIsLoadingForm] = useState(false)
-    const [editing, setEditing] = useState(false)
     const [editForm, setEditForm] = useState(false)
     const [singleData, setSingleData] = useState({})
-    const [showEmpty, setShowEmpty] = useState(false)
 
     const getData = () => {
         setIsLoading(true)
@@ -56,40 +52,6 @@ const Purchase = () => {
                     })
             }
         })
-    }
-
-    const onChangeText = (search) => {
-        if (search !== "") {
-            setEditing(true)
-            setInput(search)
-        } else {
-            setInput("")
-            setEditing(false)
-        }
-    }
-
-    const clearMode = () => {
-        setInput("")
-        setEditing(false)
-        setDataDisplay([])
-        setShowEmpty(false)
-        getData()
-    }
-
-    const getSearchSupplier = () => {
-        setIsLoading(true)
-        axios.get(`${backendURL}/api/v1/supplier/?search=${input}`)
-            .then(res => {
-                if (res.status === 200) {
-                    if (res.data.data.length > 0) {
-                        setDataDisplay(res.data.data);
-                        setShowEmpty(false)
-                    } else {
-                        setShowEmpty(true)
-                    }
-                    setIsLoading(false)
-                }
-            })
     }
 
     const getDataById = (id) => {
@@ -145,9 +107,7 @@ const Purchase = () => {
                     toast("Berhasil Menyimpan Data Supplier", "success")
                     setIsLoading(false)
                     setEditForm(false)
-                    setEditing(false)
                     setSingleData({ ...singleData, nama: nama, phone: phone, alamat: alamat });
-                    setInput("")
                     setDataDisplay([])
                     getData()
                     bs.current.close()
@@ -235,53 +195,65 @@ const Purchase = () => {
                 <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Pemesanan</Text>
             </LinearGradient>
             <ScrollView style={{ paddingVertical: 10, height: "100%", backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
-                <View style={s.areaInput}>
-                    <SafeAreaView style={s.inputWrap}>
-                        <FontAwesome5 name={"search"} size={16} color='#eb8937' style={{ marginLeft: 8 }} onPress={() => getSearchSupplier()} />
-                        <TextInput
-                            placeholder="Cari pesanan"
-                            style={s.inputComp}
-                            spellCheck={false}
-                            value={input}
-                            autoCorrect={false}
-                            onChangeText={onChangeText}
-                            onSubmitEditing={() => getSearchSupplier()}
-                        />
-                        {editing && (
-                            <Icons name={"close-circle"} size={21} color='#eb8937' style={{ marginRight: 8 }} onPress={() => clearMode()} />
-                        )}
-                    </SafeAreaView>
-                </View>
+                <SliderCard />
                 <View style={{ paddingTop: 10, paddingHorizontal: 20, justifyContent: "center", alignItems: "flex-end" }}>
                     <TouchableOpacity style={{ height: 30, width: 60, borderColor: "#f5576c", borderWidth: 1, justifyContent: "center", alignItems: "center" }} onPress={() => print()}>
                         <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak</Text>
                     </TouchableOpacity>
                 </View>
-                {showEmpty ? (
+                {isLoading ? (
                     <>
-                        <LottieView
-                            source={require('../animations/empty-search.json')}
-                            autoPlay
-                            loop
-                            style={{
-                                marginTop: 50,
-                                height: height / 3.5,
-                                alignSelf: 'center'
-                            }}
-                        />
-                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 10 }}>Supplier Tidak Ditemukan</Text>
-                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Supplier untuk pencarian tidak tersedia</Text>
+                        <ShimmerSupplier />
+                        <ShimmerSupplier />
+                        <ShimmerSupplier />
                     </>
                 ) : (
-                    isLoading ? (
-                        <>
-                            <ShimmerSupplier />
-                            <ShimmerSupplier />
-                            <ShimmerSupplier />
-                        </>
-                    ) : (
-                        <View style={s.productsWrap}>
-                            {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
+                    <View style={s.productsWrap}>
+                        {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
+                            `${el.is_lunas}` === "false" && (
+                                <TouchableOpacity
+                                    style={[styles.cardItemWrap, {
+                                        flexDirection: 'column',
+                                        height: "auto",
+                                        width: "100%",
+                                        borderRadius: 5,
+                                        backgroundColor: '#fff',
+                                        marginHorizontal: 0,
+                                        marginVertical: 5,
+                                        padding: 10,
+                                        borderRadius: 5
+                                    }]}
+                                    key={i}
+                                    onPress={() => showDetailPesanan(el.id)}
+                                >
+                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
+                                        <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
+                                            <FontAwesome5 name={"archive"} size={22} color='#eb8937' />
+                                        </View>
+                                        <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
+                                            <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}>{el.nopo}</Text>
+                                            <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.barang}</Text>
+                                            <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Total: {convertToIDR(el.total)}</Text>
+                                            <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-evenly" }}>
+                                                <Ripple
+                                                    rippleColor="red"
+                                                    onPress={() => deletePurchase(el.id)}
+                                                    style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "red", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Batalkan</Text>
+                                                </Ripple>
+                                                <Ripple
+                                                    rippleColor="#27ae60"
+                                                    onPress={() => receivePurchase(el.id)}
+                                                    style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#27ae60", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
+                                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Terima</Text>
+                                                </Ripple>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            )
+                        )) : (
+                            data.length > 0 && data.map((el, i) => (
                                 `${el.is_lunas}` === "false" && (
                                     <TouchableOpacity
                                         style={[styles.cardItemWrap, {
@@ -324,55 +296,10 @@ const Purchase = () => {
                                         </View>
                                     </TouchableOpacity>
                                 )
-                            )) : (
-                                data.length > 0 && data.map((el, i) => (
-                                    `${el.is_lunas}` === "false" && (
-                                        <TouchableOpacity
-                                            style={[styles.cardItemWrap, {
-                                                flexDirection: 'column',
-                                                height: "auto",
-                                                width: "100%",
-                                                borderRadius: 5,
-                                                backgroundColor: '#fff',
-                                                marginHorizontal: 0,
-                                                marginVertical: 5,
-                                                padding: 10,
-                                                borderRadius: 5
-                                            }]}
-                                            key={i}
-                                            onPress={() => showDetailPesanan(el.id)}
-                                        >
-                                            <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
-                                                <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
-                                                    <FontAwesome5 name={"archive"} size={22} color='#eb8937' />
-                                                </View>
-                                                <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
-                                                    <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}>{el.nopo}</Text>
-                                                    <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.barang}</Text>
-                                                    <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Total: {convertToIDR(el.total)}</Text>
-                                                    <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-evenly" }}>
-                                                        <Ripple
-                                                            rippleColor="red"
-                                                            onPress={() => deletePurchase(el.id)}
-                                                            style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "red", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
-                                                            <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Batalkan</Text>
-                                                        </Ripple>
-                                                        <Ripple
-                                                            rippleColor="#27ae60"
-                                                            onPress={() => receivePurchase(el.id)}
-                                                            style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#27ae60", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
-                                                            <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Terima</Text>
-                                                        </Ripple>
-                                                    </View>
-                                                </View>
-                                            </View>
-                                        </TouchableOpacity>
-                                    )
-                                ))
-                            )}
-                            <Space height={50} />
-                        </View>
-                    )
+                            ))
+                        )}
+                        <Space height={50} />
+                    </View>
                 )}
             </ScrollView>
             <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => Actions.AddPurchase({ getAfterAdd: getAfterAdd })}>

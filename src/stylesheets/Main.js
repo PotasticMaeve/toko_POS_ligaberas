@@ -50,6 +50,33 @@ const styles = StyleSheet.create({
         width: "100%",
         paddingTop: 10,
     },
+    purchaseCardWrap: {
+        height: 130,
+        width: "100%",
+        paddingTop: 5,
+    },
+    cardPurchase: {
+        width: "94.5%",
+        height: 100,
+        marginHorizontal: 10,
+        borderRadius: 10,
+        display: "flex",
+        backgroundColor: "#fff",
+        shadowColor: '#eaeaea',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 1,
+        elevation: 3,
+    },
+    cardPurchaseTitle: { 
+        width: "100%", 
+        height: 30,
+        borderTopLeftRadius: 10, 
+        borderTopRightRadius: 10,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+    },
     imgMenu: {
         flex: 1,
         height: 30,

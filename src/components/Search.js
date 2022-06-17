@@ -23,6 +23,7 @@ const Search = () => {
     const [editing, setEditing] = useState(false)
     const [showEmpty, setShowEmpty] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [newcome, setNewcome] = useState(true)
 
     const onChangeText = (search) => {
         if (search !== "") {
@@ -37,6 +38,7 @@ const Search = () => {
     const getRealProduct = () => {
         setIsLoading(true)
         if (input !== "") {
+            setNewcome(false)
             axios.get(`${backendURL}/api/v1/product/?search=${input}`)
                 .then(res => {
                     if (res.status === 200) {
@@ -111,38 +113,55 @@ const Search = () => {
                     )}
                 </View> */}
             <ScrollView showsVerticalScrollIndicator={false}>
-                {showEmpty ? (
+                {newcome ? (
                     <>
                         <LottieView
-                            source={require('../animations/empty-search.json')}
+                            source={require('../animations/empty-product.json')}
                             autoPlay
-                            loop
+                            loop={false}
                             style={{
                                 marginTop: 80,
                                 height: height / 3.5,
                                 alignSelf: 'center'
                             }}
                         />
-                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 35 }}>Produk Tidak Ditemukan</Text>
-                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Produk untuk pencarian tidak tersedia</Text>
+                        <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 50 }}>Pencarian Produk</Text>
+                        <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Ayo cari produk yang kamu sukai</Text>
                     </>
                 ) : (
-                    isLoading ? (
-                        <View style={{ flexDirection: "column", paddingHorizontal: 10 }}>
-                            <View style={{ flexDirection: "row" }}>
-                                <ShimmerCard />
-                                <ShimmerCard />
-                            </View>
-                            <View style={{ flexDirection: "row" }}>
-                                <ShimmerCard />
-                                <ShimmerCard />
-                            </View>
-                        </View>
-                    ) : (
+                    showEmpty ? (
                         <>
-                            <Card data={dataDisplay} />
-                            <Space height={80} />
+                            <LottieView
+                                source={require('../animations/empty-search.json')}
+                                autoPlay
+                                loop
+                                style={{
+                                    marginTop: 80,
+                                    height: height / 3.5,
+                                    alignSelf: 'center'
+                                }}
+                            />
+                            <Text style={{ fontSize: 15, color: "#ca6702", fontFamily: "Poppins-SemiBold", textAlign: "center", marginTop: 35 }}>Produk Tidak Ditemukan</Text>
+                            <Text style={{ fontSize: 13.5, color: "#ca6702", fontFamily: "Poppins-Medium", textAlign: "center" }}>Produk untuk pencarian tidak tersedia</Text>
                         </>
+                    ) : (
+                        isLoading ? (
+                            <View style={{ flexDirection: "column", paddingHorizontal: 10 }}>
+                                <View style={{ flexDirection: "row" }}>
+                                    <ShimmerCard />
+                                    <ShimmerCard />
+                                </View>
+                                <View style={{ flexDirection: "row" }}>
+                                    <ShimmerCard />
+                                    <ShimmerCard />
+                                </View>
+                            </View>
+                        ) : (
+                            <>
+                                <Card data={dataDisplay} />
+                                <Space height={80} />
+                            </>
+                        )
                     )
                 )}
             </ScrollView>
