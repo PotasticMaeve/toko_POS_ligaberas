@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useWindowDimensions, Text, BackHandler, View, StyleSheet, TouchableOpacity, SafeAreaView, TextInput } from 'react-native';
+import { useWindowDimensions, Text, BackHandler, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import LinearGradient from 'react-native-linear-gradient'
-import styles from '../stylesheets/Main'
+import LinearGradient from 'react-native-linear-gradient';
+import styles from '../stylesheets/Main';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import PesananDikirim from '../components/PesananDikirim';
 import PesananTiba from '../components/PesananTiba';
 import Modal from "react-native-modal";
-import Icon from 'react-native-vector-icons/Entypo';
 import PesananDiproses from '../components/PesananDiproses';
-import * as OpenAnything from "react-native-openanything"
+import DatePicker from 'react-native-datepicker';
+import * as OpenAnything from "react-native-openanything";
 import { MainContext } from '../context/MainContext';
 import Ripple from 'react-native-material-ripple';
 import { Actions } from 'react-native-router-flux';
@@ -22,9 +22,10 @@ const Transaksi = (props) => {
     const { back_to_shop, is_admin, backend_url } = useContext(MainContext)
     const [modalShow, setModalShow] = useState(false)
     const [backtoShop, setBacktoShop] = back_to_shop
-    const [input, setInput] = useState("")
     const [backendURL] = backend_url
     const [isAdmin] = is_admin
+    const [beginDate, setBeginDate] = useState("")
+    const [lastDate, setLastDate] = useState("")
 
     const pesanan_diproses = () => <PesananDiproses isAdmin={isAdmin} />
     const pesanan_dikirim = () => <PesananDikirim isAdmin={isAdmin} />
@@ -76,31 +77,68 @@ const Transaksi = (props) => {
                 let tokenAccess = JSON.parse(token)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
                 if (isAdmin) {
-                    axios.get(`${backendURL}/report/so_download`, key)
-                        .then(res => {
-                            if (res.status === 200) {
-                                let path = res.data.url
-                                OpenAnything.Pdf(path)
-                            }
-                        })
-                        .catch(err => {
-                            toast("Gagal Mencetak Data SO", "danger")
-                        })
+                    if (beginDate !== "" || lastDate !== "") {
+                        axios.get(`${backendURL}/report/so_download`, key)
+                            .then(res => {
+                                if (res.status === 200) {
+                                    let path = res.data.url
+                                    OpenAnything.Pdf(path)
+                                }
+                                setModalShow(false)
+                                setBeginDate("")
+                                setLastDate("")
+                            })
+                            .catch(err => {
+                                toast("Gagal Mencetak Data SO", "danger")
+                            })
+                    } else {
+                        axios.get(`${backendURL}/report/so_download`, key)
+                            .then(res => {
+                                if (res.status === 200) {
+                                    let path = res.data.url
+                                    OpenAnything.Pdf(path)
+                                }
+                                setModalShow(false)
+                                setBeginDate("")
+                                setLastDate("")
+                            })
+                            .catch(err => {
+                                toast("Gagal Mencetak Data SO", "danger")
+                            })
+                    }
                 } else {
                     AsyncStorage.getItem("customerID").then(val => {
                         let customer_id = JSON.parse(val)
                         if (customer_id !== null) {
-                            axios.get(`${backendURL}/report/so_download?customer_id=${customer_id}`, key)
-                                .then(res => {
-                                    if (res.status === 200) {
-                                        let path = res.data.url
-                                        OpenAnything.Pdf(path)
-                                    }
-                                    setModalShow(false)
-                                })
-                                .catch(err => {
-                                    toast("Gagal Mencetak Data SO", "danger")
-                                })
+                            if (beginDate !== "" || lastDate !== "") {
+                                axios.get(`${backendURL}/report/so_download?customer_id=${customer_id}`, key)
+                                    .then(res => {
+                                        if (res.status === 200) {
+                                            let path = res.data.url
+                                            OpenAnything.Pdf(path)
+                                        }
+                                        setModalShow(false)
+                                        setBeginDate("")
+                                        setLastDate("")
+                                    })
+                                    .catch(err => {
+                                        toast("Gagal Mencetak Data SO", "danger")
+                                    })
+                            } else {
+                                axios.get(`${backendURL}/report/so_download?customer_id=${customer_id}`, key)
+                                    .then(res => {
+                                        if (res.status === 200) {
+                                            let path = res.data.url
+                                            OpenAnything.Pdf(path)
+                                        }
+                                        setModalShow(false)
+                                        setBeginDate("")
+                                        setLastDate("")
+                                    })
+                                    .catch(err => {
+                                        toast("Gagal Mencetak Data SO", "danger")
+                                    })
+                            }
                         }
                     })
                 }
@@ -172,33 +210,76 @@ const Transaksi = (props) => {
                     <View
                         style={{
                             backgroundColor: "#fafafa",
-                            height: 300,
+                            height: 270,
                             width: 300,
                             borderRadius: 10,
                         }}>
-                        <View style={{ justifyContent: "center", alignItems: "center", paddingTop: 10 }}>
-                            <Icon name="calendar" size={40} color="#d90429" />
-                            <Text style={{ fontSize: 13, fontFamily: "Poppins-Medium" }}>Tentukan Tanggal</Text>
+                        <View style={{ justifyContent: "center", alignItems: "center", paddingVertical: 10 }}>
+                            <Text style={{ fontFamily: "Poppins-SemiBold" }}>Tentukan Tanggal</Text>
                         </View>
                         <View style={{ height: "100%", width: "100%", paddingHorizontal: 20 }}>
                             <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13, marginTop: 10 }}>Tanggal Awal</Text>
-                            <SafeAreaView style={s.inputWrap}>
-                                <TextInput
-                                    style={s.inputComp}
-                                    spellCheck={false}
-                                    value={input}
-                                    autoCorrect={false}
-                                />
-                            </SafeAreaView>
+                            <DatePicker
+                                style={{ width: "100%" }}
+                                date={beginDate}
+                                mode="date"
+                                placeholder="Pilih Tanggal"
+                                format="YYYY-MM-DD"
+                                minDate="2016-05-01"
+                                maxDate="2022-06-30"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        right: 0,
+                                        top: 4,
+                                        marginLeft: 0
+                                    },
+                                    dateInput: {
+                                        borderWidth: 0,
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        paddingHorizontal: 3,
+                                        backgroundColor: "#eaeaea",
+                                        width: "100%",
+                                        fontFamily: "Poppins-Medium",
+                                        borderRadius: 10
+                                    }
+                                }}
+                                onDateChange={(date) => setBeginDate(date)}
+                            />
                             <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13, marginTop: 10 }}>Tanggal Akhir</Text>
-                            <SafeAreaView style={s.inputWrap}>
-                                <TextInput
-                                    style={s.inputComp}
-                                    spellCheck={false}
-                                    value={input}
-                                    autoCorrect={false}
-                                />
-                            </SafeAreaView>
+                            <DatePicker
+                                style={{ width: "100%" }}
+                                mode="date"
+                                date={lastDate}
+                                placeholder="Pilih Tanggal"
+                                format="YYYY-MM-DD"
+                                minDate="2012-05-01"
+                                maxDate="2022-06-30"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        right: 0,
+                                        top: 4,
+                                        marginLeft: 0
+                                    },
+                                    dateInput: {
+                                        borderWidth: 0,
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        paddingHorizontal: 3,
+                                        backgroundColor: "#eaeaea",
+                                        width: "100%",
+                                        fontFamily: "Poppins-Medium",
+                                        borderRadius: 10
+                                    }
+                                }}
+                                onDateChange={(date) => setLastDate(date)}
+                            />
                         </View>
                         <View style={{
                             flexDirection: "row",
@@ -249,44 +330,7 @@ const s = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 1,
         elevation: 2,
-    },
-    inputWrap: {
-        flexDirection: "row",
-        alignItems: "center",
-        paddingHorizontal: 3,
-        backgroundColor: "#eaeaea",
-        width: "100%",
-        borderRadius: 10
-    },
-    inputComp: {
-        marginRight: 2,
-        marginTop: 2,
-        fontSize: 14,
-        color: "#595959",
-        paddingVertical: 6,
-        fontFamily: "Poppins-Medium",
-        paddingHorizontal: 10,
-        width: "83%"
-    },
-    productsWrap: {
-        width: "100%",
-        flexDirection: "column",
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-    },
-    areaInput: {
-        width: "100%",
-        flexDirection: "column",
-        paddingHorizontal: 15,
-        justifyContent: "space-between",
-        paddingVertical: 5
-    },
-    areaInputDetail: {
-        width: "100%",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        paddingVertical: 5
-    },
+    }
 })
 
 export default Transaksi

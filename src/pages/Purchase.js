@@ -6,6 +6,8 @@ import styles from '../stylesheets/Main'
 import axios from 'axios';
 import { MainContext } from '../context/MainContext';
 import * as OpenAnything from "react-native-openanything"
+import DatePicker from 'react-native-datepicker';
+import Modal from "react-native-modal";
 import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
 import { toast, setRefreshToken, convertToIDR } from "../Helper"
@@ -29,8 +31,11 @@ const Purchase = () => {
     const [dataDisplay, setDataDisplay] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingForm, setIsLoadingForm] = useState(false)
+    const [modalShow, setModalShow] = useState(false)
     const [editForm, setEditForm] = useState(false)
     const [singleData, setSingleData] = useState({})
+    const [beginDate, setBeginDate] = useState("")
+    const [lastDate, setLastDate] = useState("")
 
     const getData = () => {
         setIsLoading(true)
@@ -128,16 +133,35 @@ const Purchase = () => {
             if (token !== null) {
                 let tokenAccess = JSON.parse(token)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-                axios.get(`${backendURL}/report/po_download`, key)
-                    .then(res => {
-                        if (res.status === 200) {
-                            let path = res.data.url
-                            OpenAnything.Pdf(path)
-                        }
-                    })
-                    .catch(err => {
-                        toast("Gagal Mencetak Data Pemesanan", "danger")
-                    })
+                if (beginDate !== "" || lastDate !== "") {
+                    axios.get(`${backendURL}/report/po_download`, key)
+                        .then(res => {
+                            if (res.status === 200) {
+                                let path = res.data.url
+                                OpenAnything.Pdf(path)
+                            }
+                            setModalShow(false)
+                            setBeginDate("")
+                            setLastDate("")
+                        })
+                        .catch(err => {
+                            toast("Gagal Mencetak Data Pemesanan", "danger")
+                        })
+                } else {
+                    axios.get(`${backendURL}/report/po_download`, key)
+                        .then(res => {
+                            if (res.status === 200) {
+                                let path = res.data.url
+                                OpenAnything.Pdf(path)
+                            }
+                            setModalShow(false)
+                            setBeginDate("")
+                            setLastDate("")
+                        })
+                        .catch(err => {
+                            toast("Gagal Mencetak Data Pemesanan", "danger")
+                        })
+                }
             }
         })
     }
@@ -182,6 +206,10 @@ const Purchase = () => {
         })
     }
 
+    const filterDate = () => {
+        setModalShow(true)
+    }
+
     useEffect(() => {
         getData()
     }, [])
@@ -197,7 +225,7 @@ const Purchase = () => {
             <ScrollView style={{ paddingVertical: 10, height: "100%", backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
                 <SliderCard />
                 <View style={{ paddingTop: 10, paddingHorizontal: 20, justifyContent: "center", alignItems: "flex-end" }}>
-                    <TouchableOpacity style={{ height: 30, width: 60, borderColor: "#f5576c", borderWidth: 1, justifyContent: "center", alignItems: "center" }} onPress={() => print()}>
+                    <TouchableOpacity style={{ height: 30, width: 60, borderColor: "#f5576c", borderWidth: 1, justifyContent: "center", alignItems: "center" }} onPress={() => filterDate()}>
                         <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak</Text>
                     </TouchableOpacity>
                 </View>
@@ -452,6 +480,111 @@ const Purchase = () => {
                     </View>
                 </BottomSheet>
             </SafeAreaView>
+            {modalShow && (
+                <Modal
+                    isVisible={modalShow} style={{ justifyContent: "center", alignItems: "center" }}>
+                    <View
+                        style={{
+                            backgroundColor: "#fafafa",
+                            height: 270,
+                            width: 300,
+                            borderRadius: 10,
+                        }}>
+                        <View style={{ justifyContent: "center", alignItems: "center", paddingVertical: 10 }}>
+                            <Text style={{ fontFamily: "Poppins-SemiBold" }}>Tentukan Tanggal</Text>
+                        </View>
+                        <View style={{ height: "100%", width: "100%", paddingHorizontal: 20 }}>
+                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13, marginTop: 10 }}>Tanggal Awal</Text>
+                            <DatePicker
+                                style={{ width: "100%" }}
+                                date={beginDate}
+                                mode="date"
+                                placeholder="Pilih Tanggal"
+                                format="YYYY-MM-DD"
+                                minDate="2016-05-01"
+                                maxDate="2022-06-30"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        right: 0,
+                                        top: 4,
+                                        marginLeft: 0
+                                    },
+                                    dateInput: {
+                                        borderWidth: 0,
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        paddingHorizontal: 3,
+                                        backgroundColor: "#eaeaea",
+                                        width: "100%",
+                                        fontFamily: "Poppins-Medium",
+                                        borderRadius: 10
+                                    }
+                                }}
+                                onDateChange={(date) => setBeginDate(date)}
+                            />
+                            <Text style={{ fontFamily: "Poppins-Medium", fontSize: 13, marginTop: 10 }}>Tanggal Akhir</Text>
+                            <DatePicker
+                                style={{ width: "100%" }}
+                                mode="date"
+                                date={lastDate}
+                                placeholder="Pilih Tanggal"
+                                format="YYYY-MM-DD"
+                                minDate="2012-05-01"
+                                maxDate="2022-06-30"
+                                confirmBtnText="Confirm"
+                                cancelBtnText="Cancel"
+                                customStyles={{
+                                    dateIcon: {
+                                        position: 'absolute',
+                                        right: 0,
+                                        top: 4,
+                                        marginLeft: 0
+                                    },
+                                    dateInput: {
+                                        borderWidth: 0,
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        paddingHorizontal: 3,
+                                        backgroundColor: "#eaeaea",
+                                        width: "100%",
+                                        fontFamily: "Poppins-Medium",
+                                        borderRadius: 10
+                                    }
+                                }}
+                                onDateChange={(date) => setLastDate(date)}
+                            />
+                        </View>
+                        <View style={{
+                            flexDirection: "row",
+                            justifyContent: "space-evenly",
+                            position: "absolute",
+                            width: "100%",
+                            height: 50,
+                            bottom: 0
+                        }}>
+                            <TouchableOpacity
+                                style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#ddd", justifyContent: "center", alignItems: "center" }}
+                                onPress={() => setModalShow(false)}
+                            >
+                                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                                    <Text style={{ fontFamily: "Poppins-Medium" }}>Batal</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ height: "80%", width: "40%", borderRadius: 50, backgroundColor: "#eb8937", justifyContent: "center", alignItems: "center" }}
+                                onPress={() => print()}
+                            >
+                                <View style={{ justifyContent: "center", alignItems: "center" }}>
+                                    <Text style={{ fontFamily: "Poppins-Medium" }}>Cetak</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            )}
         </>
     )
 }
