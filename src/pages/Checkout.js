@@ -147,6 +147,10 @@ const Checkout = (props) => {
         displayProfil()
     }
 
+    const ResponsiveUpdatePembayaran = () => {
+        displayPayment()
+    }
+
     const selectMethod = () => {
         if (activePayment) {
             return (
@@ -464,7 +468,7 @@ const Checkout = (props) => {
                 </View>
                 <View style={{ paddingTop: 20, paddingBottom: 10, width: "100%", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
                     <Text style={{ fontSize: 15.5, fontFamily: "Poppins-SemiBold" }}>Metode Pembayaran</Text>
-                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Pembayaran()}>
+                    <Ripple rippleColor="#fff" style={{ padding: 10, backgroundColor: "#FCE6C6", borderRadius: 10, justifyContent: "center", alignItems: "center" }} onPress={() => Actions.Pembayaran({ ResponsiveUpdatePembayaran: ResponsiveUpdatePembayaran })}>
                         <FontAwesome5 name={"pen"} size={15} color='#eb8937' />
                     </Ripple>
                 </View>
