@@ -10,6 +10,7 @@ import DatePicker from 'react-native-datepicker';
 import Modal from "react-native-modal";
 import Ripple from 'react-native-material-ripple';
 import Space from '../components/Space';
+import SelectDropdown from 'react-native-select-dropdown'
 import { toast, setRefreshToken, convertToIDR } from "../Helper"
 import BottomSheet from "react-native-gesture-bottom-sheet";
 import ShimmerSupplier from '../components/ShimmerSupplier';
@@ -25,10 +26,10 @@ const colorHeader = ['#f3a337', '#eb8937']
 const { height } = Dimensions.get("screen")
 const Purchase = () => {
     const bs = useRef(null)
+    const bs2 = useRef(null)
     const { backend_url } = useContext(MainContext)
     const [backendURL] = backend_url
     const [data, setData] = useState([])
-    const [dataDisplay, setDataDisplay] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadingForm, setIsLoadingForm] = useState(false)
     const [modalShow, setModalShow] = useState(false)
@@ -36,6 +37,9 @@ const Purchase = () => {
     const [singleData, setSingleData] = useState({})
     const [beginDate, setBeginDate] = useState("")
     const [lastDate, setLastDate] = useState("")
+    const [nopoID, setNopoID] = useState(0)
+    const [cashflow, setCashflow] = useState({})
+    const [deleteIdPo, setDeleteIdPo] = useState("")
 
     const getData = () => {
         setIsLoading(true)
@@ -43,9 +47,11 @@ const Purchase = () => {
             let tokenAccess = JSON.parse(token)
             if (tokenAccess !== null) {
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-                axios.get(`${backendURL}/api/v1/purchase_detail/`, key)
+                axios.get(`${backendURL}/api/v1/purchase_order/`, key)
                     .then((res) => {
-                        setData(res.data.data);
+                        if(res.status === 200){
+                            setData(res.data.data);
+                        }
                         setIsLoading(false)
                     })
                     .catch((err) => {
@@ -84,7 +90,7 @@ const Purchase = () => {
         getDataById(id)
     }
 
-    const saveSupplier = () => {
+    const savePesanan = () => {
         setIsLoading(true)
         let data = singleData
         let payloadUpdate = {
@@ -113,7 +119,6 @@ const Purchase = () => {
                     setIsLoading(false)
                     setEditForm(false)
                     setSingleData({ ...singleData, nama: nama, phone: phone, alamat: alamat });
-                    setDataDisplay([])
                     getData()
                     bs.current.close()
                 })
@@ -133,8 +138,8 @@ const Purchase = () => {
             if (token !== null) {
                 let tokenAccess = JSON.parse(token)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-                if (beginDate !== "" || lastDate !== "") {
-                    axios.get(`${backendURL}/report/po_download`, key)
+                if (beginDate !== "" && lastDate !== "") {
+                    axios.get(`${backendURL}/report/po_download?start_date=${beginDate}&end_date=${lastDate}`, key)
                         .then(res => {
                             if (res.status === 200) {
                                 let path = res.data.url
@@ -166,6 +171,42 @@ const Purchase = () => {
         })
     }
 
+    const printDetail = () => {
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            if (token !== null) {
+                let tokenAccess = JSON.parse(token)
+                let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+                axios.get(`${backendURL}/report/po_detail_download/${nopoID}`, key)
+                    .then(res => {
+                        if (res.status === 200) {
+                            let path = res.data.url
+                            OpenAnything.Pdf(path)
+                        }
+                    })
+                    .catch(err => {
+                        toast("Gagal Mencetak Data Detail Pesanan", "danger")
+                    })
+            }
+        })
+    }
+
+    const getCashflow = () => {
+        setIsLoading(true)
+        AsyncStorage.getItem("tokenAccess").then(token => {
+            let tokenAccess = JSON.parse(token)
+            let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+            if (tokenAccess !== null) {
+                axios.get(`${backendURL}/api/v1/cashflow/`, key)
+                    .then(res => {
+                        if(Object.keys(res).length !== 0){
+                            setCashflow(res.data)
+                        }
+                        setIsLoading(false)
+                    })
+            }
+        })
+    }
+
     const receivePurchase = (id) => {
         AsyncStorage.getItem("tokenAccess").then(token => {
             if (token !== null) {
@@ -176,6 +217,7 @@ const Purchase = () => {
                 }, key)
                     .then(res => {
                         getData()
+                        getCashflow()
                         toast("Pesanan Selesai", "success")
                     })
                     .catch((err) => {
@@ -188,20 +230,49 @@ const Purchase = () => {
     }
 
     const deletePurchase = (id) => {
+        // AsyncStorage.getItem("tokenAccess").then(token => {
+        //     if (token !== null) {
+        //         let tokenAccess = JSON.parse(token)
+        //         let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
+        //         axios.delete(`${backendURL}/api/v1/purchase_order/${id}/`, key)
+        //             .then(res => {
+        //                 toast("Pesanan Berhasil Dihapus", "success")
+        //                 getData()
+        //                 getCashflow()
+        //             })
+        //             .catch((err) => {
+        //                 toast("Gagal Menghapus Pesanan", "danger")
+        //                 setIsLoading(false)
+        //             })
+        //     }
+        // })
+        setIsLoading(true)
         AsyncStorage.getItem("tokenAccess").then(token => {
             if (token !== null) {
                 let tokenAccess = JSON.parse(token)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-                axios.delete(`${backendURL}/api/v1/purchase_detail/${id}/`, key)
+                axios.get(`${backendURL}/api/v1/purchase_order/`, key)
                     .then(res => {
-                        toast("Pesanan Berhasil Dihapus", "success")
-                        getData()
+                        const list_purchase = res.data.data
+                        list_purchase.length > 0 && list_purchase.map((el) => {
+                            if(el.products[0].id === id){
+                                setDeleteIdPo(el.id)
+                            }
+                        })
+                        axios.delete(`${backendURL}/api/v1/purchase_order/${deleteIdPo}/`, key)
+                        .then(res => {
+                            toast("Pesanan Berhasil Dihapus", "success")
+                            getData()
+                        })
+                        .catch((err) => {
+                            toast("Gagal Menghapus Pesanan", "danger")
+                            setIsLoading(false)
+                        })
                     })
                     .catch((err) => {
                         toast("Gagal Menghapus Pesanan", "danger")
                         setIsLoading(false)
                     })
-
             }
         })
     }
@@ -210,8 +281,13 @@ const Purchase = () => {
         setModalShow(true)
     }
 
+    const filterIdPO = () => {
+        bs2.current.show()
+    }
+
     useEffect(() => {
         getData()
+        getCashflow()
     }, [])
 
     return (
@@ -223,10 +299,13 @@ const Purchase = () => {
                 <Text style={{ fontSize: 16, color: "#fff", marginLeft: 30, fontFamily: "Poppins-SemiBold", marginTop: 5 }}>Pemesanan</Text>
             </LinearGradient>
             <ScrollView style={{ paddingVertical: 10, height: "100%", backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
-                <SliderCard />
-                <View style={{ paddingTop: 10, paddingHorizontal: 20, justifyContent: "center", alignItems: "flex-end" }}>
-                    <TouchableOpacity style={{ height: 30, width: 60, borderColor: "#f5576c", borderWidth: 1, justifyContent: "center", alignItems: "center" }} onPress={() => filterDate()}>
-                        <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak</Text>
+                <SliderCard cashflow={cashflow.data} isLoading={isLoading} />
+                <View style={{ paddingTop: 10, paddingHorizontal: 20, justifyContent: "flex-end", alignItems: "flex-end", flexDirection: "row" }}>
+                    <TouchableOpacity style={{ height: 30, width: 100, borderColor: "#f5576c", borderWidth: 1, justifyContent: "center", alignItems: "center", marginRight: 10 }} onPress={() => filterDate()}>
+                        <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak PO</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ height: 30, width: 150, borderColor: "#f5576c", borderWidth: 1, justifyContent: "center", alignItems: "center" }} onPress={() => filterIdPO()}>
+                        <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak Detail PO</Text>
                     </TouchableOpacity>
                 </View>
                 {isLoading ? (
@@ -237,52 +316,9 @@ const Purchase = () => {
                     </>
                 ) : (
                     <View style={s.productsWrap}>
-                        {dataDisplay.length > 0 ? dataDisplay.map((el, i) => (
-                            `${el.is_lunas}` === "false" && (
-                                <TouchableOpacity
-                                    style={[styles.cardItemWrap, {
-                                        flexDirection: 'column',
-                                        height: "auto",
-                                        width: "100%",
-                                        borderRadius: 5,
-                                        backgroundColor: '#fff',
-                                        marginHorizontal: 0,
-                                        marginVertical: 5,
-                                        padding: 10,
-                                        borderRadius: 5
-                                    }]}
-                                    key={i}
-                                    onPress={() => showDetailPesanan(el.id)}
-                                >
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
-                                        <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
-                                            <FontAwesome5 name={"archive"} size={22} color='#eb8937' />
-                                        </View>
-                                        <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
-                                            <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}>{el.nopo}</Text>
-                                            <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.barang}</Text>
-                                            <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Total: {convertToIDR(el.total)}</Text>
-                                            <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-evenly" }}>
-                                                <Ripple
-                                                    rippleColor="red"
-                                                    onPress={() => deletePurchase(el.id)}
-                                                    style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "red", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
-                                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Batalkan</Text>
-                                                </Ripple>
-                                                <Ripple
-                                                    rippleColor="#27ae60"
-                                                    onPress={() => receivePurchase(el.id)}
-                                                    style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#27ae60", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
-                                                    <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Terima</Text>
-                                                </Ripple>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        )) : (
-                            data.length > 0 && data.map((el, i) => (
-                                `${el.is_lunas}` === "false" && (
+                        {data.length > 0 && data.map((el) => (
+                            el.products.map((prod, key) => (
+                                `${prod.is_lunas}` === "false" && (
                                     <TouchableOpacity
                                         style={[styles.cardItemWrap, {
                                             flexDirection: 'column',
@@ -295,27 +331,27 @@ const Purchase = () => {
                                             padding: 10,
                                             borderRadius: 5
                                         }]}
-                                        key={i}
-                                        onPress={() => showDetailPesanan(el.id)}
+                                        key={key}
+                                        onPress={() => showDetailPesanan(prod.id)}
                                     >
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: "center" }}>
                                             <View style={{ height: 50, width: 50, backgroundColor: "#FCE6C6", borderRadius: 100, justifyContent: "center", alignItems: "center" }} >
                                                 <FontAwesome5 name={"archive"} size={22} color='#eb8937' />
                                             </View>
                                             <View style={{ display: 'flex', flexDirection: 'column', marginLeft: 15, justifyContent: 'space-around', width: "80%" }}>
-                                                <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}>{el.nopo}</Text>
-                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{el.barang}</Text>
-                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Total: {convertToIDR(el.total)}</Text>
+                                                <Text numberOfLines={1} style={{ width: 200, fontSize: 12, fontFamily: "Poppins-SemiBold", textTransform: "uppercase" }}>{prod.nopo}</Text>
+                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#60a3bc' }}>{prod.barang}</Text>
+                                                <Text style={{ marginVertical: 3, fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Total: {convertToIDR(prod.total)}</Text>
                                                 <View style={{ width: "100%", flexDirection: "row", justifyContent: "space-evenly" }}>
                                                     <Ripple
                                                         rippleColor="red"
-                                                        onPress={() => deletePurchase(el.id)}
+                                                        onPress={() => deletePurchase(prod.id)}
                                                         style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "red", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
                                                         <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: 'red' }}>Batalkan</Text>
                                                     </Ripple>
                                                     <Ripple
                                                         rippleColor="#27ae60"
-                                                        onPress={() => receivePurchase(el.id)}
+                                                        onPress={() => receivePurchase(prod.id)}
                                                         style={{ width: 100, height: 30, marginTop: 5, padding: 3, borderWidth: 1, borderColor: "#27ae60", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
                                                         <Text style={{ fontSize: 12, fontFamily: "Poppins-SemiBold", color: '#27ae60' }}>Terima</Text>
                                                     </Ripple>
@@ -325,7 +361,7 @@ const Purchase = () => {
                                     </TouchableOpacity>
                                 )
                             ))
-                        )}
+                        ))}
                         <Space height={50} />
                     </View>
                 )}
@@ -458,7 +494,7 @@ const Purchase = () => {
                                     <Ripple
                                         rippleColor="#fff"
                                         style={{ height: 40, width: "48%", borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }}
-                                        onPress={() => saveSupplier()}
+                                        onPress={() => savePesanan()}
                                     >
                                         {isLoading ? (
                                             <ActivityIndicator color="#fff" />
@@ -476,6 +512,66 @@ const Purchase = () => {
                                     <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#eb8937", fontFamily: "Poppins-SemiBold" }}>Ubah Data</Text>
                                 </Ripple>
                             )}
+                        </View>
+                    </View>
+                </BottomSheet>
+            </SafeAreaView>
+            <SafeAreaView style={s.container}>
+                <BottomSheet hasDraggableIcon ref={bs2} height={220}>
+                    <View style={{
+                        paddingHorizontal: 20,
+                    }}>
+                        <Text style={{ fontSize: 15, color: "#000", textAlign: "center", fontFamily: "Poppins-SemiBold", marginVertical: 10 }}>Filter Pemesanan</Text>
+                        <View>
+                            <Text style={{ color: "#ca6702", fontFamily: "Poppins-SemiBold", fontSize: 13 }}>Nomor PO</Text>
+                            <View style={s.areaInputDetail}>
+                                <SafeAreaView style={s.inputWrap}>
+                                    <SelectDropdown
+                                        data={data.length > 0 && data.map(el => `PO00${el.id}`)}
+                                        onSelect={(selectedItem, index) => {
+                                            data.map(el => {
+                                                if (`PO00${el.id}` === selectedItem) {
+                                                    setNopoID(el.id);
+                                                }
+                                            })
+                                            return selectedItem
+                                        }}
+                                        defaultButtonText={"-- Pilih Nomor PO --"}
+                                        buttonTextAfterSelection={(selectedItem, index) => {
+                                            return selectedItem
+                                        }}
+                                        rowTextForSelection={(item, index) => {
+                                            return item
+                                        }}
+                                        buttonStyle={{
+                                            width: "100%",
+                                            backgroundColor: "#eaeaea"
+                                        }}
+                                        rowTextStyle={{
+                                            fontSize: 14,
+                                            color: "#595959",
+                                            fontFamily: "Poppins-Medium",
+                                        }}
+                                        buttonTextStyle={{
+                                            fontSize: 14,
+                                            color: "#595959",
+                                            fontFamily: "Poppins-Medium",
+                                            textAlign: "left"
+                                        }}
+                                    />
+                                </SafeAreaView>
+                            </View>
+                            <Ripple
+                                rippleColor="#fff"
+                                style={{ height: 40, width: "100%", marginTop: 10, borderRadius: 10, backgroundColor: '#eb8937', justifyContent: "center", alignItems: "center" }}
+                                onPress={() => printDetail()}
+                            >
+                                {isLoading ? (
+                                    <ActivityIndicator color="#fff" />
+                                ) : (
+                                    <Text style={{ textTransform: "capitalize", fontSize: 14, color: "#fff", fontFamily: "Poppins-SemiBold" }}>Cetak</Text>
+                                )}
+                            </Ripple>
                         </View>
                     </View>
                 </BottomSheet>

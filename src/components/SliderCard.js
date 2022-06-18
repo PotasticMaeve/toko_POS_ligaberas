@@ -1,34 +1,22 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Text, View } from 'react-native'
 import Swiper from 'react-native-swiper'
 import styles from '../stylesheets/Main'
 import Ripple from 'react-native-material-ripple';
 import { convertToIDR } from "../Helper"
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+import LinearGradient from 'react-native-linear-gradient';
 
-const SliderCard = () => {
-    const [contents, setContents] = useState([
-        {
-            title: "pemasukan",
-            color: "#0ead69",
-            value: "1250000"
-        },
-        {
-            title: "pengeluaran",
-            color: "#e76f51",
-            value: "400000"
-        },
-        {
-            title: "keuntungan",
-            color: "#219ebc",
-            value: "850000"
-        },
-    ])
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient)
+const colorShimmer = ["#ececec", "#d0d0d0", "#ececec"]
+
+const SliderCard = (props) => {
     return (
         <View style={styles.purchaseCardWrap}>
             <Swiper
                 loop
                 autoplay
-                autoplayTimeout={8}
+                autoplayTimeout={7}
                 paginationStyle={{
                     position: "absolute",
                     bottom: 5,
@@ -44,20 +32,69 @@ const SliderCard = () => {
                     </View>
                 }
             >
-                {contents.map((el, i) => (
-                    <Ripple
-                        style={styles.cardPurchase}
-                        rippleColor="#fff"
-                        key={i}
-                    >
-                        <View style={[styles.cardPurchaseTitle, { backgroundColor: `${el.color}` }]}>
-                            <Text style={{ textTransform: "capitalize", color: "#fff", fontFamily: "Poppins-SemiBold" }}>{el.title}</Text>
-                        </View>
-                        <View style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "70%" }}>
-                            <Text style={{ textTransform: "capitalize", color: `${el.color}`, fontFamily: "Poppins-Bold", fontSize: 16 }}>{convertToIDR(el.value)}</Text>
-                        </View>
-                    </Ripple>
-                ))}
+                <Ripple
+                    style={styles.cardPurchase}
+                    rippleColor="#fff"
+                >
+                    <View style={[styles.cardPurchaseTitle, { backgroundColor: "#0ead69" }]}>
+                        <Text style={{ textTransform: "capitalize", color: "#fff", fontFamily: "Poppins-SemiBold" }}>pemasukan</Text>
+                    </View>
+                    <View style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "70%" }}>
+                        {props.isLoading ? (
+                            <ShimmerPlaceHolder
+                                shimmerColors={colorShimmer}
+                                style={{
+                                    width: "45%",
+                                    height: 20
+                                }}
+                            />
+                        ) : (
+                            <Text style={{ textTransform: "capitalize", color: "#0ead69", fontFamily: "Poppins-Bold", fontSize: 16 }}>{props.cashflow && convertToIDR(parseInt(props.cashflow.income))}</Text>
+                        )}
+                    </View>
+                </Ripple>
+                <Ripple
+                    style={styles.cardPurchase}
+                    rippleColor="#fff"
+                >
+                    <View style={[styles.cardPurchaseTitle, { backgroundColor: "#e76f51" }]}>
+                        <Text style={{ textTransform: "capitalize", color: "#fff", fontFamily: "Poppins-SemiBold" }}>pengeluaran</Text>
+                    </View>
+                    <View style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "70%" }}>
+                        {props.isLoading ? (
+                            <ShimmerPlaceHolder
+                                shimmerColors={colorShimmer}
+                                style={{
+                                    width: "45%",
+                                    height: 20
+                                }}
+                            />
+                        ) : (
+                            <Text style={{ textTransform: "capitalize", color: "#e76f51", fontFamily: "Poppins-Bold", fontSize: 16 }}>{props.cashflow && convertToIDR(parseInt(props.cashflow.expanse))}</Text>
+                        )}
+                    </View>
+                </Ripple>
+                <Ripple
+                    style={styles.cardPurchase}
+                    rippleColor="#fff"
+                >
+                    <View style={[styles.cardPurchaseTitle, { backgroundColor: "#219ebc" }]}>
+                        <Text style={{ textTransform: "capitalize", color: "#fff", fontFamily: "Poppins-SemiBold" }}>keuntungan</Text>
+                    </View>
+                    <View style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "70%" }}>
+                        {props.isLoading ? (
+                            <ShimmerPlaceHolder
+                                shimmerColors={colorShimmer}
+                                style={{
+                                    width: "45%",
+                                    height: 20
+                                }}
+                            />
+                        ) : (
+                            <Text style={{ textTransform: "capitalize", color: "#219ebc", fontFamily: "Poppins-Bold", fontSize: 16 }}>{props.cashflow && convertToIDR(parseInt(props.cashflow.margin))}</Text>
+                        )}
+                    </View>
+                </Ripple>
             </Swiper>
         </View>
     )

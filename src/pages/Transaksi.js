@@ -77,8 +77,8 @@ const Transaksi = (props) => {
                 let tokenAccess = JSON.parse(token)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
                 if (isAdmin) {
-                    if (beginDate !== "" || lastDate !== "") {
-                        axios.get(`${backendURL}/report/so_download`, key)
+                    if (beginDate !== "" && lastDate !== "") {
+                        axios.get(`${backendURL}/report/so_download?start_date=${beginDate}&end_date=${lastDate}`, key)
                             .then(res => {
                                 if (res.status === 200) {
                                     let path = res.data.url
@@ -110,35 +110,19 @@ const Transaksi = (props) => {
                     AsyncStorage.getItem("customerID").then(val => {
                         let customer_id = JSON.parse(val)
                         if (customer_id !== null) {
-                            if (beginDate !== "" || lastDate !== "") {
-                                axios.get(`${backendURL}/report/so_download?customer_id=${customer_id}`, key)
-                                    .then(res => {
-                                        if (res.status === 200) {
-                                            let path = res.data.url
-                                            OpenAnything.Pdf(path)
-                                        }
-                                        setModalShow(false)
-                                        setBeginDate("")
-                                        setLastDate("")
-                                    })
-                                    .catch(err => {
-                                        toast("Gagal Mencetak Data SO", "danger")
-                                    })
-                            } else {
-                                axios.get(`${backendURL}/report/so_download?customer_id=${customer_id}`, key)
-                                    .then(res => {
-                                        if (res.status === 200) {
-                                            let path = res.data.url
-                                            OpenAnything.Pdf(path)
-                                        }
-                                        setModalShow(false)
-                                        setBeginDate("")
-                                        setLastDate("")
-                                    })
-                                    .catch(err => {
-                                        toast("Gagal Mencetak Data SO", "danger")
-                                    })
-                            }
+                            axios.get(`${backendURL}/report/so_download?customer_id=${customer_id}`, key)
+                                .then(res => {
+                                    if (res.status === 200) {
+                                        let path = res.data.url
+                                        OpenAnything.Pdf(path)
+                                    }
+                                    setModalShow(false)
+                                    setBeginDate("")
+                                    setLastDate("")
+                                })
+                                .catch(err => {
+                                    toast("Gagal Mencetak Data SO", "danger")
+                                })
                         }
                     })
                 }
@@ -196,13 +180,19 @@ const Transaksi = (props) => {
                 </>
             )}
             {props.backToShopping ? (
-                <Ripple style={[s.buttonAmount, { bottom: "5%" }]} rippleColor="#fff" onPress={() => filterDate()}>
+                <Ripple style={[s.buttonAmount, { bottom: "5%" }]} rippleColor="#fff" onPress={() => print()}>
                     <FontAwesome5 name={"file"} size={20} color="#fff" />
                 </Ripple>
             ) : (
-                <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => filterDate()}>
-                    <FontAwesome5 name={"file"} size={20} color="#fff" />
-                </Ripple>
+                isAdmin ? (
+                    <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => filterDate()}>
+                        <FontAwesome5 name={"file"} size={20} color="#fff" />
+                    </Ripple>
+                ) : (
+                    <Ripple style={s.buttonAmount} rippleColor="#fff" onPress={() => print()}>
+                        <FontAwesome5 name={"file"} size={20} color="#fff" />
+                    </Ripple>
+                )
             )}
             {modalShow && (
                 <Modal

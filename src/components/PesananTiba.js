@@ -110,7 +110,7 @@ const PesananTiba = (props) => {
                     </>
                 ) : (
                     data.map((el, i) => (
-                        <TransaksiCard key={i} isAdmin={admin} data={el.cart_item.length} customer={el.customer} id_so={el.id_so} grandtotal={el.grandtotal} lunas={el.lunas} tgl={el.cart_item[0].modified_date} kirim={el.barang_dikirim} exist={true} print={print} />
+                        <TransaksiCard key={i} isAdmin={admin} data={el.cart_item.length} customer={el.customer} id_so={el.id_so} grandtotal={el.grandtotal} lunas={el.lunas} tgl={el.cart_item[el.cart_item.length-1].modified_date} kirim={el.barang_dikirim} exist={true} print={print} />
                     ))
                 )
             )}
