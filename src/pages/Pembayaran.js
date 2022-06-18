@@ -86,6 +86,8 @@ const Pembayaran = (props) => {
                                 setValidatePembayaran(false)
                                 bs.current.close()
                                 toast("Berhasil Menyimpan Kartu", "success")
+                                detailPembayaran()
+                                setEmptyData(false)
                                 setCreditData({})
                             })
                             .catch((err) => {
