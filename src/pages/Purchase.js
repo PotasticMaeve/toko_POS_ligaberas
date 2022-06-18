@@ -230,22 +230,6 @@ const Purchase = () => {
     }
 
     const deletePurchase = (id) => {
-        // AsyncStorage.getItem("tokenAccess").then(token => {
-        //     if (token !== null) {
-        //         let tokenAccess = JSON.parse(token)
-        //         let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
-        //         axios.delete(`${backendURL}/api/v1/purchase_order/${id}/`, key)
-        //             .then(res => {
-        //                 toast("Pesanan Berhasil Dihapus", "success")
-        //                 getData()
-        //                 getCashflow()
-        //             })
-        //             .catch((err) => {
-        //                 toast("Gagal Menghapus Pesanan", "danger")
-        //                 setIsLoading(false)
-        //             })
-        //     }
-        // })
         setIsLoading(true)
         AsyncStorage.getItem("tokenAccess").then(token => {
             if (token !== null) {
