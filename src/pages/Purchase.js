@@ -40,6 +40,8 @@ const Purchase = () => {
     const [nopoID, setNopoID] = useState(0)
     const [cashflow, setCashflow] = useState({})
     const [deleteIdPo, setDeleteIdPo] = useState("")
+    const [keuanganCetak, setKeuanganCetak] = useState(false)
+    const [POCetak, setPOCetak] = useState(false)
 
     const getData = () => {
         setIsLoading(true)
@@ -139,33 +141,71 @@ const Purchase = () => {
                 let tokenAccess = JSON.parse(token)
                 let key = { headers: { Authorization: `Bearer ${tokenAccess}` } }
                 if (beginDate !== "" && lastDate !== "") {
-                    axios.get(`${backendURL}/report/po_download?start_date=${beginDate}&end_date=${lastDate}`, key)
-                        .then(res => {
-                            if (res.status === 200) {
-                                let path = res.data.url
-                                OpenAnything.Pdf(path)
-                            }
-                            setModalShow(false)
-                            setBeginDate("")
-                            setLastDate("")
-                        })
-                        .catch(err => {
-                            toast("Gagal Mencetak Data Pemesanan", "danger")
-                        })
+                    if(POCetak){
+                        axios.get(`${backendURL}/report/po_download?start_date=${beginDate}&end_date=${lastDate}`, key)
+                            .then(res => {
+                                if (res.status === 200) {
+                                    let path = res.data.url
+                                    OpenAnything.Pdf(path)
+                                }
+                                setModalShow(false)
+                                setBeginDate("")
+                                setLastDate("")
+                                setPOCetak(false)
+                            })
+                            .catch(err => {
+                                toast("Gagal Mencetak Data Pemesanan", "danger")
+                            })
+                    }
+                    if(keuanganCetak){
+                        axios.get(`${backendURL}/report/cashflow_download?start_date=${beginDate}&end_date=${lastDate}`, key)
+                            .then(res => {
+                                if (res.status === 200) {
+                                    let path = res.data.url
+                                    OpenAnything.Pdf(path)
+                                }
+                                setModalShow(false)
+                                setBeginDate("")
+                                setLastDate("")
+                                setKeuanganCetak(false)
+                            })
+                            .catch(err => {
+                                toast("Gagal Mencetak Data Keuangan", "danger")
+                            })
+                    }
                 } else {
-                    axios.get(`${backendURL}/report/po_download`, key)
-                        .then(res => {
-                            if (res.status === 200) {
-                                let path = res.data.url
-                                OpenAnything.Pdf(path)
-                            }
-                            setModalShow(false)
-                            setBeginDate("")
-                            setLastDate("")
-                        })
-                        .catch(err => {
-                            toast("Gagal Mencetak Data Pemesanan", "danger")
-                        })
+                    if(POCetak){
+                        axios.get(`${backendURL}/report/po_download`, key)
+                            .then(res => {
+                                if (res.status === 200) {
+                                    let path = res.data.url
+                                    OpenAnything.Pdf(path)
+                                }
+                                setModalShow(false)
+                                setBeginDate("")
+                                setLastDate("")
+                                setPOCetak(false)
+                            })
+                            .catch(err => {
+                                toast("Gagal Mencetak Data Pemesanan", "danger")
+                            })
+                    }
+                    if(keuanganCetak){
+                        axios.get(`${backendURL}/report/cashflow_download`, key)
+                            .then(res => {
+                                if (res.status === 200) {
+                                    let path = res.data.url
+                                    OpenAnything.Pdf(path)
+                                }
+                                setModalShow(false)
+                                setBeginDate("")
+                                setLastDate("")
+                                setKeuanganCetak(false)
+                            })
+                            .catch(err => {
+                                toast("Gagal Mencetak Data Keuangan", "danger")
+                            })
+                    }
                 }
             }
         })
@@ -269,6 +309,16 @@ const Purchase = () => {
         bs2.current.show()
     }
 
+    const cetakKeuangan = () => {
+        setKeuanganCetak(true)
+        filterDate()
+    }
+
+    const cetakPO = () => {
+        setPOCetak(true)
+        filterDate()
+    }
+
     useEffect(() => {
         getData()
         getCashflow()
@@ -285,11 +335,16 @@ const Purchase = () => {
             <ScrollView style={{ paddingVertical: 10, height: "100%", backgroundColor: "#fafafa" }} showsVerticalScrollIndicator={false}>
                 <SliderCard cashflow={cashflow.data} isLoading={isLoading} />
                 <View style={{ paddingTop: 10, paddingHorizontal: 20, justifyContent: "flex-end", alignItems: "flex-end", flexDirection: "row" }}>
-                    <TouchableOpacity style={{ height: 30, width: 100, borderColor: "#f5576c", borderWidth: 1, justifyContent: "center", alignItems: "center", marginRight: 10 }} onPress={() => filterDate()}>
-                        <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak PO</Text>
+                    <TouchableOpacity style={{ height: 30, width: 150, borderColor: "#bc4749", borderWidth: 1, justifyContent: "center", alignItems: "center" }} onPress={() => cetakKeuangan()}>
+                        <Text style={{ fontSize: 12, color: "#bc4749", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak keuangan</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ height: 30, width: 150, borderColor: "#f5576c", borderWidth: 1, justifyContent: "center", alignItems: "center" }} onPress={() => filterIdPO()}>
-                        <Text style={{ fontSize: 12, color: "#f5576c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak Detail PO</Text>
+                </View>
+                <View style={{ paddingTop: 10, paddingHorizontal: 20, justifyContent: "flex-end", alignItems: "flex-end", flexDirection: "row" }}>
+                    <TouchableOpacity style={{ height: 30, width: 100, borderColor: "#219ebc", borderWidth: 1, justifyContent: "center", alignItems: "center", marginRight: 10 }} onPress={() => cetakPO()}>
+                        <Text style={{ fontSize: 12, color: "#219ebc", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak PO</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ height: 30, width: 150, borderColor: "#40916c", borderWidth: 1, justifyContent: "center", alignItems: "center" }} onPress={() => filterIdPO()}>
+                        <Text style={{ fontSize: 12, color: "#40916c", textTransform: "uppercase", fontFamily: "Poppins-SemiBold" }}>cetak Detail PO</Text>
                     </TouchableOpacity>
                 </View>
                 {isLoading ? (

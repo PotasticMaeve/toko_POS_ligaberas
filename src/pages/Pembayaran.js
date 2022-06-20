@@ -37,7 +37,7 @@ const Pembayaran = (props) => {
 
     const detailPembayaran = () => {
         setIsLoading(true)
-        props.ResponsiveUpdatePembayaran()
+        props.ResponsiveUpdatePembayaran && props.ResponsiveUpdatePembayaran()
         AsyncStorage.getItem("tokenAccess").then(token => {
             if (token !== null) {
                 let tokenAccess = JSON.parse(token)

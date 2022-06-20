@@ -143,7 +143,7 @@ const AddProduct = (props) => {
     const uploadImg = () => {
         RNFetchBlob.fetch(
             'POST',
-            'http://192.168.18.23:7002/upload',
+            'http://claudiafelicia.com:7002/upload',
             {
                 'Content-Type': 'multipart/form-data',
             },
